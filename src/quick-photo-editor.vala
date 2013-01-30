@@ -46,7 +46,7 @@ namespace QuickPhotoEditor {
 				GLib.warning("Could not open UI file %s", UI);
 			}
 			window = builder.get_object("window") as Window;
-			window.title = "Quick Photo Editor";
+			window.title = _("Quick Photo Editor");
 			window.window_position = WindowPosition.CENTER_ALWAYS;
 			window.destroy.connect(Gtk.main_quit);
 			window.key_press_event.connect((k) => { return key_pressed(k); });
