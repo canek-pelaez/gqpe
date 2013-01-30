@@ -2,11 +2,6 @@ bin_PROGRAMS = quick-photo-editor
 
 quick_photo_editor_SOURCES = src/quick-photo-editor.vala
 
-# \
-#        -DLOCALEDIR=\""$(localedir)"\" \
-#        -DPKGDATADIR=\""$(pkgdatadir)"\" \
-#        -DPKGLIBDIR=\""$(pkglibdir)"\"
-
 INCLUDES =					\
 	-include config.h			\
 	-DPKGDATADIR=\""$(pkgdatadir)"\"
