@@ -13,6 +13,7 @@ config.status
 configure
 depcomp
 install-sh
+m4
 missing
 quick-photo-editor
 quick_photo_editor-quick-photo-editor.o
