@@ -12,5 +12,5 @@ autoreconf -v --force --install
 intltoolize -f -c
 
 if [ -z "$NOCONFIGURE" ]; then
-    "$srcdir"/configure
+    "$srcdir"/configure $@
 fi
