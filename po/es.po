@@ -1,0 +1,22 @@
+# Quick Photo Editor.
+# Copyright (C) 2013 Canek Peláez Valdés
+# This file is distributed under the same license as the
+# quick-photo-editor package.
+# Canek Peláez Valdés <canek@ciencias.unam.mx>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: quick-photo-editor 0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-01-30 17:21-0600\n"
+"PO-Revision-Date: 2013-01-30 17:23-0600\n"
+"Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
+"Language-Team: es\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/quick-photo-editor.vala:49
+msgid "Quick Photo Editor"
+msgstr "Editor Rápido de Fotos"
