@@ -97,9 +97,15 @@ namespace QuickPhotoEditor {
 			}
 			if (e.keyval == Gdk.Key.Page_Down) {
 				move_to_next();
+				return true;
 			}
 			if (e.keyval == Gdk.Key.Page_Up) {
 				move_to_prev();
+				return true;
+			}
+			if (e.keyval == Gdk.Key.Escape) {
+				Gtk.main_quit();
+				return true;
 			}
 			return false;
 		}
