@@ -1,4 +1,5 @@
 .deps/
+.dirstamp
 ChangeLog
 INSTALL
 Makefile
@@ -16,7 +17,7 @@ install-sh
 m4
 missing
 quick-photo-editor
-quick_photo_editor-quick-photo-editor.o
-quick_photo_editor_vala.stamp
-src/quick-photo-editor.c
+*.c
+*.o
+*.stamp
 stamp-h1
