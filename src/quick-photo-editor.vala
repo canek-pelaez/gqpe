@@ -24,7 +24,6 @@ namespace QuickPhotoEditor {
 		private ToolButton save;
 
 		private Gdk.Pixbuf pixbuf;
-		private Orientation initial_orientation;
 		private Orientation orientation;
 
 		private GExiv2.Metadata metadata;
@@ -113,15 +112,15 @@ namespace QuickPhotoEditor {
 		private void rotate_left() {
 			switch (orientation) {
 			case Orientation.PORTRAIT:
-				orientation = Orientation.REVERSE_LANDSCAPE;
-				break;
-			case Orientation.REVERSE_LANDSCAPE:
-				orientation = Orientation.REVERSE_PORTRAIT;
-				break;
-			case Orientation.REVERSE_PORTRAIT:
 				orientation = Orientation.LANDSCAPE;
 				break;
 			case Orientation.LANDSCAPE:
+				orientation = Orientation.REVERSE_PORTRAIT;
+				break;
+			case Orientation.REVERSE_PORTRAIT:
+				orientation = Orientation.REVERSE_LANDSCAPE;
+				break;
+			case Orientation.REVERSE_LANDSCAPE:
 				orientation = Orientation.PORTRAIT;
 				break;
 			}
@@ -134,15 +133,15 @@ namespace QuickPhotoEditor {
 		private void rotate_right() {
 			switch (orientation) {
 			case Orientation.PORTRAIT:
-				orientation = Orientation.LANDSCAPE;
-				break;
-			case Orientation.LANDSCAPE:
-				orientation = Orientation.REVERSE_PORTRAIT;
-				break;
-			case Orientation.REVERSE_PORTRAIT:
 				orientation = Orientation.REVERSE_LANDSCAPE;
 				break;
 			case Orientation.REVERSE_LANDSCAPE:
+				orientation = Orientation.REVERSE_PORTRAIT;
+				break;
+			case Orientation.REVERSE_PORTRAIT:
+				orientation = Orientation.LANDSCAPE;
+				break;
+			case Orientation.LANDSCAPE:
 				orientation = Orientation.PORTRAIT;
 				break;
 			}
@@ -163,15 +162,23 @@ namespace QuickPhotoEditor {
 				pixbuf = original.scale_simple((int)(width*scale),
 											   (int)(height*scale),
 											   Gdk.InterpType.NEAREST);
-				initial_orientation = orientation = Orientation.LANDSCAPE;
 				if (metadata.has_tag("Exif.Image.Orientation")) {
-					var v = metadata.get_tag_long("Exif.Image.Orientation");
-					if (v == 6) {
+					switch (metadata.get_tag_long("Exif.Image.Orientation")) {
+					case 1:
+						orientation = Orientation.LANDSCAPE;
+						break;
+					case 3:
+						pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.UPSIDEDOWN);
+						orientation = Orientation.REVERSE_LANDSCAPE;
+						break;
+					case 6:
 						pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
-						initial_orientation = orientation = Orientation.PORTRAIT;
-					} else if (v == 8) {
+						orientation = Orientation.PORTRAIT;
+						break;
+					case 8:
 						pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
-						initial_orientation = orientation = Orientation.REVERSE_PORTRAIT;
+						orientation = Orientation.REVERSE_PORTRAIT;
+						break;
 					}
 				}
 				image.set_from_pixbuf(pixbuf);
@@ -220,30 +227,16 @@ namespace QuickPhotoEditor {
 
 		private void save_metadata() {
 			metadata.set_tag_string("Iptc.Application2.Caption", entry.get_text());
-			if (initial_orientation != orientation) {
-				switch (orientation) {
-				case Orientation.PORTRAIT:
-					metadata.set_tag_long("Exif.Image.Orientation", 6);
-					if (metadata.has_tag("Exif.Thumbnail.Orientation"))
-						metadata.set_tag_long("Exif.Thumbnail.Orientation", 6);
-					break;
-				case Orientation.LANDSCAPE:
-					metadata.set_tag_long("Exif.Image.Orientation", 1);
-					if (metadata.has_tag("Exif.Thumbnail.Orientation"))
-						metadata.set_tag_long("Exif.Thumbnail.Orientation", 1);
-					break;
-				case Orientation.REVERSE_PORTRAIT:
-					metadata.set_tag_long("Exif.Image.Orientation", 8);
-					if (metadata.has_tag("Exif.Thumbnail.Orientation"))
-						metadata.set_tag_long("Exif.Thumbnail.Orientation", 8);
-					break;
-				case Orientation.REVERSE_LANDSCAPE:
-					/* It's actually difficult to take pictures upside down, but
-					   with smartphones cameras it will be necessary to cover this
-					   case in the future. */
-					break;
-				}
+			int otag = 1;
+			switch (orientation) {
+			case Orientation.PORTRAIT:          otag = 6; break;
+			case Orientation.LANDSCAPE:         otag = 1; break;
+			case Orientation.REVERSE_PORTRAIT:  otag = 8; break;
+			case Orientation.REVERSE_LANDSCAPE: otag = 3; break;
 			}
+			metadata.set_tag_long("Exif.Image.Orientation", otag);
+			if (metadata.has_tag("Exif.Thumbnail.Orientation"))
+				metadata.set_tag_long("Exif.Thumbnail.Orientation", otag);
 			try {
 				metadata.save_file(current_file);
 			} catch (GLib.Error e) {
@@ -253,7 +246,7 @@ namespace QuickPhotoEditor {
 		}
 
 		private void picture_done() {
-			if (entry.get_text() == "")
+			if (!save.sensitive)
 				return;
 			save_metadata();
 			move_to_next();
