@@ -17,6 +17,7 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Previous picture</property>
                 <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Previous</property>
                 <property name="use_underline">True</property>
@@ -32,6 +33,7 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Next picture</property>
                 <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Next</property>
                 <property name="use_underline">True</property>
@@ -59,8 +61,9 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Rotate the picture 270°</property>
                 <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">Rotate left</property>
+                <property name="label" translatable="yes">Rotate 270°</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">object-rotate-left</property>
               </object>
@@ -74,8 +77,9 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Rotate the picture 90°</property>
                 <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">Rotate right</property>
+                <property name="label" translatable="yes">Rotate 90°</property>
                 <property name="use_underline">True</property>
                 <property name="icon_name">object-rotate-right</property>
               </object>
@@ -101,6 +105,7 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="tooltip_text" translatable="yes">Save the tags to the picture</property>
                 <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">Save</property>
                 <property name="use_underline">True</property>
@@ -152,7 +157,7 @@
               <object class="GtkLabel" id="label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;frame&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Picture&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
               </object>
             </child>
