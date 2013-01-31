@@ -4,7 +4,7 @@ Quick Photo Editor
 Quick Photo  Editor is a  small image  tag editor. It's  a companion
 program for Gallery 3 Uploader[1].
 
-Since  I only  need  tO set  the  Iptc.Application2.Caption and  the
+Since  I only  need  to set  the  Iptc.Application2.Caption and  the
 Exif.Image.Orientation tags,  this program is intended  to set those
 tags as fast as possible. The  program shows the picture, and allows
 the user  to rotate  it and  to enter  the Iptc.Application2.Caption
@@ -48,6 +48,12 @@ You need the following to compile Quick Photo Editor:
 
 The program is written in Vala, but  you only need Vala if you don't
 use tarballs.
+
+
+Homepage
+--------
+
+https://github.com/canek-pelaez/quick-photo-editor
 
 
 Notes
