@@ -1,4 +1,8 @@
-AC_INIT([quick-photo-editor],[0.1])
+AC_INIT([quick-photo-editor],
+        [0.1],
+        [https://github.com/canek-pelaez/quick-photo-editor/issues],
+        [quick-photo-editor],
+        [https://github.com/canek-pelaez/quick-photo-editor])
 AC_CONFIG_SRCDIR([src/quick-photo-editor.vala])
 
 AC_CONFIG_MACRO_DIR([m4])
