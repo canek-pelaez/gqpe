@@ -1,1 +1,2 @@
-	../src/quick-photo-editor.vala
+	../src/quick-photo-editor.vala \
+	../data/quick-photo-editor.ui
