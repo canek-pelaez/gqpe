@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Exec=quick-photo-editor %F
+Name=Quick Photo Editor
+Categories=Graphics;Photography;GNOME;GTK;
+Icon=quick-photo-editor
+MimeType=image/jpeg;image/jpg;image/pjpeg;
