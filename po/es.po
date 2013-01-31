@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quick-photo-editor 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-30 17:21-0600\n"
-"PO-Revision-Date: 2013-01-30 17:23-0600\n"
+"POT-Creation-Date: 2013-01-30 19:07-0600\n"
+"PO-Revision-Date: 2013-01-30 19:01-0600\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: \n"
@@ -20,3 +20,52 @@ msgstr ""
 #: ../src/quick-photo-editor.vala:49
 msgid "Quick Photo Editor"
 msgstr "Editor Rápido de Fotos"
+
+#: ../src/quick-photo-editor.vala:187
+#, c-format
+msgid "<b>%s (%d of %d)</b>"
+msgstr "<b>%s (%d de %d)</b>"
+
+#: ../data/quick-photo-editor.ui.h:1
+msgid "Previous picture"
+msgstr "Anterior imagen"
+
+#: ../data/quick-photo-editor.ui.h:2
+msgid "Previous"
+msgstr "Anterior"
+
+#: ../data/quick-photo-editor.ui.h:3
+msgid "Next picture"
+msgstr "Siguiente imagen"
+
+#: ../data/quick-photo-editor.ui.h:4
+msgid "Next"
+msgstr "Siguiente"
+
+#: ../data/quick-photo-editor.ui.h:5
+msgid "Rotate the picture 270°"
+msgstr "Rotar la imagen 270°"
+
+#: ../data/quick-photo-editor.ui.h:6
+msgid "Rotate 270°"
+msgstr "Rotar 270°"
+
+#: ../data/quick-photo-editor.ui.h:7
+msgid "Rotate the picture 90°"
+msgstr "Rotar la imagen 90°"
+
+#: ../data/quick-photo-editor.ui.h:8
+msgid "Rotate 90°"
+msgstr "Rotar 90°"
+
+#: ../data/quick-photo-editor.ui.h:9
+msgid "Save the tags to the picture"
+msgstr "Guardar etiquetas en la imagen"
+
+#: ../data/quick-photo-editor.ui.h:10
+msgid "Save"
+msgstr "Salvar"
+
+#: ../data/quick-photo-editor.ui.h:11
+msgid "<b>Picture</b>"
+msgstr "<b>Imagen</b>"
