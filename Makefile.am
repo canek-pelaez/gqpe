@@ -21,9 +21,12 @@ ui_DATA = data/quick-photo-editor.ui
 icondir = $(datadir)/icons/hicolor/scalable/apps
 icon_DATA = data/quick-photo-editor.svg
 
+desktopdir = $(datadir)/applications
+desktop_DATA = data/quick-photo-editor.desktop
+
 noinst_DATA = vapi/config.vapi
 
-EXTRA_DIST = $(noinst_DATA) $(ui_DATA) $(icon_DATA)
+EXTRA_DIST = $(noinst_DATA) $(ui_DATA) $(icon_DATA) $(desktop_DATA)
 
 SUBDIRS = po
 
