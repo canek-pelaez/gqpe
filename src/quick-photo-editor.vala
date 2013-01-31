@@ -184,7 +184,7 @@ namespace QuickPhotoEditor {
 		private void update_picture() {
 			string file = iterator.get();
 			string basename = File.new_for_path(file).get_basename();
-			label.set_text("%s (%d of %d)".printf(basename, index, num_files));
+			label.set_markup(_("<b>%s (%d of %d)</b>").printf(basename, index, num_files));
 			set_pixbuf_from_file(file);
 			save.sensitive = false;
 			entry.grab_focus();
@@ -255,6 +255,10 @@ namespace QuickPhotoEditor {
 	}
 
 	int main(string[] args) {
+		Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
+		Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
+		Intl.textdomain(Config.GETTEXT_PACKAGE);
+
 		Gtk.init(ref args);
 
 		Gtk.Settings.get_default().gtk_application_prefer_dark_theme = true;
