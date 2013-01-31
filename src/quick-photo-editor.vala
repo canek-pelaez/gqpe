@@ -64,6 +64,7 @@ namespace QuickPhotoEditor {
 			save.clicked.connect(() => { save_metadata(); });
 			entry = builder.get_object("entry") as Entry;
 			entry.activate.connect(() => { picture_done(); });
+			entry.changed.connect(() => { save.sensitive = true; });
 		}
 
 		public void start() {
