@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-02 00:29-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/quick-photo-editor.vala:48
+msgid "Quick Photo Editor"
+msgstr ""
+
+#: ../src/quick-photo-editor.vala:201
+#, c-format
+msgid "<b>%s (%d of %d)</b>"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:1
+msgid "Previous picture"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:2
+msgid "Previous"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:3
+msgid "Next picture"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:4
+msgid "Next"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:5
+msgid "Rotate the picture 270°"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:6
+msgid "Rotate 270°"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:7
+msgid "Rotate the picture 90°"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:8
+msgid "Rotate 90°"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:9
+msgid "Save the tags to the picture"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:10
+msgid "Save"
+msgstr ""
+
+#: ../data/quick-photo-editor.ui.h:11
+msgid "<b>Picture</b>"
+msgstr ""
