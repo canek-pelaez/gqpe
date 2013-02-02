@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quick-photo-editor 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-30 19:07-0600\n"
+"POT-Creation-Date: 2013-02-02 00:29-0600\n"
 "PO-Revision-Date: 2013-01-30 19:01-0600\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/quick-photo-editor.vala:49
+#: ../src/quick-photo-editor.vala:48
 msgid "Quick Photo Editor"
 msgstr "Editor Rápido de Fotos"
 
-#: ../src/quick-photo-editor.vala:187
+#: ../src/quick-photo-editor.vala:201
 #, c-format
 msgid "<b>%s (%d of %d)</b>"
 msgstr "<b>%s (%d de %d)</b>"
