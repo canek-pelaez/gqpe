@@ -62,7 +62,7 @@ namespace QuickPhotoEditor {
             try {
                 builder.add_from_file(UI);
             } catch (Error e) {
-                GLib.warning("Could not open UI file %s", UI);
+                GLib.error("Could not open UI file %s", UI);
             }
             window = builder.get_object("window") as Window;
             window.title = _("Quick Photo Editor");
@@ -182,7 +182,7 @@ namespace QuickPhotoEditor {
                 double scale = 500.0 / double.max(width, height);
                 pixbuf = original.scale_simple((int)(width*scale),
                                                (int)(height*scale),
-                                               Gdk.InterpType.NEAREST);
+                                               Gdk.InterpType.BILINEAR);
                 if (metadata.has_tag("Exif.Image.Orientation")) {
                     switch (metadata.get_tag_long("Exif.Image.Orientation")) {
                     case 1:
