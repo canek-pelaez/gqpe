@@ -51,7 +51,7 @@ namespace QuickPhotoEditor {
 
         private Gee.ArrayList<string> files;
         private int num_files;
-        private Gee.ListIterator<string> iterator;
+        private Gee.BidirListIterator<string> iterator;
         private int index;
 
         public QuickPhotoEditor(Gee.ArrayList<string> files) {
@@ -93,7 +93,7 @@ namespace QuickPhotoEditor {
                 rot270.sensitive = rot90.sensitive = false;
                 save.sensitive = entry.sensitive = false;
             } else {
-                iterator = files.list_iterator();
+                iterator = files.bidir_list_iterator();
                 move_to_next();
                 prev.sensitive = false;
                 if (num_files == 1)
