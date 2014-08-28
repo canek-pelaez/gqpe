@@ -20,30 +20,22 @@
 
 namespace GQPE {
 
-    public enum ExifImageOrientation {
-        LANDSCAPE = 1,
-        REVERSE_LANDSCAPE = 3,
-        PORTRAIT = 6,
-        REVERSE_PORTRAIT = 8
-    }
-
     public enum Orientation {
-        PORTRAIT,
-        LANDSCAPE,
-        REVERSE_PORTRAIT,
-        REVERSE_LANDSCAPE,
+        LANDSCAPE         = 1,
+        REVERSE_LANDSCAPE = 3,
+        PORTRAIT          = 6,
+        REVERSE_PORTRAIT  = 8
     }
 
-    public class Photograph : Image {
+    public class Photograph : Gtk.Image {
 
         public string filename { get; private set; }
         public string caption { get; private set; }
+        public Orientation orientation { get; private set; }
 
-        private Gdk.Pixbuf pixbuf;
-        private Orientation orientation;
         private GExiv2.Metadata metadata;
 
-        public Photograph(filename) {
+        public Photograph(string filename) throws GLib.Error {
             metadata = new GExiv2.Metadata();
             metadata.open_path(filename);
 
@@ -56,18 +48,18 @@ namespace GQPE {
                                            Gdk.InterpType.BILINEAR);
             if (metadata.has_tag("Exif.Image.Orientation")) {
                 switch (metadata.get_tag_long("Exif.Image.Orientation")) {
-                case ExifImageOrientation.LANDSCAPE:
+                case Orientation.LANDSCAPE:
                     orientation = Orientation.LANDSCAPE;
                     break;
-                case ExifImageOrientation.REVERSE_LANDSCAPE:
+                case Orientation.REVERSE_LANDSCAPE:
                     pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.UPSIDEDOWN);
                     orientation = Orientation.REVERSE_LANDSCAPE;
                     break;
-                case ExifImageOrientation.PORTRAIT:
+                case Orientation.PORTRAIT:
                     pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
                     orientation = Orientation.PORTRAIT;
                     break;
-                case ExifImageOrientation.REVERSE_PORTRAIT:
+                case Orientation.REVERSE_PORTRAIT:
                     pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
                     orientation = Orientation.REVERSE_PORTRAIT;
                     break;
@@ -80,7 +72,7 @@ namespace GQPE {
                 caption = "";
         }
 
-        private void rotate_left() {
+        public void rotate_left() {
             switch (orientation) {
             case Orientation.PORTRAIT:
                 orientation = Orientation.LANDSCAPE;
@@ -99,7 +91,7 @@ namespace GQPE {
             set_from_pixbuf(pixbuf);
         }
 
-        private void rotate_right() {
+        public void rotate_right() {
             switch (orientation) {
             case Orientation.PORTRAIT:
                 orientation = Orientation.REVERSE_LANDSCAPE;
@@ -118,26 +110,11 @@ namespace GQPE {
             set_from_pixbuf(pixbuf);
         }
 
-        public void save_metadata() {
+        public void save_metadata() throws GLib.Error {
             metadata.set_tag_string("Iptc.Application2.Caption", caption);
-            int otag = ExifImageOrientation.LANDSCAPE;
-            switch (orientation) {
-            case Orientation.PORTRAIT:
-                otag = ExifImageOrientation.PORTRAIT;
-                break;
-            case Orientation.LANDSCAPE:
-                otag = ExifImageOrientation.LANDSCAPE;
-                break;
-            case Orientation.REVERSE_PORTRAIT:
-                otag = ExifImageOrientation.REVERSE_PORTRAIT;
-                break;
-            case Orientation.REVERSE_LANDSCAPE:
-                otag = ExifImageOrientation.REVERSE_LANDSCAPE;
-                break;
-            }
-            metadata.set_tag_long("Exif.Image.Orientation", otag);
+            metadata.set_tag_long("Exif.Image.Orientation", orientation);
             if (metadata.has_tag("Exif.Thumbnail.Orientation"))
-                metadata.set_tag_long("Exif.Thumbnail.Orientation", otag);
+                metadata.set_tag_long("Exif.Thumbnail.Orientation", orientation);
             metadata.save_file(filename);
         }
     }
