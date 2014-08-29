@@ -19,16 +19,23 @@
 
 namespace GQPE {
 
+    public enum Orientation {
+        LANDSCAPE         = 1,
+        REVERSE_LANDSCAPE = 3,
+        PORTRAIT          = 6,
+        REVERSE_PORTRAIT  = 8
+    }
+
     public class PhotoImage : Gtk.Image {
 
         public string filename { get; private set; }
         public string caption { get; private set; }
-        public Orientation orientation { get; private set; }
+        public Orientation orientation { get; set; }
 
         private GExiv2.Metadata metadata;
 
-        public PhotoImage(string filename) throws GLib.Error {
-            update_filename(filename);
+        public PhotoImage() {
+            orientation = Orientation.LANDSCAPE;
         }
 
         public void update_filename(string filename) throws GLib.Error {
@@ -39,13 +46,7 @@ namespace GQPE {
             metadata = new GExiv2.Metadata();
             metadata.open_path(filename);
 
-            var original = new Gdk.Pixbuf.from_file(filename);
-            int width = original.width;
-            int height = original.height;
-            double scale = 600.0 / double.max(width, height);
-            pixbuf = original.scale_simple((int)(width*scale),
-                                           (int)(height*scale),
-                                           Gdk.InterpType.BILINEAR);
+            pixbuf = new Gdk.Pixbuf.from_file(filename);
             if (metadata.has_tag("Exif.Image.Orientation")) {
                 switch (metadata.get_tag_long("Exif.Image.Orientation")) {
                 case Orientation.LANDSCAPE:
@@ -65,6 +66,14 @@ namespace GQPE {
                     break;
                 }
             }
+            double scale = 1.0;
+            if (pixbuf.width > pixbuf.height)
+                scale = 500.0 / pixbuf.width;
+            else
+                scale = 375.0 / pixbuf.height;
+            pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
+                                         (int)(pixbuf.height*scale),
+                                         Gdk.InterpType.BILINEAR);
             set_from_pixbuf(pixbuf);
             if (metadata.has_tag("Iptc.Application2.Caption"))
                 caption = metadata.get_tag_string("Iptc.Application2.Caption");
