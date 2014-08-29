@@ -1,19 +1,40 @@
-bin_PROGRAMS = src/quick-photo-editor
+AUTOMAKE_OPTIONS = subdir-objects
 
-src_quick_photo_editor_SOURCES = src/quick-photo-editor.vala
+bin_PROGRAMS = src/gqpe
 
-INCLUDES =					\
+src_gqpe_SOURCES =				\
+	src/quick-photo-editor.vala		\
+	src/photograph-image.vala		\
+	$(NULL)
+
+AM_CPPFLAGS =					\
 	-include config.h			\
 	-DLOCALEDIR=\""$(localedir)"\"		\
 	-DPKGDATADIR=\""$(pkgdatadir)"\"	\
-	-DPKGLIBDIR=\""$(pkglibdir)"\"
+	-DPKGLIBDIR=\""$(pkglibdir)"\"		\
+	$(NULL)
 
-VALAFLAGS =					\
-	--vapidir=$(srcdir)/vapi --pkg config	\
-	@QUICKPHOTOEDITOR_PACKAGES@
+src_gqpe_VALAFLAGS =				\
+	--target-glib=2.38			\
+	--vapidir=$(srcdir)/vapi		\
+	 --pkg config				\
+	@GEE_PACKAGES@				\
+	@GEXIV2_PACKAGES@			\
+	@GTK_PACKAGES@				\
+	$(NULL)
 
-src_quick_photo_editor_CFLAGS = $(QUICKPHOTOEDITOR_CFLAGS)
-src_quick_photo_editor_LDADD = $(QUICKPHOTOEDITOR_LIBS)
+src_gqpe_CFLAGS =				\
+	@GEE_CFLAGS@				\
+	@GEXIV2_CFLAGS@				\
+	@GTK_CFLAGS@				\
+	-w					\
+	$(NULL)
+
+src_gqpe_LDADD =				\
+	@GEE_LIBS@				\
+	@GEXIV2_LIBS@				\
+	@GTK_LIBS@				\
+	$(NULL)
 
 uidir = $(pkgdatadir)
 ui_DATA = data/quick-photo-editor.ui

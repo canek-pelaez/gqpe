@@ -1,33 +1,25 @@
 /*
- * This file is part of quick-photo-editor.
+ * This file is part of gqpe.
  *
  * Copyright 2013 Canek Peláez Valdés
  *
- * quick-photo-editor is free software: you can redistribute it
- * and/or modify it under the terms of the GNU General Public
- * License as published by the Free Software Foundation, either
- * version 3 of the License, or (at your option) any later version.
+ * gqpe is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * quick-photo-editor is distributed in the hope that it will be
- * useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
+ * gqpe is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with quick-photo-editor.  If not, see
- * <http://www.gnu.org/licenses/>.
+ * along with gqpq.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace GQPE {
 
-    public enum Orientation {
-        LANDSCAPE         = 1,
-        REVERSE_LANDSCAPE = 3,
-        PORTRAIT          = 6,
-        REVERSE_PORTRAIT  = 8
-    }
-
-    public class Photograph : Gtk.Image {
+    public class PhotoImage : Gtk.Image {
 
         public string filename { get; private set; }
         public string caption { get; private set; }
@@ -35,7 +27,15 @@ namespace GQPE {
 
         private GExiv2.Metadata metadata;
 
-        public Photograph(string filename) throws GLib.Error {
+        public PhotoImage(string filename) throws GLib.Error {
+            update_filename(filename);
+        }
+
+        public void update_filename(string filename) throws GLib.Error {
+            if (this.filename == filename)
+                return;
+
+            this.filename = filename;
             metadata = new GExiv2.Metadata();
             metadata.open_path(filename);
 

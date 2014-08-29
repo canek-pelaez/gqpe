@@ -18,9 +18,9 @@ es.gmo
 install-sh
 m4
 missing
-quick-photo-editor
 *.c
 *.o
 *.stamp
 stamp-h1
 stamp-it
+src/gqpe
