@@ -1,1 +1,2 @@
-src/quick-photo-editor.c
+src/main.c
+src/photograph.c

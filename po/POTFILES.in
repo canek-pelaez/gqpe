@@ -1,2 +1,3 @@
-src/quick-photo-editor.vala
-[type: gettext/glade]data/quick-photo-editor.ui
+src/main.vala
+src/photograph.vala
+[type: gettext/glade]data/gqpe.ui
