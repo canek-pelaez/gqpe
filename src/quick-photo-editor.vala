@@ -14,7 +14,7 @@
  * General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with gqpq.  If not, see <http://www.gnu.org/licenses/>.
+ * along with gqpq. If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace GQPE {
@@ -24,23 +24,25 @@ namespace GQPE {
         private static string UI = GLib.Path.build_filename(Config.PKGDATADIR, "gqpe.ui");
 
         private Gtk.Window window;
-        private Gtk.Frame frame;
         private Gtk.Button previous;
         private Gtk.Button next;
         private Gtk.Button rotate_left;
         private Gtk.Button rotate_right;
         private Gtk.Button save;
-        private PhotoImage image;
+        private Gtk.Frame frame;
+        private Gtk.Label label;
+        private Gtk.Image image;
         private Gtk.Entry entry;
 
-        private Gee.ArrayList<string> filenames;
-        private Gee.BidirListIterator<string> iterator;
+        private Gee.ArrayList<Photograph> photographs;
+        private Gee.BidirListIterator<Photograph> iterator;
+        private Gee.ListIterator<Photograph> loader;
         private int total;
         private int index;
 
-        public Main(Gee.ArrayList<string> filenames) {
-            this.filenames = filenames;
-            total = filenames.size;
+        public Main(Gee.ArrayList<Photograph> photographs) {
+            this.photographs = photographs;
+            total = photographs.size;
 
             var builder = new Gtk.Builder();
             try {
@@ -58,22 +60,18 @@ namespace GQPE {
             next = builder.get_object("next") as Gtk.Button;
             next.clicked.connect(() => { move_to_next(); });
             rotate_left = builder.get_object("rotate_left") as Gtk.Button;
-            rotate_left.clicked.connect(() => { image.rotate_left(); });
+            rotate_left.clicked.connect(() => { rotate_photograph_left(); });
             rotate_right = builder.get_object("rotate_right") as Gtk.Button;
-            rotate_right.clicked.connect(() => { image.rotate_right(); });
+            rotate_right.clicked.connect(() => { rotate_photograph_right(); });
             save = builder.get_object("save") as Gtk.Button;
-            save.clicked.connect(() => { image.save_metadata(); });
+            save.clicked.connect(() => { save_photograph_metadata(); });
 
             frame = builder.get_object("frame") as Gtk.Frame;
+            label = builder.get_object("label") as Gtk.Label;
+            image = builder.get_object("image") as Gtk.Image;
             entry = builder.get_object("entry") as Gtk.Entry;
             entry.activate.connect(() => { picture_done(); });
             entry.changed.connect(() => { save.sensitive = true; });
-
-            image = new PhotoImage();
-            image.margin = 6;
-            image.set_size_request(500, 375);
-            image.visible = true;
-            frame.add(image);
         }
 
         public void start() {
@@ -83,12 +81,23 @@ namespace GQPE {
                 rotate_left.sensitive = rotate_right.sensitive = false;
                 save.sensitive = entry.sensitive = false;
             } else {
-                iterator = filenames.bidir_list_iterator();
+                iterator = photographs.bidir_list_iterator();
+                loader = photographs.list_iterator();
                 move_to_next();
                 if (total == 1)
                     next.sensitive = false;
             }
+            GLib.Idle.add(autoload_photographs);
             window.show_all();
+        }
+
+        private bool autoload_photographs() {
+            if (!loader.has_next())
+                return false;
+            loader.next();
+            var photograph = loader.get();
+            photograph.load();
+            return true;
         }
 
         private bool key_pressed(Gdk.EventKey e) {
@@ -96,12 +105,12 @@ namespace GQPE {
                 return false;
             if (e.keyval == Gdk.Key.Left &&
                 (e.state & Gdk.ModifierType.MOD1_MASK) != 0) {
-                image.rotate_left();
+                rotate_photograph_left();
                 return true;
             }
             if (e.keyval == Gdk.Key.Right &&
                 (e.state & Gdk.ModifierType.MOD1_MASK) != 0) {
-                image.rotate_right();
+                rotate_photograph_right();
                 return true;
             }
             if (e.keyval == Gdk.Key.Page_Down) {
@@ -120,12 +129,12 @@ namespace GQPE {
         }
 
         private void update_picture() {
-            string filename = iterator.get();
-            string basename = File.new_for_path(filename).get_basename();
-            var label = (Gtk.Label)frame.label_widget;
+            var photograph = iterator.get();
+            var basename = File.new_for_path(photograph.filename).get_basename();
             label.set_markup(_("<b>%s (%d of %d)</b>").printf(basename, index, total));
-            image.update_filename(filename);
-            entry.set_text(image.caption);
+            photograph.load();
+            image.set_from_pixbuf(photograph.pixbuf);
+            entry.set_text(photograph.caption);
             entry.grab_focus();
             save.sensitive = false;
         }
@@ -152,10 +161,27 @@ namespace GQPE {
             update_picture();
         }
 
+        private void rotate_photograph_left() {
+            var photograph = iterator.get();
+            photograph.rotate_left();
+            image.set_from_pixbuf(photograph.pixbuf);
+        }
+
+        private void rotate_photograph_right() {
+            var photograph = iterator.get();
+            photograph.rotate_right();
+            image.set_from_pixbuf(photograph.pixbuf);
+        }
+
+        private void save_photograph_metadata() {
+            var photograph = iterator.get();
+            photograph.save_metadata();
+        }
+
         private void picture_done() {
             if (!save.sensitive)
                 return;
-            image.save_metadata();
+            save_photograph_metadata();
             move_to_next();
         }
     }
@@ -169,12 +195,24 @@ namespace GQPE {
 
         Gtk.Settings.get_default().gtk_application_prefer_dark_theme = true;
 
-        var filenames = new Gee.ArrayList<string>();
-        foreach (var arg in args[1:args.length])
-            filenames.add(arg);
-        filenames.sort();
+        var photographs = new Gee.ArrayList<Photograph>();
+        foreach (var filename in args[1:args.length]) {
+            if (!GLib.FileUtils.test(filename, GLib.FileTest.EXISTS)) {
+                GLib.warning("The filename '%s' does not exists".printf(filename));
+                continue;
+            }
+            var file = GLib.File.new_for_path(filename);
+            var info = file.query_info("standard::*", GLib.FileQueryInfoFlags.NONE);
+            var ctype = info.get_content_type();
+            if (ctype != "image/jpeg" && ctype != "image/png") {
+                GLib.warning("The filename '%s' is not a picture".printf(filename));
+                continue;
+            }
+            photographs.add(new Photograph(filename));
+        }
+        photographs.sort();
 
-        var gqpe = new Main(filenames);
+        var gqpe = new Main(photographs);
         gqpe.start();
 
         Gtk.main();

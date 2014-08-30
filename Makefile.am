@@ -4,7 +4,7 @@ bin_PROGRAMS = src/gqpe
 
 src_gqpe_SOURCES =				\
 	src/quick-photo-editor.vala		\
-	src/photo-image.vala			\
+	src/photograph.vala			\
 	$(NULL)
 
 AM_CPPFLAGS =					\
