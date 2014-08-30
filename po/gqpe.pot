@@ -1,17 +1,17 @@
-# Gtk+ Quick Photo Editor.
-# Copyright (C) 2013 Canek Peláez Valdés
-# This file is distributed under the same license as the
-# gqpe package.
-# Canek Peláez Valdés <canek@ciencias.unam.mx>, 2013.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: quick-photo-editor 0.1\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-30 12:02-0500\n"
-"PO-Revision-Date: 2014-08-30 12:06-0500\n"
-"Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
-"Language-Team: es\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,28 +20,28 @@ msgstr ""
 #: ../src/main.vala:134
 #, c-format
 msgid "<b>%s (%d of %d)</b>"
-msgstr "<b>%s (%d de %d)</b>"
+msgstr ""
 
 #: ../data/gqpe.ui.h:1
 msgid "Previous picture"
-msgstr "Anterior imagen"
+msgstr ""
 
 #: ../data/gqpe.ui.h:2
 msgid "Next picture"
-msgstr "Siguiente imagen"
+msgstr ""
 
 #: ../data/gqpe.ui.h:3
 msgid "Save picture"
-msgstr "Siguiente imagen"
+msgstr ""
 
 #: ../data/gqpe.ui.h:4
 msgid "Rotate 270°"
-msgstr "Rotar 270°"
+msgstr ""
 
 #: ../data/gqpe.ui.h:5
 msgid "Rotate 90°"
-msgstr "Rotar 90°"
+msgstr ""
 
 #: ../data/gqpe.ui.h:6
 msgid "<b>Picture</b>"
-msgstr "<b>Imagen</b>"
+msgstr ""
