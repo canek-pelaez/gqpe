@@ -52,4 +52,7 @@ EXTRA_DIST = $(noinst_DATA) $(ui_DATA) $(icon_DATA) $(desktop_DATA)
 SUBDIRS = po
 
 dist-hook:
-	cd ${top_srcdir} && git log --no-color --stat --name-only --date=short --abbrev-commit > ${srcdir}/ChangeLog
+	cd ${top_srcdir} &&			\
+	git log --no-color --stat --name-only	\
+		--date=short --abbrev-commit	\
+		> ${srcdir}/ChangeLog
