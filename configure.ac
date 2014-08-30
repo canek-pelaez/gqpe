@@ -1,9 +1,9 @@
-AC_INIT([quick-photo-editor],
+AC_INIT([gqpe],
         [0.1],
-        [https://github.com/canek-pelaez/quick-photo-editor/issues],
-        [quick-photo-editor],
-        [https://github.com/canek-pelaez/quick-photo-editor])
-AC_CONFIG_SRCDIR([src/quick-photo-editor.vala])
+        [https://github.com/canek-pelaez/gqpe/issues],
+        [gqpe],
+        [https://github.com/canek-pelaez/gqpe])
+AC_CONFIG_SRCDIR([src/main.vala])
 
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS([config.h])

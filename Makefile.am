@@ -40,10 +40,10 @@ uidir = $(pkgdatadir)
 ui_DATA = data/gqpe.ui
 
 icondir = $(datadir)/icons/hicolor/scalable/apps
-icon_DATA = data/quick-photo-editor.svg
+icon_DATA = data/gqpe.svg
 
 desktopdir = $(datadir)/applications
-desktop_DATA = data/quick-photo-editor.desktop
+desktop_DATA = data/gqpe.desktop
 
 noinst_DATA = vapi/config.vapi
 
