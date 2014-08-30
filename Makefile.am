@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = subdir-objects
 bin_PROGRAMS = src/gqpe
 
 src_gqpe_SOURCES =				\
-	src/quick-photo-editor.vala		\
+	src/main.vala				\
 	src/photograph.vala			\
 	$(NULL)
 
