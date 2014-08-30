@@ -26,19 +26,23 @@ namespace GQPE {
         REVERSE_PORTRAIT  = 8
     }
 
-    public class PhotoImage : Gtk.Image {
+    public class Photograph : Object, Gee.Comparable<Photograph> {
 
         public string filename { get; private set; }
         public string caption { get; private set; }
+        public Gdk.Pixbuf pixbuf { get; private set; }
 
         private Orientation orientation;
         private GExiv2.Metadata metadata;
 
-        public void update_filename(string filename) throws GLib.Error {
-            if (this.filename == filename)
+        public Photograph(string filename) {
+            this.filename = filename;
+        }
+
+        public void load() throws GLib.Error {
+            if (pixbuf != null)
                 return;
 
-            this.filename = filename;
             metadata = new GExiv2.Metadata();
             metadata.open_path(filename);
 
@@ -70,7 +74,6 @@ namespace GQPE {
             pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
                                          (int)(pixbuf.height*scale),
                                          Gdk.InterpType.BILINEAR);
-            set_from_pixbuf(pixbuf);
             if (metadata.has_tag("Iptc.Application2.Caption"))
                 caption = metadata.get_tag_string("Iptc.Application2.Caption");
             else
@@ -93,7 +96,6 @@ namespace GQPE {
                 break;
             }
             pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
-            set_from_pixbuf(pixbuf);
         }
 
         public void rotate_right() {
@@ -112,7 +114,6 @@ namespace GQPE {
                 break;
             }
             pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
-            set_from_pixbuf(pixbuf);
         }
 
         public void save_metadata() throws GLib.Error {
@@ -121,6 +122,14 @@ namespace GQPE {
             if (metadata.has_tag("Exif.Thumbnail.Orientation"))
                 metadata.set_tag_long("Exif.Thumbnail.Orientation", orientation);
             metadata.save_file(filename);
+        }
+
+        public int compare_to(Photograph photograph) {
+            if (filename < photograph.filename)
+                return -1;
+            if (filename > photograph.filename)
+                return 1;
+            return 0;
         }
     }
 }
