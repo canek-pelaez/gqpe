@@ -30,13 +30,9 @@ namespace GQPE {
 
         public string filename { get; private set; }
         public string caption { get; private set; }
-        public Orientation orientation { get; set; }
 
+        private Orientation orientation;
         private GExiv2.Metadata metadata;
-
-        public PhotoImage() {
-            orientation = Orientation.LANDSCAPE;
-        }
 
         public void update_filename(string filename) throws GLib.Error {
             if (this.filename == filename)

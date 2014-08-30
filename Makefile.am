@@ -37,7 +37,7 @@ src_gqpe_LDADD =				\
 	$(NULL)
 
 uidir = $(pkgdatadir)
-ui_DATA = data/quick-photo-editor.ui
+ui_DATA = data/gqpe.ui
 
 icondir = $(datadir)/icons/hicolor/scalable/apps
 icon_DATA = data/quick-photo-editor.svg

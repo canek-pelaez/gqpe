@@ -21,6 +21,8 @@ namespace GQPE {
 
     public class Main {
 
+        private static string UI = GLib.Path.build_filename(Config.PKGDATADIR, "gqpe.ui");
+
         private Gtk.Window window;
         private Gtk.Frame frame;
         private Gtk.Button previous;
@@ -40,77 +42,38 @@ namespace GQPE {
             this.filenames = filenames;
             total = filenames.size;
 
-            window = new Gtk.Window();
-            window.window_position = Gtk.WindowPosition.CENTER_ALWAYS;
+            var builder = new Gtk.Builder();
+            try {
+                builder.add_from_file(UI);
+            } catch (GLib.Error e) {
+                GLib.error("Could not open UI file %s", UI);
+            }
+
+            window = builder.get_object("window") as Gtk.Window;
             window.destroy.connect(Gtk.main_quit);
             window.key_press_event.connect((k) => { return key_pressed(k); });
 
-            window.set_titlebar(create_headerbar());
-            window.add(create_main_area());
-        }
+            previous = builder.get_object("previous") as Gtk.Button;
+            previous.clicked.connect(() => { move_to_previous(); });
+            next = builder.get_object("next") as Gtk.Button;
+            next.clicked.connect(() => { move_to_next(); });
+            rotate_left = builder.get_object("rotate_left") as Gtk.Button;
+            rotate_left.clicked.connect(() => { image.rotate_left(); });
+            rotate_right = builder.get_object("rotate_right") as Gtk.Button;
+            rotate_right.clicked.connect(() => { image.rotate_right(); });
+            save = builder.get_object("save") as Gtk.Button;
+            save.clicked.connect(() => { image.save_metadata(); });
 
-        private Gtk.Box create_main_area() {
-            var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 6);
-            box.margin = 6;
-
-            frame = new Gtk.Frame("");
-            frame.shadow_type = Gtk.ShadowType.ETCHED_OUT;
-            box.pack_start(frame, true, true);
+            frame = builder.get_object("frame") as Gtk.Frame;
+            entry = builder.get_object("entry") as Gtk.Entry;
+            entry.activate.connect(() => { picture_done(); });
+            entry.changed.connect(() => { save.sensitive = true; });
 
             image = new PhotoImage();
             image.margin = 6;
             image.set_size_request(500, 375);
+            image.visible = true;
             frame.add(image);
-
-            var sep = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-            box.pack_start(sep, false, false);
-
-            entry = new Gtk.Entry();
-            entry.activate.connect(() => { picture_done(); });
-            entry.changed.connect(() => { save.sensitive = true; });
-            box.pack_start(entry, false, false);
-
-            return box;
-        }
-
-        private Gtk.HeaderBar create_headerbar() {
-            var header = new Gtk.HeaderBar();
-            header.title = "Quick Photo Editor";
-            header.show_close_button = true;
-            header.spacing = 6;
-
-            var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-            box.get_style_context().add_class("linked");
-            header.pack_start(box);
-
-            previous = new Gtk.Button.from_icon_name("go-previous-symbolic",
-                                                 Gtk.IconSize.SMALL_TOOLBAR);
-            previous.clicked.connect(() => { move_to_previous(); });
-            box.pack_start(previous);
-            next = new Gtk.Button.from_icon_name("go-next-symbolic",
-                                                 Gtk.IconSize.SMALL_TOOLBAR);
-            next.clicked.connect(() => { move_to_next(); });
-            box.pack_start(next);
-
-            box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-            box.get_style_context().add_class("linked");
-            header.pack_start(box);
-
-            rotate_left = new Gtk.Button.from_icon_name("object-rotate-left-symbolic",
-                                                        Gtk.IconSize.SMALL_TOOLBAR);
-            rotate_left.clicked.connect(() => { image.rotate_left(); });
-            box.pack_start(rotate_left);
-            rotate_right = new Gtk.Button.from_icon_name("object-rotate-right-symbolic",
-                                                         Gtk.IconSize.SMALL_TOOLBAR);
-            rotate_right.clicked.connect(() => { image.rotate_right(); });
-            box.pack_start(rotate_right);
-
-            save = new Gtk.Button.from_icon_name("document-save-symbolic",
-                                                 Gtk.IconSize.SMALL_TOOLBAR);
-            save.clicked.connect(() => { image.save_metadata(); });
-            header.pack_end(save);
-
-            return header;
         }
 
         public void start() {
