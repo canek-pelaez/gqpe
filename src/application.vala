@@ -152,8 +152,6 @@ namespace GQPE {
 
         private void update_picture() {
             var photograph = iterator.get();
-            var basename = photograph.file.get_basename();
-            var markup = _("<b>%s (%d of %d)</b>").printf(basename, index, total);
             try {
                 photograph.load();
             } catch (GLib.Error e) {
@@ -161,6 +159,8 @@ namespace GQPE {
                 GLib.warning("There was an error loading '%s'".printf(p));
                 return;
             }
+            var basename = photograph.file.get_basename();
+            var markup = _("<b>%s (%d of %d)</b>").printf(basename, index, total);
             window.label.set_markup(markup);
             window.image.set_from_pixbuf(photograph.pixbuf);
             window.entry.set_text(photograph.caption);
