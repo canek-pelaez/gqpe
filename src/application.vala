@@ -112,12 +112,21 @@ namespace GQPE {
         public override void open(GLib.File[] files, string hint) {
             photographs = new Gee.ArrayList<Photograph>();
             foreach (var file in files) {
-                var info = file.query_info("standard::*", GLib.FileQueryInfoFlags.NONE);
+                FileInfo info = null;
+                try {
+                    info = file.query_info("standard::*",
+                                           GLib.FileQueryInfoFlags.NONE);
+                } catch (GLib.Error e) {
+                    var p = file.get_path();
+                    var m = "There was a problem getting info from '%s'".printf(p);
+                    GLib.warning(m);
+                    continue;
+                }
                 var ctype = info.get_content_type();
                 if (ctype != "image/jpeg" && ctype != "image/png") {
-                    var path = file.get_path();
-                    var message = "The filename '%s' is not a picture".printf(path);
-                    GLib.warning(message);
+                    var p = file.get_path();
+                    var m = "The filename '%s' is not a picture".printf(p);
+                    GLib.warning(m);
                     continue;
                 }
                 photographs.add(new Photograph(file));
@@ -132,7 +141,12 @@ namespace GQPE {
                 return false;
             loader.next();
             var photograph = loader.get();
-            photograph.load();
+            try {
+                photograph.load();
+            } catch (GLib.Error e) {
+                var p = photograph.file.get_path();
+                GLib.warning("There was an error loading '%s'".printf(p));
+            }
             return true;
         }
 
@@ -140,8 +154,14 @@ namespace GQPE {
             var photograph = iterator.get();
             var basename = photograph.file.get_basename();
             var markup = _("<b>%s (%d of %d)</b>").printf(basename, index, total);
+            try {
+                photograph.load();
+            } catch (GLib.Error e) {
+                var p = photograph.file.get_path();
+                GLib.warning("There was an error loading '%s'".printf(p));
+                return;
+            }
             window.label.set_markup(markup);
-            photograph.load();
             window.image.set_from_pixbuf(photograph.pixbuf);
             window.entry.set_text(photograph.caption);
             window.entry.grab_focus();
@@ -179,7 +199,6 @@ namespace GQPE {
 
         public void rotate_right() {
             var photograph = iterator.get();
-            stdout.printf("Rotate r %s\n", photograph.file.get_path());
             photograph.rotate_right();
             window.image.set_from_pixbuf(photograph.pixbuf);
             window.save.sensitive = true;
@@ -187,7 +206,12 @@ namespace GQPE {
 
         public void save() {
             var photograph = iterator.get();
-            photograph.save_metadata();
+            try {
+                photograph.save_metadata();
+            } catch (GLib.Error e) {
+                var f = photograph.file.get_path();
+                GLib.warning("There was an error saving the metadata of '%s'".printf(f));
+            }
         }
 
         public void picture_done() {
