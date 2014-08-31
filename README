@@ -44,6 +44,7 @@ Requirements
 You need the following to compile GQPE:
 
 * Gtk+-3
+* libgee-0.8
 * gexiv2
 
 The program is written in Vala, but you only need Vala if you don't
