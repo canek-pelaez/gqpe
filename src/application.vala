@@ -95,7 +95,7 @@ namespace GQPE {
                 window.rotate_left.sensitive = false;
                 window.rotate_right.sensitive = false;
                 window.save.sensitive = false;
-                window.entry.sensitive = false;
+                window.caption.sensitive = false;
             } else {
                 iterator = photographs.bidir_list_iterator();
                 loader = photographs.list_iterator();
@@ -155,13 +155,13 @@ namespace GQPE {
             window.rotate_left.sensitive = false;
             window.rotate_right.sensitive = false;
             window.save.sensitive = false;
-            window.entry.sensitive = false;
+            window.caption.sensitive = false;
         }
 
         private void update_picture() {
             window.rotate_left.sensitive = true;
             window.rotate_right.sensitive = true;
-            window.entry.sensitive = true;
+            window.caption.sensitive = true;
             var photograph = iterator.get();
             try {
                 photograph.load();
@@ -175,8 +175,8 @@ namespace GQPE {
             var markup = _("<b>%s (%d of %d)</b>").printf(basename, index, total);
             window.label.set_markup(markup);
             window.image.set_from_pixbuf(photograph.pixbuf);
-            window.entry.set_text(photograph.caption);
-            window.entry.grab_focus();
+            window.caption.set_text(photograph.caption);
+            window.caption.grab_focus();
             window.save.sensitive = false;
         }
 

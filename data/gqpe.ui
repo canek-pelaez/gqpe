@@ -184,14 +184,14 @@
           </packing>
         </child>
         <child>
-          <object class="GtkEntry" id="entry">
+          <object class="GtkEntry" id="caption">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="hexpand">True</property>
             <property name="invisible-char">●</property>
             <property name="invisible-char-set">True</property>
-            <signal name="activate" handler="on_entry_activate" swapped="no"/>
-            <signal name="changed" handler="on_entry_changed" swapped="no"/>
+            <signal name="activate" handler="on_caption_activate" swapped="no"/>
+            <signal name="changed" handler="on_caption_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>

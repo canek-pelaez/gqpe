@@ -54,9 +54,9 @@ namespace GQPE {
         private Gtk.Image _image;
         public Gtk.Image image { get { return _image; } }
 
-        [GtkChild (name = "entry")]
-        private Gtk.Entry _entry;
-        public Gtk.Entry entry { get { return _entry; } }
+        [GtkChild (name = "caption")]
+        private Gtk.Entry _caption;
+        public Gtk.Entry caption { get { return _caption; } }
 
         private Application app;
 
@@ -96,12 +96,12 @@ namespace GQPE {
         }
 
         [GtkCallback]
-        public void on_entry_activate() {
+        public void on_caption_activate() {
         }
 
         [GtkCallback]
-        public void on_entry_changed() {
-            entry.sensitive = true;
+        public void on_caption_changed() {
+            caption.sensitive = true;
         }
 
         [GtkCallback]
