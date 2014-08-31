@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.8 -->
-  <object class="GtkWindow" id="window">
+  <template class="GQPEApplicationWindow" parent="GtkApplicationWindow">
     <property name="visible">False</property>
     <property name="can-focus">False</property>
     <property name="window-position">3</property>
+    <signal name="destroy" handler="on_window_destroy" swapped="no"/>
+    <signal name="key-press-event" handler="on_window_key_press" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header">
         <property name="visible">True</property>
@@ -23,6 +25,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Previous picture</property>
+                <signal name="clicked" handler="on_previous_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="previous_image">
                     <property name="visible">True</property>
@@ -41,6 +44,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Next picture</property>
+                <signal name="clicked" handler="on_next_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="next_image">
                     <property name="visible">True</property>
@@ -60,24 +64,6 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="save">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="tooltip-text" translatable="yes">Save picture</property>
-            <child>
-              <object class="GtkImage" id="save_image">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="icon-name">document-save-symbolic</property>
-                <property name="icon-size">1</property>
-              </object>
-            </child>
-          </object>
-          <packing>
-            <property name="pack-type">end</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkBox" id="rotation_box">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -87,7 +73,8 @@
               <object class="GtkButton" id="rotate_left">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Rotate 270°</property>
+                <property name="tooltip-text" translatable="yes">Rotate left</property>
+                <signal name="clicked" handler="on_rotate_left_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_left_image">
                     <property name="visible">True</property>
@@ -105,7 +92,8 @@
               <object class="GtkButton" id="rotate_right">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Rotate 90°</property>
+                <property name="tooltip-text" translatable="yes">Rotate right</property>
+                <signal name="clicked" handler="on_rotate_right_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_right_image">
                     <property name="visible">True</property>
@@ -124,6 +112,25 @@
             </style>
           </object>
         </child>
+        <child>
+          <object class="GtkButton" id="save">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="tooltip-text" translatable="yes">Save picture</property>
+            <signal name="clicked" handler="on_save_clicked" swapped="no"/>
+            <child>
+              <object class="GtkImage" id="save_image">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="icon-name">document-save-symbolic</property>
+                <property name="icon-size">1</property>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="pack-type">end</property>
+          </packing>
+        </child>
       </object>
     </child>
     <child>
@@ -141,7 +148,7 @@
             <child>
               <object class="GtkImage" id="image">
                 <property name="width_request">500</property>
-                <property name="height_request">375</property>
+                <property name="height_request">500</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="margin">6</property>
@@ -183,6 +190,8 @@
             <property name="hexpand">True</property>
             <property name="invisible-char">●</property>
             <property name="invisible-char-set">True</property>
+            <signal name="activate" handler="on_entry_activate" swapped="no"/>
+            <signal name="changed" handler="on_entry_changed" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -192,5 +201,5 @@
         </child>
       </object>
     </child>
-  </object>
+  </template>
 </interface>

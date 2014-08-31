@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/mx/unam/GQPE">
+    <file preprocess="xml-stripblanks">gqpe.ui</file>
+  </gresource>
+</gresources>
