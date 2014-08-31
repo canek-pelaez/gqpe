@@ -8,38 +8,50 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-30 12:02-0500\n"
+"POT-Creation-Date: 2014-08-31 00:19-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.vala:134
+#: ../src/application.vala:68 ../data/gqpe.ui.h:1
+msgid "Previous picture"
+msgstr ""
+
+#: ../src/application.vala:69 ../data/gqpe.ui.h:2
+msgid "Next picture"
+msgstr ""
+
+#: ../src/application.vala:72 ../data/gqpe.ui.h:3
+msgid "Rotate left"
+msgstr ""
+
+#: ../src/application.vala:73 ../data/gqpe.ui.h:4
+msgid "Rotate right"
+msgstr ""
+
+#: ../src/application.vala:76 ../data/gqpe.ui.h:5
+msgid "Save picture"
+msgstr ""
+
+#: ../src/application.vala:77
+msgid "About"
+msgstr ""
+
+#: ../src/application.vala:78
+msgid "Quit"
+msgstr ""
+
+#: ../src/application.vala:142
 #, c-format
 msgid "<b>%s (%d of %d)</b>"
 msgstr ""
 
-#: ../data/gqpe.ui.h:1
-msgid "Previous picture"
-msgstr ""
-
-#: ../data/gqpe.ui.h:2
-msgid "Next picture"
-msgstr ""
-
-#: ../data/gqpe.ui.h:3
-msgid "Save picture"
-msgstr ""
-
-#: ../data/gqpe.ui.h:4
-msgid "Rotate 270°"
-msgstr ""
-
-#: ../data/gqpe.ui.h:5
-msgid "Rotate 90°"
+#: ../src/application.vala:205
+msgid "A Gtk+ based quick photo editor"
 msgstr ""
 
 #: ../data/gqpe.ui.h:6

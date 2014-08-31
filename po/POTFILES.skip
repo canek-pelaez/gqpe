@@ -1,2 +1,4 @@
+src/application.c
+src/application-window.c
 src/main.c
 src/photograph.c

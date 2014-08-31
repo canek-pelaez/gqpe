@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: quick-photo-editor 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-30 12:02-0500\n"
-"PO-Revision-Date: 2014-08-30 12:06-0500\n"
+"POT-Creation-Date: 2014-08-31 00:19-0500\n"
+"PO-Revision-Date: 2014-08-31 00:19-0500\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: \n"
@@ -17,30 +17,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/main.vala:134
+#: ../src/application.vala:68 ../data/gqpe.ui.h:1
+msgid "Previous picture"
+msgstr "Imagen anterior"
+
+#: ../src/application.vala:69 ../data/gqpe.ui.h:2
+msgid "Next picture"
+msgstr "Imagen siguiente"
+
+#: ../src/application.vala:72 ../data/gqpe.ui.h:3
+msgid "Rotate left"
+msgstr "Rotar a la izquierda"
+
+#: ../src/application.vala:73 ../data/gqpe.ui.h:4
+msgid "Rotate right"
+msgstr "Rotar a la derecha"
+
+#: ../src/application.vala:76 ../data/gqpe.ui.h:5
+msgid "Save picture"
+msgstr "Guardar imagen"
+
+#: ../src/application.vala:77
+msgid "About"
+msgstr "Acerca de"
+
+#: ../src/application.vala:78
+msgid "Quit"
+msgstr "Salir"
+
+#: ../src/application.vala:142
 #, c-format
 msgid "<b>%s (%d of %d)</b>"
 msgstr "<b>%s (%d de %d)</b>"
 
-#: ../data/gqpe.ui.h:1
-msgid "Previous picture"
-msgstr "Anterior imagen"
-
-#: ../data/gqpe.ui.h:2
-msgid "Next picture"
-msgstr "Siguiente imagen"
-
-#: ../data/gqpe.ui.h:3
-msgid "Save picture"
-msgstr "Siguiente imagen"
-
-#: ../data/gqpe.ui.h:4
-msgid "Rotate 270°"
-msgstr "Rotar 270°"
-
-#: ../data/gqpe.ui.h:5
-msgid "Rotate 90°"
-msgstr "Rotar 90°"
+#: ../src/application.vala:205
+msgid "A Gtk+ based quick photo editor"
+msgstr "Un rápido editor de fotos basado en Gtk+"
 
 #: ../data/gqpe.ui.h:6
 msgid "<b>Picture</b>"
