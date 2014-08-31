@@ -146,17 +146,29 @@ namespace GQPE {
             } catch (GLib.Error e) {
                 var p = photograph.file.get_path();
                 GLib.warning("There was an error loading '%s'".printf(p));
+                loader.remove();
             }
             return true;
         }
 
+        private void disable_picture() {
+            window.rotate_left.sensitive = false;
+            window.rotate_right.sensitive = false;
+            window.save.sensitive = false;
+            window.entry.sensitive = false;
+        }
+
         private void update_picture() {
+            window.rotate_left.sensitive = true;
+            window.rotate_right.sensitive = true;
+            window.entry.sensitive = true;
             var photograph = iterator.get();
             try {
                 photograph.load();
             } catch (GLib.Error e) {
                 var p = photograph.file.get_path();
                 GLib.warning("There was an error loading '%s'".printf(p));
+                disable_picture();
                 return;
             }
             var basename = photograph.file.get_basename();
