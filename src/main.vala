@@ -26,9 +26,10 @@ namespace GQPE {
             Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");
             Intl.textdomain(Config.GETTEXT_PACKAGE);
             GLib.Environment.set_application_name("GQPE");
-
             Gtk.init(ref args);
-            Gtk.Settings.get_default().gtk_application_prefer_dark_theme = true;
+
+            var settings = Gtk.Settings.get_default();
+            settings.gtk_application_prefer_dark_theme = true;
 
             var gqpe = new Application();
             gqpe.run(args);
