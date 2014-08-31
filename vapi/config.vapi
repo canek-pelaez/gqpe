@@ -8,9 +8,10 @@ namespace Config {
 	/* Gettext package */
 	public const string GETTEXT_PACKAGE;
 
-	/* Configured paths - these variables are not present in config.h, they are
-	 * passed to underlying C code as cmd line macros. */
+	/* Configured paths - these variables are not present in
+	 * config.h, they are passed to underlying C code as cmd line
+	 * macros. */
 	public const string LOCALEDIR;  /* /usr/local/share/locale */
-	public const string PKGDATADIR; /* /usr/local/share/quick-photo-editor */
-	public const string PKGLIBDIR;  /* /usr/local/lib/quick-photo-editor   */
+	public const string PKGDATADIR; /* /usr/local/share/gqpe */
+	public const string PKGLIBDIR;  /* /usr/local/lib/gqpe   */
 }
