@@ -22,32 +22,41 @@ namespace GQPE {
     [GtkTemplate (ui = "/mx/unam/GQPE/gqpe.ui")]
     public class ApplicationWindow : Gtk.ApplicationWindow {
 
-        [GtkChild]
-        public Gtk.Button previous;
+        [GtkChild (name = "previous")]
+        private Gtk.Button _previous;
+        public Gtk.Button previous { get { return _previous; } }
 
-        [GtkChild]
-        public Gtk.Button next;
+        [GtkChild (name = "next")]
+        private Gtk.Button _next;
+        public Gtk.Button next { get { return _next; } }
 
-        [GtkChild]
-        public Gtk.Button rotate_left;
+        [GtkChild (name = "rotate_left")]
+        private Gtk.Button _rotate_left;
+        public Gtk.Button rotate_left { get { return _rotate_left; } }
 
-        [GtkChild]
-        public Gtk.Button rotate_right;
+        [GtkChild (name = "rotate_right")]
+        private Gtk.Button _rotate_right;
+        public Gtk.Button rotate_right { get { return _rotate_right; } }
 
-        [GtkChild]
-        public Gtk.Button save;
+        [GtkChild (name = "save")]
+        private Gtk.Button _save;
+        public Gtk.Button save { get { return _save; } }
 
-        [GtkChild]
-        public Gtk.Frame frame;
+        [GtkChild (name = "frame")]
+        private Gtk.Frame _frame;
+        public Gtk.Frame frame { get { return _frame; } }
 
-        [GtkChild]
-        public Gtk.Label label;
+        [GtkChild (name = "label")]
+        private Gtk.Label _label;
+        public Gtk.Label label { get { return _label; } }
 
-        [GtkChild]
-        public Gtk.Image image;
+        [GtkChild (name = "image")]
+        private Gtk.Image _image;
+        public Gtk.Image image { get { return _image; } }
 
-        [GtkChild]
-        public Gtk.Entry entry;
+        [GtkChild (name = "entry")]
+        private Gtk.Entry _entry;
+        public Gtk.Entry entry { get { return _entry; } }
 
         private Application app;
 
@@ -97,13 +106,11 @@ namespace GQPE {
 
         [GtkCallback]
         public bool on_window_key_press(Gdk.EventKey e) {
-            if (e.keyval == Gdk.Key.Left &&
-                (e.state & Gdk.ModifierType.MOD1_MASK) != 0) {
+            if (e.keyval == Gdk.Key.bracketleft) {
                 app.rotate_left();
                 return true;
             }
-            if (e.keyval == Gdk.Key.Right &&
-                (e.state & Gdk.ModifierType.MOD1_MASK) != 0) {
+            if (e.keyval == Gdk.Key.bracketright) {
                 app.rotate_right();
                 return true;
             }
