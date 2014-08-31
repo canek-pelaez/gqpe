@@ -63,24 +63,9 @@ namespace GQPE {
 
         public override void startup() {
             base.startup();
-
-            var nav = new GLib.Menu();
-            nav.append(_("Previous picture"), "app.previous");
-            nav.append(_("Next picture"), "app.next");
-
-            var pic = new GLib.Menu();
-            pic.append(_("Rotate left"), "app.rotate-left");
-            pic.append(_("Rotate right"), "app.rotate-right");
-
-            var app = new GLib.Menu();
-            app.append(_("Save picture"), "app.save");
-            app.append(_("About"), "app.about");
-            app.append(_("Quit"), "app.quit");
-
             var menu = new GLib.Menu();
-            menu.append_section(null, nav);
-            menu.append_section(null, pic);
-            menu.append_section(null, app);
+            menu.append(_("About"), "app.about");
+            menu.append(_("Quit"), "app.quit");
             set_app_menu(menu);
         }
 
