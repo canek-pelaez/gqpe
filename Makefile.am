@@ -1,7 +1,10 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
 gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
-resource_files = $(top_srcdir)/data/gqpe.ui
+resource_files = 				\
+	$(top_srcdir)/data/gqpe.ui		\
+	$(top_srcdir)/data/gqpe.css		\
+	$(NULL)
 
 icondir = $(datadir)/icons/hicolor/scalable/apps
 icon_DATA = data/gqpe.svg
