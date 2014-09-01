@@ -21,6 +21,11 @@ namespace GQPE {
 
     public class Application : Gtk.Application {
 
+        private enum Direction {
+            LEFT,
+            RIGHT
+        }
+
         private ApplicationWindow window;
         private Gee.ArrayList<Photograph> photographs;
         private Gee.BidirListIterator<Photograph> iterator;
@@ -76,21 +81,21 @@ namespace GQPE {
                 window = new ApplicationWindow(this);
 
             if (total == 0) {
-                window.next.sensitive = false;
-                window.rotate_left.sensitive = false;
-                window.rotate_right.sensitive = false;
-                window.save.sensitive = false;
-                window.caption.sensitive = false;
+                window.disable(UIItemFlags.NEXT         |
+                               UIItemFlags.ROTATE_LEFT  |
+                               UIItemFlags.ROTATE_RIGHT |
+                               UIItemFlags.SAVE         |
+                               UIItemFlags.CAPTION);
             } else {
                 iterator = photographs.bidir_list_iterator();
                 loader = photographs.list_iterator();
                 next();
                 if (total == 1)
-                    window.next.sensitive = false;
+                    window.disable(UIItemFlags.NEXT);
                 GLib.Idle.add(autoload_photographs);
             }
 
-            window.previous.sensitive = false;
+            window.disable(UIItemFlags.PREVIOUS);
             window.present();
         }
 
@@ -137,16 +142,16 @@ namespace GQPE {
         }
 
         private void disable_picture() {
-            window.rotate_left.sensitive = false;
-            window.rotate_right.sensitive = false;
-            window.save.sensitive = false;
-            window.caption.sensitive = false;
+            window.disable(UIItemFlags.ROTATE_LEFT  |
+                           UIItemFlags.ROTATE_RIGHT |
+                           UIItemFlags.SAVE         |
+                           UIItemFlags.CAPTION);
         }
 
         private void update_picture() {
-            window.rotate_left.sensitive = true;
-            window.rotate_right.sensitive = true;
-            window.caption.sensitive = true;
+            window.enable(UIItemFlags.ROTATE_LEFT  |
+                          UIItemFlags.ROTATE_RIGHT |
+                          UIItemFlags.CAPTION);
             var photograph = iterator.get();
             try {
                 photograph.load();
@@ -157,12 +162,10 @@ namespace GQPE {
                 return;
             }
             var basename = photograph.file.get_basename();
-            var markup = _("<b>%s (%d of %d)</b>").printf(basename, index, total);
-            window.label.set_markup(markup);
-            window.image.set_from_pixbuf(photograph.pixbuf);
-            window.caption.set_text(photograph.caption);
-            window.caption.grab_focus();
-            window.save.sensitive = false;
+            window.set_filename(basename, index, total);
+            window.set_pixbuf(photograph.pixbuf);
+            window.set_caption(photograph.caption);
+            window.disable(UIItemFlags.SAVE);
         }
 
         public void previous() {
@@ -170,9 +173,9 @@ namespace GQPE {
                 return;
             iterator.previous();
             index--;
-            window.next.sensitive = true;
+            window.enable(UIItemFlags.NEXT);
             if (!iterator.has_previous())
-                window.previous.sensitive = false;
+                window.disable(UIItemFlags.PREVIOUS);
             update_picture();
         }
 
@@ -181,24 +184,32 @@ namespace GQPE {
                 return;
             iterator.next();
             index++;
-            window.previous.sensitive = true;
+            window.enable(UIItemFlags.PREVIOUS);
             if (!iterator.has_next())
-                window.next.sensitive = false;
+                window.disable(UIItemFlags.NEXT);
             update_picture();
         }
 
-        public void rotate_left() {
+        private void rotate(Direction direction) {
             var photograph = iterator.get();
-            photograph.rotate_left();
-            window.image.set_from_pixbuf(photograph.pixbuf);
-            window.save.sensitive = true;
+            switch (direction) {
+            case Direction.LEFT:
+                photograph.rotate_left();
+                break;
+            case Direction.RIGHT:
+                photograph.rotate_right();
+                break;
+            }
+            window.set_pixbuf(photograph.pixbuf);
+            window.enable(UIItemFlags.SAVE);
+        }
+
+        public void rotate_left() {
+            rotate(Direction.LEFT);
         }
 
         public void rotate_right() {
-            var photograph = iterator.get();
-            photograph.rotate_right();
-            window.image.set_from_pixbuf(photograph.pixbuf);
-            window.save.sensitive = true;
+            rotate(Direction.RIGHT);
         }
 
         public void save() {
@@ -212,9 +223,8 @@ namespace GQPE {
         }
 
         public void picture_done() {
-            if (!window.save.sensitive)
-                return;
-            save();
+            if (window.saving_allowed())
+                save();
             next();
         }
 
