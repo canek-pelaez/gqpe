@@ -33,26 +33,21 @@ namespace GQPE {
     public class ApplicationWindow : Gtk.ApplicationWindow {
 
         [GtkChild]
+        private Gtk.HeaderBar header;
+        [GtkChild]
         private Gtk.Button previous;
-
         [GtkChild]
         private Gtk.Button next;
-
         [GtkChild]
         private Gtk.Button rotate_left;
-
         [GtkChild]
         private Gtk.Button rotate_right;
-
         [GtkChild]
         private Gtk.Button save;
-
         [GtkChild]
         private Gtk.Label label;
-
         [GtkChild]
         private Gtk.Image image;
-
         [GtkChild]
         private Gtk.Entry caption;
 
@@ -66,9 +61,9 @@ namespace GQPE {
             var provider = new Gtk.CssProvider();
             try {
                 var file = GLib.File.new_for_uri("resource:///mx/unam/GQPE/gqpe.css");
-                provider.load_from_file (file);
+                provider.load_from_file(file);
             } catch (GLib.Error e) {
-                GLib.warning ("There was a problem loading 'gqpe.css'");
+                GLib.warning("There was a problem loading 'gqpe.css'");
             }
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
                                                       provider, 999);
@@ -163,8 +158,9 @@ namespace GQPE {
         }
 
         public void set_filename(string basename, int index, int total) {
-            var markup = _("<b>%s (%d of %d)</b>").printf(basename, index, total);
+            var markup = _("<b>%s</b>").printf(basename);
             label.set_markup(markup);
+            header.subtitle = "%d / %d".printf(index, total);
         }
 
         public void set_pixbuf(Gdk.Pixbuf pixbuf) {
