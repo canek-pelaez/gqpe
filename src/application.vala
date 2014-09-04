@@ -37,27 +37,7 @@ namespace GQPE {
             application_id = "mx.unam.GQPE";
             flags |= GLib.ApplicationFlags.HANDLES_OPEN;
 
-            var action = new GLib.SimpleAction("previous", null);
-            action.activate.connect(() => previous());
-            add_action(action);
-
-            action = new GLib.SimpleAction("next", null);
-            action.activate.connect(() => next());
-            add_action(action);
-
-            action = new GLib.SimpleAction("rotate-left", null);
-            action.activate.connect(() => rotate_left());
-            add_action(action);
-
-            action = new GLib.SimpleAction("rotate-right", null);
-            action.activate.connect(() => rotate_right());
-            add_action(action);
-
-            action = new GLib.SimpleAction("save", null);
-            action.activate.connect(() => save());
-            add_action(action);
-
-            action = new GLib.SimpleAction("about", null);
+            var action = new GLib.SimpleAction("about", null);
             action.activate.connect(() => about());
             add_action(action);
 
