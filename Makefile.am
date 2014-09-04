@@ -6,25 +6,13 @@ resource_files = 				\
 	$(top_srcdir)/data/gqpe.css		\
 	$(NULL)
 
-icondir = $(datadir)/icons/hicolor/scalable/apps
-icon_DATA = data/gqpe.svg
-
-desktopdir = $(datadir)/applications
-desktop_DATA = data/gqpe.desktop
-
-noinst_DATA =					\
-	vapi/config.vapi			\
-	$(gresource_file)			\
-	$(resource_files)			\
-	$(NULL)
-
-bin_PROGRAMS = src/gqpe
-
 src/resources.c: $(gresource_file) $(resource_files)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) 	\
 		--target=$@			\
 		--sourcedir=$(top_srcdir)/data	\
 		--generate-source $<
+
+bin_PROGRAMS = src/gqpe
 
 src_gqpe_SOURCES =				\
 	src/application.vala			\
@@ -62,6 +50,18 @@ src_gqpe_LDADD =				\
 	@GEE_LIBS@				\
 	@GEXIV2_LIBS@				\
 	@GTK_LIBS@				\
+	$(NULL)
+
+icondir = $(datadir)/icons/hicolor/scalable/apps
+icon_DATA = data/gqpe.svg
+
+desktopdir = $(datadir)/applications
+desktop_DATA = data/gqpe.desktop
+
+noinst_DATA =					\
+	vapi/config.vapi			\
+	$(gresource_file)			\
+	$(resource_files)			\
 	$(NULL)
 
 EXTRA_DIST =					\
