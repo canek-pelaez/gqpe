@@ -50,6 +50,7 @@ src_gqpe_LDADD =				\
 	@GEE_LIBS@				\
 	@GEXIV2_LIBS@				\
 	@GTK_LIBS@				\
+	-lm					\
 	$(NULL)
 
 icondir = $(datadir)/icons/hicolor/scalable/apps

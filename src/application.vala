@@ -57,25 +57,26 @@ namespace GQPE {
         public override void activate() {
             base.activate();
 
-            if (window == null)
+            if (window == null) {
                 window = new ApplicationWindow(this);
 
-            if (total == 0) {
-                window.disable(UIItemFlags.NEXT         |
-                               UIItemFlags.ROTATE_LEFT  |
-                               UIItemFlags.ROTATE_RIGHT |
-                               UIItemFlags.SAVE         |
-                               UIItemFlags.CAPTION);
-            } else {
-                iterator = photographs.bidir_list_iterator();
-                loader = photographs.list_iterator();
-                next();
-                if (total == 1)
-                    window.disable(UIItemFlags.NEXT);
-                GLib.Idle.add(autoload_photographs);
+                if (total == 0) {
+                    window.disable(UIItemFlags.NEXT         |
+                                   UIItemFlags.ROTATE_LEFT  |
+                                   UIItemFlags.ROTATE_RIGHT |
+                                   UIItemFlags.SAVE         |
+                                   UIItemFlags.CAPTION);
+                } else {
+                    iterator = photographs.bidir_list_iterator();
+                    loader = photographs.list_iterator();
+                    next();
+                    if (total == 1)
+                        window.disable(UIItemFlags.NEXT);
+                    GLib.Idle.add(autoload_photographs);
+                }
+                window.disable(UIItemFlags.PREVIOUS);
             }
 
-            window.disable(UIItemFlags.PREVIOUS);
             window.present();
         }
 
