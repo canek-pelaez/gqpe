@@ -32,9 +32,7 @@ namespace GQPE {
             settings.gtk_application_prefer_dark_theme = true;
 
             var gqpe = new Application();
-            gqpe.run(args);
-
-            return 0;
+            return gqpe.run(args);
         }
     }
 }
