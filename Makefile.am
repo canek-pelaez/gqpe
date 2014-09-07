@@ -74,9 +74,3 @@ EXTRA_DIST =					\
 	$(NULL)
 
 SUBDIRS = po
-
-dist-hook:
-	cd ${top_srcdir} &&			\
-	git log --no-color --stat --name-only	\
-		--date=short --abbrev-commit	\
-		> ${srcdir}/ChangeLog
