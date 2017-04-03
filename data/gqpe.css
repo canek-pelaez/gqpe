@@ -1,3 +1,8 @@
 .dark-bg {
     background-color: #111;
 }
+
+.bordered {
+    border-color: #000;
+    border-width: 1px;
+}

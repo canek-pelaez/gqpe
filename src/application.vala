@@ -89,14 +89,16 @@ namespace GQPE {
                                            GLib.FileQueryInfoFlags.NONE);
                 } catch (GLib.Error e) {
                     var p = file.get_path();
-                    var m = "There was a problem getting info from '%s'".printf(p);
+                    var m = "There was a problem getting " +
+                        "info from '%s'".printf(p);
                     GLib.warning(m);
                     continue;
                 }
                 var ctype = info.get_content_type();
                 if (ctype != "image/jpeg" && ctype != "image/png") {
                     var p = file.get_path();
-                    var m = "The filename '%s' is not a picture".printf(p);
+                    var m = "The filename '%s' ".printf(p) +
+                        "is not a picture";
                     GLib.warning(m);
                     continue;
                 }
@@ -145,7 +147,9 @@ namespace GQPE {
             var basename = photograph.file.get_basename();
             window.set_filename(basename, index, total);
             window.set_pixbuf(photograph.pixbuf);
-            window.set_caption(photograph.caption);
+            window.set_photo_data(photograph.album,
+                                  photograph.caption,
+                                  photograph.comment);
             window.disable(UIItemFlags.SAVE);
         }
 
@@ -199,18 +203,21 @@ namespace GQPE {
                 photograph.save_metadata();
             } catch (GLib.Error e) {
                 var f = photograph.file.get_path();
-                GLib.warning("There was an error saving the metadata of '%s'".printf(f));
+                GLib.warning("There was an error saving the " +
+                             "metadata of '%s'".printf(f));
             }
         }
 
         public void picture_done() {
             if (window.saving_allowed())
-                save();
+                window.on_save_clicked();
             next();
         }
 
         private void about() {
-            string[] authors = { "Canek Peláez Valdés <canek@ciencias.unam.mx>" };
+            string[] authors = {
+                "Canek Peláez Valdés <canek@ciencias.unam.mx>"
+            };
             Gtk.show_about_dialog(
                 window,
                 "authors", authors,

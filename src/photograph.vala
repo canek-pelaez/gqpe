@@ -26,9 +26,25 @@ namespace GQPE {
         REVERSE_PORTRAIT  = 8
     }
 
-    public class Photograph : Object, Gee.Comparable<Photograph> {
+    public class Photograph : GLib.Object, Gee.Comparable<Photograph> {
 
+        private class Tag {
+            public static const string ORIENTATION =
+                "Exif.Image.Orientation";
+            public static const string TH_ORIENTATION =
+                "Exif.Thumbnail.Orientation";
+            public static const string SUBJECT =
+                "Xmp.dc.subject";
+            public static const string CAPTION =
+                "Iptc.Application2.Caption";
+            public static const string DESCRIPTION =
+                "Exif.Image.ImageDescription";
+        }
+
+        public string album { get; private set; }
         public string caption { get; private set; }
+        public string comment { get; private set; }
+
         public GLib.File file { get; private set; }
         public Gdk.Pixbuf pixbuf { get; private set; }
 
@@ -47,33 +63,38 @@ namespace GQPE {
             metadata.open_path(file.get_path());
 
             pixbuf = new Gdk.Pixbuf.from_file(file.get_path());
-            if (metadata.has_tag("Exif.Image.Orientation")) {
-                switch (metadata.get_tag_long("Exif.Image.Orientation")) {
+            if (metadata.has_tag(Tag.ORIENTATION)) {
+                var rot = Gdk.PixbufRotation.NONE;
+                switch (metadata.get_tag_long(Tag.ORIENTATION)) {
                 case Orientation.LANDSCAPE:
                     orientation = Orientation.LANDSCAPE;
                     break;
                 case Orientation.REVERSE_LANDSCAPE:
-                    pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.UPSIDEDOWN);
                     orientation = Orientation.REVERSE_LANDSCAPE;
+                    rot = Gdk.PixbufRotation.UPSIDEDOWN;
                     break;
                 case Orientation.PORTRAIT:
-                    pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
                     orientation = Orientation.PORTRAIT;
+                    rot = Gdk.PixbufRotation.CLOCKWISE;
                     break;
                 case Orientation.REVERSE_PORTRAIT:
-                    pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
                     orientation = Orientation.REVERSE_PORTRAIT;
+                    rot = Gdk.PixbufRotation.COUNTERCLOCKWISE;
                     break;
                 }
+                if (rot != Gdk.PixbufRotation.NONE)
+                    pixbuf = pixbuf.rotate_simple(rot);
             }
             double scale = 500.0 / double.max(pixbuf.width, pixbuf.height);
             pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
                                          (int)(pixbuf.height*scale),
                                          Gdk.InterpType.BILINEAR);
-            if (metadata.has_tag("Iptc.Application2.Caption"))
-                caption = metadata.get_tag_string("Iptc.Application2.Caption");
-            else
-                caption = "";
+            album = (metadata.has_tag(Tag.SUBJECT)) ?
+                metadata.get_tag_string(Tag.SUBJECT) : "";
+            caption = (metadata.has_tag(Tag.CAPTION)) ?
+                metadata.get_tag_string(Tag.CAPTION) : "";
+            comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
+                metadata.get_tag_string(Tag.DESCRIPTION) : "";
         }
 
         public void rotate_left() {
@@ -113,10 +134,24 @@ namespace GQPE {
         }
 
         public void save_metadata() throws GLib.Error {
-            metadata.set_tag_string("Iptc.Application2.Caption", caption);
-            metadata.set_tag_long("Exif.Image.Orientation", orientation);
-            if (metadata.has_tag("Exif.Thumbnail.Orientation"))
-                metadata.set_tag_long("Exif.Thumbnail.Orientation", orientation);
+            metadata.clear_tag(Tag.SUBJECT);
+            metadata.clear_tag(Tag.CAPTION);
+            metadata.clear_tag(Tag.DESCRIPTION);
+            if (album != "") {
+                metadata.set_tag_string(Tag.SUBJECT, album);
+                stderr.printf("Album set\n");
+            }
+            if (caption != "") {
+                metadata.set_tag_string(Tag.CAPTION, caption);
+                stderr.printf("Caption set\n");
+            }
+            if (comment != "") {
+                metadata.set_tag_string(Tag.DESCRIPTION, comment);
+                stderr.printf("Description set\n");
+            }
+            metadata.set_tag_long(Tag.ORIENTATION, orientation);
+            if (metadata.has_tag(Tag.TH_ORIENTATION))
+                metadata.set_tag_long(Tag.TH_ORIENTATION, orientation);
             metadata.save_file(file.get_path());
         }
 

@@ -32,6 +32,9 @@ namespace GQPE {
     [GtkTemplate (ui = "/mx/unam/GQPE/gqpe.ui")]
     public class ApplicationWindow : Gtk.ApplicationWindow {
 
+        private static const string RESOURCE =
+            "resource:///mx/unam/GQPE/gqpe.css";
+
         [GtkChild]
         private Gtk.HeaderBar header;
         [GtkChild]
@@ -49,7 +52,11 @@ namespace GQPE {
         [GtkChild]
         private Gtk.Image image;
         [GtkChild]
+        private Gtk.Entry album;
+        [GtkChild]
         private Gtk.Entry caption;
+        [GtkChild]
+        private Gtk.TextView comment;
 
         private Application app;
 
@@ -60,7 +67,7 @@ namespace GQPE {
             Gtk.Window.set_default_icon_name("gqpe");
             var provider = new Gtk.CssProvider();
             try {
-                var file = GLib.File.new_for_uri("resource:///mx/unam/GQPE/gqpe.css");
+                var file = GLib.File.new_for_uri(RESOURCE);
                 provider.load_from_file(file);
             } catch (GLib.Error e) {
                 GLib.warning("There was a problem loading 'gqpe.css'");
@@ -97,15 +104,16 @@ namespace GQPE {
         [GtkCallback]
         public void on_save_clicked() {
             app.save();
+            save.sensitive = false;
         }
 
         [GtkCallback]
-        public void on_caption_activate() {
+        public void on_data_activate() {
             app.picture_done();
         }
 
         [GtkCallback]
-        public void on_caption_changed() {
+        public void on_data_changed() {
             save.sensitive = true;
         }
 
@@ -145,8 +153,10 @@ namespace GQPE {
                 rotate_right.sensitive = s;
             if ((flags & UIItemFlags.SAVE) != 0)
                 save.sensitive = s;
-            if ((flags & UIItemFlags.CAPTION) != 0)
+            if ((flags & UIItemFlags.CAPTION) != 0) {
                 caption.sensitive = s;
+                comment.sensitive = s;
+            }
         }
 
         public void enable(UIItemFlags flags) {
@@ -167,8 +177,12 @@ namespace GQPE {
             image.set_from_pixbuf(pixbuf);
         }
 
-        public void set_caption(string caption) {
+        public void set_photo_data(string album,
+                                   string caption,
+                                   string comment) {
+            this.album.set_text(album);
             this.caption.set_text(caption);
+            this.comment.buffer.set_text(comment);
             this.caption.grab_focus();
         }
 
