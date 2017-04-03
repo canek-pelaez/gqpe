@@ -1,24 +1,15 @@
 AUTOMAKE_OPTIONS = subdir-objects
 
-gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
-resource_files = 						\
-	$(top_srcdir)/data/gqpe.ui				\
-	$(top_srcdir)/data/gqpe.css				\
-	$(NULL)
-
-src/resources.c: $(gresource_file) $(resource_files)
-	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) 			\
-		--target=$@					\
-		--sourcedir=$(top_srcdir)/data			\
-		--generate-source $<
-
 bin_PROGRAMS = src/gqpe
 
-src_gqpe_SOURCES =						\
+GQPESOURCES =							\
 	src/application.vala					\
 	src/application-window.vala				\
+	src/photograph.vala
+
+src_gqpe_SOURCES =						\
+	$(GQPESOURCES)						\
 	src/application-main.vala				\
-	src/photograph.vala					\
 	src/resources.c
 
 AM_CPPFLAGS =							\
@@ -26,7 +17,6 @@ AM_CPPFLAGS =							\
 	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DPKGDATADIR=\""$(pkgdatadir)"\"			\
 	-DPKGLIBDIR=\""$(pkglibdir)"\"
-
 
 src_gqpe_VALAFLAGS =						\
 	@GEE_PACKAGES@						\
@@ -49,6 +39,18 @@ src_gqpe_LDADD =						\
 	@GTK_LIBS@						\
 	-lm
 
+gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
+resource_files = 						\
+	$(top_srcdir)/data/gqpe.ui				\
+	$(top_srcdir)/data/gqpe.css				\
+	$(NULL)
+
+src/resources.c: $(gresource_file) $(resource_files)
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) 			\
+		--target=$@					\
+		--sourcedir=$(top_srcdir)/data			\
+		--generate-source $<
+
 icondir = $(datadir)/icons/hicolor/scalable/apps
 icon_DATA = data/gqpe.svg
 
@@ -66,5 +68,35 @@ EXTRA_DIST =							\
 	$(desktop_DATA)						\
 	$(gresource_file)                       		\
         $(resource_files)
+
+if HAVE_VALADOC
+
+AM_V_VALADOC = $(AM_V_VALADOC_$(V))
+AM_V_VALADOC_ = $(AM_V_VALADOC_$(AM_DEFAULT_VERBOSITY))
+AM_V_VALADOC_0 = @echo "  VALADOC " $@;
+
+docs: doc/gqpe/index.htm
+
+doc/gqpe/index.htm: $(GQPESOURCES)
+	$(AM_V_VALADOC)$(VALADOC)					\
+		--directory=doc						\
+		--force							\
+		--package-name=${PACKAGE}				\
+		--package-version=${VERSION}				\
+		--target-glib=2.38					\
+		--vapidir=vapi						\
+		--verbose						\
+		@GEE_PACKAGES@						\
+		@GEXIV2_PACKAGES@					\
+		@GTK_PACKAGES@						\
+		--pkg config						\
+		$(GQPESOURCES)
+
+clean-docs:
+	-rm -rf doc/
+
+clean-local: clean-docs
+
+endif
 
 SUBDIRS = po

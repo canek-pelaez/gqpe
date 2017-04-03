@@ -12,6 +12,7 @@ config.log
 config.status
 configure
 depcomp
+doc/
 es.gmo
 install-sh
 m4

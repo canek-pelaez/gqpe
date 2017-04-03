@@ -28,7 +28,8 @@
               <object class="GtkButton" id="previous">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Previous picture</property>
+                <property name="tooltip-text" translatable="yes"
+                          >Previous picture</property>
                 <property name="sensitive">False</property>
                 <signal name="clicked" handler="on_previous_clicked" swapped="no"/>
                 <child>
@@ -45,7 +46,8 @@
               <object class="GtkButton" id="next">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Next picture</property>
+                <property name="tooltip-text" translatable="yes"
+                          >Next picture</property>
                 <signal name="clicked" handler="on_next_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="next_image">
@@ -72,13 +74,16 @@
               <object class="GtkButton" id="rotate_left">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Rotate left</property>
-                <signal name="clicked" handler="on_rotate_left_clicked" swapped="no"/>
+                <property name="tooltip-text" translatable="yes"
+                          >Rotate left</property>
+                <signal name="clicked" handler="on_rotate_left_clicked"
+                        swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_left_image">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">object-rotate-left-symbolic</property>
+                    <property name="icon-name"
+                              >object-rotate-left-symbolic</property>
                     <property name="icon-size">1</property>
                   </object>
                 </child>
@@ -91,13 +96,16 @@
               <object class="GtkButton" id="rotate_right">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Rotate right</property>
-                <signal name="clicked" handler="on_rotate_right_clicked" swapped="no"/>
+                <property name="tooltip-text" translatable="yes"
+                          >Rotate right</property>
+                <signal name="clicked" handler="on_rotate_right_clicked"
+                        swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_right_image">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name">object-rotate-right-symbolic</property>
+                    <property name="icon-name"
+                              >object-rotate-right-symbolic</property>
                     <property name="icon-size">1</property>
                   </object>
                 </child>

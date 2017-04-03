@@ -1,22 +1,24 @@
-/*
+/* photograph.vala
+ * 
  * This file is part of gqpe.
  *
- * Copyright 2013 Canek Peláez Valdés
+ * This file is part of gqpe.
  *
- * gqpe is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * Copyright © 2013-2017 Canek Peláez Valdés
  *
- * gqpe is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * General Public License for more details.
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation, either version 3 of the License, or (at your option) any later
+ * version.
  *
- * You should have received a copy of the GNU General Public License
- * along with gqpq. If not, see <http://www.gnu.org/licenses/>.
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-
 namespace GQPE {
 
     public enum Orientation {
@@ -41,9 +43,9 @@ namespace GQPE {
                 "Exif.Image.ImageDescription";
         }
 
-        public string album { get; private set; }
-        public string caption { get; private set; }
-        public string comment { get; private set; }
+        public string album { get; set; }
+        public string caption { get; set; }
+        public string comment { get; set; }
 
         public GLib.File file { get; private set; }
         public Gdk.Pixbuf pixbuf { get; private set; }
@@ -90,11 +92,15 @@ namespace GQPE {
                                          (int)(pixbuf.height*scale),
                                          Gdk.InterpType.BILINEAR);
             album = (metadata.has_tag(Tag.SUBJECT)) ?
-                metadata.get_tag_string(Tag.SUBJECT) : "";
+                metadata.get_tag_string(Tag.SUBJECT).strip() : "";
             caption = (metadata.has_tag(Tag.CAPTION)) ?
-                metadata.get_tag_string(Tag.CAPTION) : "";
+                metadata.get_tag_string(Tag.CAPTION).strip() : "";
             comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
-                metadata.get_tag_string(Tag.DESCRIPTION) : "";
+                metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
+
+            album.strip();
+            caption.strip();
+            comment.strip();
         }
 
         public void rotate_left() {
@@ -134,22 +140,20 @@ namespace GQPE {
         }
 
         public void save_metadata() throws GLib.Error {
-            metadata.clear_tag(Tag.SUBJECT);
-            metadata.clear_tag(Tag.CAPTION);
-            metadata.clear_tag(Tag.DESCRIPTION);
-            if (album != "") {
+            if (album == "")
+                metadata.clear_tag(Tag.SUBJECT);
+            else
                 metadata.set_tag_string(Tag.SUBJECT, album);
-                stderr.printf("Album set\n");
-            }
-            if (caption != "") {
+            if (caption == "")
+                metadata.clear_tag(Tag.CAPTION);
+            else
                 metadata.set_tag_string(Tag.CAPTION, caption);
-                stderr.printf("Caption set\n");
-            }
-            if (comment != "") {
+            if (comment != "")
+                metadata.clear_tag(Tag.DESCRIPTION);
+            else
                 metadata.set_tag_string(Tag.DESCRIPTION, comment);
-                stderr.printf("Description set\n");
-            }
             metadata.set_tag_long(Tag.ORIENTATION, orientation);
+            metadata.save_file(file.get_path());
             if (metadata.has_tag(Tag.TH_ORIENTATION))
                 metadata.set_tag_long(Tag.TH_ORIENTATION, orientation);
             metadata.save_file(file.get_path());

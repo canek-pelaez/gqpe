@@ -16,6 +16,16 @@ AC_PROG_CC_STDC
 AM_PROG_VALAC([0.24])
 AC_PROG_INSTALL
 
+AC_PATH_PROG([VALADOC], [valadoc])
+AM_CONDITIONAL([HAVE_VALADOC], [test "${VALADOC}" != ""])
+
+AC_ARG_ENABLE([valadoc],
+    AS_HELP_STRING([--enable-valadoc],
+        [enable valadoc generation (default=yes if available)]),
+    [enable_valadoc=yes], [enable_valadoc=no])
+AS_IF([test "${enable_valadoc}" = "yes" && test "${VALADOC}" = ""],
+    [AC_MSG_ERROR([valadoc is not available])])
+
 AC_PATH_PROG(GLIB_COMPILE_RESOURCES, glib-compile-resources)
 
 GEE_PACKAGES="--pkg gee-0.8"
