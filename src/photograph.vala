@@ -173,17 +173,14 @@ namespace GQPE {
          * @throws GLib.Error if there is an error while loading.
          */
         public void save_metadata() throws GLib.Error {
-            if (album == "")
-                metadata.clear_tag(Tag.SUBJECT);
-            else
+            metadata.clear_tag(Tag.SUBJECT);
+            if (album != "")
                 metadata.set_tag_string(Tag.SUBJECT, album);
-            if (caption == "")
-                metadata.clear_tag(Tag.CAPTION);
-            else
+            metadata.clear_tag(Tag.CAPTION);
+            if (caption != "")
                 metadata.set_tag_string(Tag.CAPTION, caption);
+            metadata.clear_tag(Tag.DESCRIPTION);
             if (comment != "")
-                metadata.clear_tag(Tag.DESCRIPTION);
-            else
                 metadata.set_tag_string(Tag.DESCRIPTION, comment);
             metadata.set_tag_long(Tag.ORIENTATION, orientation);
             metadata.save_file(file.get_path());
