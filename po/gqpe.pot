@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/canek-pelaez/gqpe/issues\n"
-"POT-Creation-Date: 2017-04-03 21:37-0500\n"
+"POT-Creation-Date: 2017-04-04 13:19-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,18 +57,18 @@ msgstr ""
 msgid "<b>Picture</b>"
 msgstr ""
 
-#: src/application.vala:49
+#: src/application.vala:59
 msgid "Save"
 msgstr ""
 
-#: src/application.vala:50
+#: src/application.vala:60
 msgid "About"
 msgstr ""
 
-#: src/application.vala:51
+#: src/application.vala:61
 msgid "Quit"
 msgstr ""
 
-#: src/application.vala:80
+#: src/application-window.vala:259
 msgid "A Gtk+ based quick photo editor"
 msgstr ""
