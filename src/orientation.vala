@@ -21,10 +21,29 @@
  */
 namespace GQPE {
 
+    /**
+     * Enumeration for orientations.
+     */
     public enum Orientation {
+
+        /**
+         * 0° clockwise orientation.
+         */
         LANDSCAPE         = 1,
+
+        /**
+         * 180° orientation.
+         */
         REVERSE_LANDSCAPE = 3,
+
+        /**
+         * 90° orientation.
+         */
         PORTRAIT          = 6,
+
+        /**
+         * 270° orientation.
+         */
         REVERSE_PORTRAIT  = 8
     }
 }

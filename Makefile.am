@@ -5,7 +5,7 @@ bin_PROGRAMS = src/gqpe
 GQPESOURCES =							\
 	src/application.vala					\
 	src/application-window.vala				\
-	src/orientation						\
+	src/orientation.vala					\
 	src/photograph.vala
 
 src_gqpe_SOURCES =						\

@@ -19,8 +19,15 @@
  */
 namespace GQPE {
 
+    /**
+     * Class for the main entry point for the program.
+     */
     public class ApplicationMain {
 
+        /**
+         * Main entry point for the program.
+         * @param args the program command line arguments.
+         */
         public static int main(string[] args) {
             Intl.bindtextdomain(Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
             Intl.bind_textdomain_codeset(Config.GETTEXT_PACKAGE, "UTF-8");

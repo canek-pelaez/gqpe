@@ -19,10 +19,14 @@
  */
 namespace GQPE {
 
+    /**
+     * Class for the application window.
+     */
     [GtkTemplate (ui = "/mx/unam/GQPE/gqpe.ui")]
     public class ApplicationWindow : Gtk.ApplicationWindow {
 
-        private enum UIItemFlags {
+        /* UI items. */
+        private enum Items {
             PREVIOUS     = 1 << 0,
             NEXT         = 1 << 1,
             ROTATE_LEFT  = 1 << 2,
@@ -36,51 +40,71 @@ namespace GQPE {
             ALL          = 0x3f
         }
 
+        /* Directions. */
         private enum Direction {
             LEFT,
             RIGHT
         }
 
-        private static const string RESOURCE =
-            "resource:///mx/unam/GQPE/gqpe.css";
+        /* CSS Resource. */
+        private static const string CSS = "resource:///mx/unam/GQPE/gqpe.css";
 
+        /* The head bar. */
         [GtkChild]
         private Gtk.HeaderBar header;
+        /* The previous button. */
         [GtkChild]
         private Gtk.Button previous;
+        /* The next button. */
         [GtkChild]
         private Gtk.Button next;
+        /* The rotate left button. */
         [GtkChild]
         private Gtk.Button rotate_left;
+        /* The rotate right button. */
         [GtkChild]
         private Gtk.Button rotate_right;
+        /* The save button. */
         [GtkChild]
         private Gtk.Button save;
+        /* The label button. */
         [GtkChild]
         private Gtk.Label label;
+        /* The image. */
         [GtkChild]
         private Gtk.Image image;
+        /* The album entry. */
         [GtkChild]
         private Gtk.Entry album;
+        /* The caption entry. */
         [GtkChild]
         private Gtk.Entry caption;
+        /* The comment text view. */
         [GtkChild]
         private Gtk.TextView comment;
 
+        /* The current photograph. */
         private Photograph photograph;
-        private Gee.ListIterator<Photograph> loader;
+        /* Photograph list. */
         private Gee.ArrayList<Photograph> photographs;
+        /* Loader iterator. */
+        private Gee.ListIterator<Photograph> loader;
+        /* Photograp iterator. */
         private Gee.BidirListIterator<Photograph> iterator;
-        private int total;
+        /* The index of the current photograph. */
         private int index;
 
+        /**
+         * Constructs a new application window.
+         * @param application the application.
+         */
         public ApplicationWindow(Gtk.Application application) {
             GLib.Object(application: application);
 
             Gtk.Window.set_default_icon_name("gqpe");
             var provider = new Gtk.CssProvider();
             try {
-                var file = GLib.File.new_for_uri(RESOURCE);
+                var file = GLib.File.new_for_uri(CSS);
                 provider.load_from_file(file);
             } catch (GLib.Error e) {
                 GLib.warning("There was a problem loading 'gqpe.css'");
@@ -89,45 +113,63 @@ namespace GQPE {
                                                       provider, 999);
         }
 
+        /**
+         * Callback for window destruction.
+         */
         [GtkCallback]
         public void on_window_destroy() {
             application.quit();
         }
 
+        /**
+         * Callback for previous button clicked.
+         */
         [GtkCallback]
         public void on_previous_clicked() {
             if (!iterator.has_previous())
                 return;
             iterator.previous();
             index--;
-            enable_ui(UIItemFlags.NEXT);
+            enable_ui(Items.NEXT);
             if (!iterator.has_previous())
-                disable_ui(UIItemFlags.PREVIOUS);
-            update_picture();
+                disable_ui(Items.PREVIOUS);
+            update_ui();
         }
 
+        /**
+         * Callback for next button clicked.
+         */
         [GtkCallback]
         public void on_next_clicked() {
             if (!iterator.has_next())
                 return;
             iterator.next();
             index++;
-            enable_ui(UIItemFlags.PREVIOUS);
+            enable_ui(Items.PREVIOUS);
             if (!iterator.has_next())
-                disable_ui(UIItemFlags.NEXT);
-            update_picture();
+                disable_ui(Items.NEXT);
+            update_ui();
         }
 
+        /**
+         * Callback for rotate left button clicked.
+         */
         [GtkCallback]
         public void on_rotate_left_clicked() {
             rotate(Direction.LEFT);
         }
 
+        /**
+         * Callback for rotate right button clicked.
+         */
         [GtkCallback]
         public void on_rotate_right_clicked() {
             rotate(Direction.RIGHT);
         }
 
+        /**
+         * Callback for save button clicked.
+         */
         [GtkCallback]
         public void on_save_clicked() {
             try {
@@ -143,6 +185,9 @@ namespace GQPE {
             save.sensitive = false;
         }
 
+        /**
+         * Callback for any entry activation.
+         */
         [GtkCallback]
         public void on_data_activate() {
             if (save.sensitive)
@@ -150,11 +195,17 @@ namespace GQPE {
             on_next_clicked();
         }
 
+        /**
+         * Callback for any data changed.
+         */
         [GtkCallback]
         public void on_data_changed() {
             save.sensitive = true;
         }
 
+        /**
+         * Callback for window key presses.
+         */
         [GtkCallback]
         public bool on_window_key_press(Gdk.EventKey e) {
             if (e.keyval == Gdk.Key.bracketleft) {
@@ -180,11 +231,35 @@ namespace GQPE {
             return false;
         }
 
+        /**
+         * Opens an array of files.
+         * @param files the array of files.
+         */
         public void open_files(GLib.File[] files) {
             load_photographs(files);
             set_iterators();
         }
 
+        /**
+         * Shows the about dialog.
+         */
+        public void about() {
+            string[] authors = {
+                "Canek Peláez Valdés <canek@ciencias.unam.mx>"
+            };
+            Gtk.show_about_dialog(
+                this,
+                "authors",        authors,
+                "comments",       _("A Gtk+ based quick photo editor"),
+                "copyright",      "Copyright © 2013-2017 Canek Peláez Valdés",
+                "license-type",   Gtk.License.GPL_3_0,
+                "logo-icon-name", "gqpe",
+                "version",        Config.PACKAGE_VERSION,
+                "website",        "http://github.com/canek-pelaez/gqpe",
+                "wrap-license",   true);
+        }
+
+        /* Loads the photograps. */
         private void load_photographs(GLib.File[] files) {
             photographs = new Gee.ArrayList<Photograph>();
             foreach (var file in files) {
@@ -208,23 +283,24 @@ namespace GQPE {
                 photographs.add(new Photograph(file));
             }
             photographs.sort();
-            total = photographs.size;
         }
 
+        /* Initializes the iterators. */
         private void set_iterators() {
-            if (total == 0) {
-                disable_ui(UIItemFlags.ALL);
+            if (photographs.size == 0) {
+                disable_ui(Items.ALL);
             } else {
                 iterator = photographs.bidir_list_iterator();
                 loader = photographs.list_iterator();
                 on_next_clicked();
-                if (total == 1)
-                    disable_ui(UIItemFlags.NEXT);
+                if (photographs.size == 1)
+                    disable_ui(Items.NEXT);
                 GLib.Idle.add(autoload_photographs);
             }
-            disable_ui(UIItemFlags.PREVIOUS);
+            disable_ui(Items.PREVIOUS);
         }
 
+        /* Autoloads the photographs asynchronously. */
         private bool autoload_photographs() {
             if (!loader.has_next())
                 return false;
@@ -240,31 +316,35 @@ namespace GQPE {
             return true;
         }
 
-        private void items_set_sensitive(UIItemFlags flags, bool s) {
-            if ((flags & UIItemFlags.PREVIOUS) != 0)
+        /* Turns on and off UI items. */
+        private void items_set_sensitive(Items flags, bool s) {
+            if ((flags & Items.PREVIOUS) != 0)
                 previous.sensitive = s;
-            if ((flags & UIItemFlags.NEXT) != 0)
+            if ((flags & Items.NEXT) != 0)
                 next.sensitive = s;
-            if ((flags & UIItemFlags.ROTATE_LEFT) != 0)
+            if ((flags & Items.ROTATE_LEFT) != 0)
                 rotate_left.sensitive = s;
-            if ((flags & UIItemFlags.ROTATE_RIGHT) != 0)
+            if ((flags & Items.ROTATE_RIGHT) != 0)
                 rotate_right.sensitive = s;
-            if ((flags & UIItemFlags.SAVE) != 0)
+            if ((flags & Items.SAVE) != 0)
                 save.sensitive = s;
-            if ((flags & UIItemFlags.CAPTION) != 0) {
+            if ((flags & Items.CAPTION) != 0) {
                 caption.sensitive = s;
                 comment.sensitive = s;
             }
         }
 
-        private void enable_ui(UIItemFlags flags) {
+        /* Turns on UI items. */
+        private void enable_ui(Items flags) {
             items_set_sensitive(flags, true);
         }
 
-        private void disable_ui(UIItemFlags flags) {
+        /* Turns off UI items. */
+        private void disable_ui(Items flags) {
             items_set_sensitive(flags, false);
         }
 
+        /* Rotates the photograph. */
         private void rotate(Direction direction) {
             switch (direction) {
             case Direction.LEFT:
@@ -275,9 +355,16 @@ namespace GQPE {
                 break;
             }
             image.set_from_pixbuf(photograph.pixbuf);
-            enable_ui(UIItemFlags.SAVE);
+            enable_ui(Items.SAVE);
         }
 
+        /* Updates the UI. */
+        private void update_ui() {
+            update_picture();
+            update_data();
+        }
+
+        /* Updates the picture. */
         private void update_picture() {
             photograph = iterator.get();
             try {
@@ -285,23 +372,23 @@ namespace GQPE {
             } catch (GLib.Error e) {
                 var p = photograph.file.get_path();
                 GLib.warning("Could not load '%s'".printf(p));
-                disable_ui(UIItemFlags.PICTURE);
+                disable_ui(Items.PICTURE);
             }
-            new_photograph();
-            enable_ui(UIItemFlags.PICTURE);
+            enable_ui(Items.PICTURE);
         }
 
-        private void new_photograph() {
+        /* Updates the data. */
+        private void update_data() {
             var basename = photograph.file.get_basename();
             var markup = "<b>%s</b>".printf(basename);
             label.set_markup(markup);
-            header.subtitle = "%d / %d".printf(index, total);
+            header.subtitle = "%d / %d".printf(index, photographs.size);
             image.set_from_pixbuf(photograph.pixbuf);
             album.text = photograph.album;
             caption.text = photograph.caption;
             comment.buffer.text = photograph.comment;
             caption.grab_focus();
-            disable_ui(UIItemFlags.SAVE);
+            disable_ui(Items.SAVE);
         }
     }
 }
