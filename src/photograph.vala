@@ -21,15 +21,12 @@
  */
 namespace GQPE {
 
-    public enum Orientation {
-        LANDSCAPE         = 1,
-        REVERSE_LANDSCAPE = 3,
-        PORTRAIT          = 6,
-        REVERSE_PORTRAIT  = 8
-    }
-
+    /**
+     * Class for photographs.
+     */
     public class Photograph : GLib.Object, Gee.Comparable<Photograph> {
 
+        /* Constants for the used tags. */
         private class Tag {
             public static const string ORIENTATION =
                 "Exif.Image.Orientation";
@@ -43,20 +40,48 @@ namespace GQPE {
                 "Exif.Image.ImageDescription";
         }
 
+        /**
+         * The album of the photograph.
+         */
         public string album { get; set; }
+
+        /**
+         * The caption (title) of the photograph.
+         */
         public string caption { get; set; }
+
+        /**
+         * The comment of the photograph.
+         */
         public string comment { get; set; }
 
+        /**
+         * The file for the photograph.
+         */
         public GLib.File file { get; private set; }
+
+        /**
+         * The pixbuf for the photograph.
+         */
         public Gdk.Pixbuf pixbuf { get; private set; }
 
+        /* The photograph orientation. */
         private Orientation orientation;
+        /* The photograph metadata. */
         private GExiv2.Metadata metadata;
 
+        /**
+         * Creates a new photograph.
+         * @param file the file with the photograph.
+         */
         public Photograph(GLib.File file) {
             this.file = file;
         }
 
+        /**
+         * Loads the pixbuf of the photograph.
+         * @throws GLib.Error if there is an error while loading.
+         */
         public void load() throws GLib.Error {
             if (pixbuf != null)
                 return;
@@ -103,6 +128,9 @@ namespace GQPE {
             comment.strip();
         }
 
+        /**
+         * Rotates the photograph 90° to the left.
+         */
         public void rotate_left() {
             switch (orientation) {
             case Orientation.PORTRAIT:
@@ -121,6 +149,9 @@ namespace GQPE {
             pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
         }
 
+        /**
+         * Rotates the photograph 90° to the right.
+         */
         public void rotate_right() {
             switch (orientation) {
             case Orientation.PORTRAIT:
@@ -139,6 +170,10 @@ namespace GQPE {
             pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
         }
 
+        /**
+         * Saves the metadata of the photograph.
+         * @throws GLib.Error if there is an error while loading.
+         */
         public void save_metadata() throws GLib.Error {
             if (album == "")
                 metadata.clear_tag(Tag.SUBJECT);
@@ -159,6 +194,13 @@ namespace GQPE {
             metadata.save_file(file.get_path());
         }
 
+        /**
+         * Compares the photograph with the one received.
+         * @param photograph the photograph to compare to.
+         * @return an integer less than zero if the photograph is less than the
+         *         one received; zero if they are both the same; and an integer
+         *         greater than zero otherwise.
+         */
         public int compare_to(Photograph photograph) {
             if (file.get_path() < photograph.file.get_path())
                 return -1;

@@ -5,6 +5,7 @@ bin_PROGRAMS = src/gqpe
 GQPESOURCES =							\
 	src/application.vala					\
 	src/application-window.vala				\
+	src/orientation						\
 	src/photograph.vala
 
 src_gqpe_SOURCES =						\
@@ -51,11 +52,15 @@ src/resources.c: $(gresource_file) $(resource_files)
 		--sourcedir=$(top_srcdir)/data			\
 		--generate-source $<
 
-MSGFMT_DESKTOP_OPTIONS = --keyword=Name --keyword=Icon
+MSGFMT_DESKTOP_OPTIONS =					\
+	--keyword=GenericName					\
+	--keyword=Comment
+
 gqpe_desktop_in_file = $(top_srcdir)/data/gqpe.desktop.in
 data/gqpe.desktop: $(gqpe_desktop_in_file)
 	$(AM_V_GEN)$(MSGFMT) $(MSGFMT_DESKTOP_OPTIONS) 		\
-		--desktop --template $< -d $(top_srcdir)/po -o $@
+		--desktop --template $< 			\
+		-d $(top_srcdir)/po -o $@
 
 icondir = $(datadir)/icons/hicolor/scalable/apps
 icon_DATA = data/gqpe.svg

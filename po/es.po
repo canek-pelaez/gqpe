@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/canek-pelaez/gqpe/issues\n"
-"POT-Creation-Date: 2017-04-03 19:34-0500\n"
-"PO-Revision-Date: 2017-04-03 19:26-0500\n"
+"POT-Creation-Date: 2017-04-03 21:37-0500\n"
+"PO-Revision-Date: 2017-04-03 21:34-0500\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: es\n"
@@ -19,20 +19,19 @@ msgstr ""
 
 #: data/gqpe.desktop:3
 msgid "GQPE"
-msgstr ""
-
-#: data/gqpe.desktop:4
-#, fuzzy
-msgid "Gtk+ Quick Photo Editor"
-msgstr "Un rápido editor de fotos basado en Gtk+"
+msgstr "GQPE"
 
 #: data/gqpe.desktop:5
-msgid "Quick editor for photography tags"
-msgstr ""
+msgid "Gtk+ Quick Photo Editor"
+msgstr "Editor rápido de fotos basado en Gtk+"
 
 #: data/gqpe.desktop:7
+msgid "Quick editor for photography tags"
+msgstr "Editor rápido para etiquetas de fotografía"
+
+#: data/gqpe.desktop:9
 msgid "gqpe"
-msgstr ""
+msgstr "gqpe"
 
 #: data/gqpe.ui:32
 msgid "Previous picture"
