@@ -217,15 +217,24 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkTextView" id="comment">
+                  <object class="GtkScrolledWindow" id="comment_scroll">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
-                    <property name="expand">True</property>
-                    <property name="left-margin">6</property>
-                    <property name="top-margin">6</property>
-                    <property name="right-margin">6</property>
-                    <property name="bottom-margin">6</property>
-                    <property name="buffer">comment_buffer</property>
+                    <property name="hscrollbar-policy">automatic</property>
+                    <property name="vscrollbar-policy">automatic</property>
+                    <child>
+                      <object class="GtkTextView" id="comment">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="expand">True</property>
+                        <property name="wrap-mode">GTK_WRAP_WORD</property>
+                        <property name="left-margin">6</property>
+                        <property name="top-margin">6</property>
+                        <property name="right-margin">6</property>
+                        <property name="bottom-margin">6</property>
+                        <property name="buffer">comment_buffer</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
