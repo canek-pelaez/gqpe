@@ -6,6 +6,7 @@ GQPESOURCES =							\
 	src/application.vala					\
 	src/application-window.vala				\
 	src/orientation.vala					\
+	src/namespace.vala					\
 	src/photograph.vala
 
 src_gqpe_SOURCES =						\
@@ -43,8 +44,7 @@ src_gqpe_LDADD =						\
 gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
 resource_files = 						\
 	$(top_srcdir)/data/gqpe.ui				\
-	$(top_srcdir)/data/gqpe.css				\
-	$(NULL)
+	$(top_srcdir)/data/gqpe.css
 
 src/resources.c: $(gresource_file) $(resource_files)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) 			\
@@ -70,6 +70,7 @@ desktop_DATA = data/gqpe.desktop
 
 noinst_DATA =							\
 	vapi/config.vapi					\
+	$(gqpe_desktop_in_file)					\
 	$(gresource_file)					\
 	$(resource_files)
 
