@@ -2,8 +2,6 @@
  * 
  * This file is part of gqpe.
  *
- * This file is part of gqpe.
- *
  * Copyright © 2013-2017 Canek Peláez Valdés
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -23,6 +21,8 @@ namespace GQPE {
 
     /**
      * Enumeration for orientations.
+     *
+     * //[[http://www.exif.org/Exif2-2.PDF#page=24|Exif Version 2.2, page 18]].//
      */
     public enum Orientation {
 

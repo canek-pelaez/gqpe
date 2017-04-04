@@ -40,14 +40,18 @@ namespace GQPE {
             ALL          = 0x3f
         }
 
-        /* Directions. */
-        private enum Direction {
+        /* Rotate direction. */
+        private enum Rotate {
             LEFT,
             RIGHT
         }
 
         /* CSS Resource. */
         private static const string CSS = "resource:///mx/unam/GQPE/gqpe.css";
+        /* Maximum length for the album. */
+        private static const int ALBUM_LENGTH = 50;
+        /* Maximum length for the caption. */
+        private static const int CAPTION_LENGTH = 40;
 
         /* The head bar. */
         [GtkChild]
@@ -111,6 +115,8 @@ namespace GQPE {
             }
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
                                                      provider, 999);
+
+            GLib.Idle.add(check_entries_length);
         }
 
         /**
@@ -156,7 +162,7 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_rotate_left_clicked() {
-            rotate(Direction.LEFT);
+            rotate(Rotate.LEFT);
         }
 
         /**
@@ -164,7 +170,7 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_rotate_right_clicked() {
-            rotate(Direction.RIGHT);
+            rotate(Rotate.RIGHT);
         }
 
         /**
@@ -345,12 +351,12 @@ namespace GQPE {
         }
 
         /* Rotates the photograph. */
-        private void rotate(Direction direction) {
+        private void rotate(Rotate direction) {
             switch (direction) {
-            case Direction.LEFT:
+            case Rotate.LEFT:
                 photograph.rotate_left();
                 break;
-            case Direction.RIGHT:
+            case Rotate.RIGHT:
                 photograph.rotate_right();
                 break;
             }
@@ -373,7 +379,9 @@ namespace GQPE {
                 var p = photograph.file.get_path();
                 GLib.warning("Could not load '%s'".printf(p));
                 disable_ui(Items.PICTURE);
+                return;
             }
+            image.set_from_pixbuf(photograph.pixbuf);
             enable_ui(Items.PICTURE);
         }
 
@@ -383,12 +391,37 @@ namespace GQPE {
             var markup = "<b>%s</b>".printf(basename);
             label.set_markup(markup);
             header.subtitle = "%d / %d".printf(index, photographs.size);
-            image.set_from_pixbuf(photograph.pixbuf);
             album.text = photograph.album;
             caption.text = photograph.caption;
+            check_entries_length();
             comment.buffer.text = photograph.comment;
             caption.grab_focus();
             disable_ui(Items.SAVE);
+        }
+
+        /* Checks the length of both entries. */
+        private bool check_entries_length() {
+            if (save == null || !save.sensitive)
+                return true;
+            check_entry_length(album, ALBUM_LENGTH);
+            check_entry_length(caption, CAPTION_LENGTH);
+            return true;
+        }
+
+        /* Checks the length of an entry. */
+        private void check_entry_length(Gtk.Entry entry, int length) {
+            if (entry.text.length > length &&
+                entry.secondary_icon_name == null) {
+                entry.secondary_icon_name = "dialog-warning-symbolic";
+                entry.secondary_icon_tooltip_text = "Entry is too long";
+                entry.secondary_icon_activatable = false;
+            }
+            if (entry.text.length <= length &&
+                entry.secondary_icon_name != null) {
+                entry.secondary_icon_name = null;
+                entry.secondary_icon_tooltip_text = null;
+                entry.secondary_icon_activatable = false;
+            }
         }
     }
 }
