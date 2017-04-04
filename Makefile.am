@@ -51,6 +51,12 @@ src/resources.c: $(gresource_file) $(resource_files)
 		--sourcedir=$(top_srcdir)/data			\
 		--generate-source $<
 
+MSGFMT_DESKTOP_OPTIONS = --keyword=Name --keyword=Icon
+gqpe_desktop_in_file = $(top_srcdir)/data/gqpe.desktop.in
+data/gqpe.desktop: $(gqpe_desktop_in_file)
+	$(AM_V_GEN)$(MSGFMT) $(MSGFMT_DESKTOP_OPTIONS) 		\
+		--desktop --template $< -d $(top_srcdir)/po -o $@
+
 icondir = $(datadir)/icons/hicolor/scalable/apps
 icon_DATA = data/gqpe.svg
 
@@ -65,9 +71,11 @@ noinst_DATA =							\
 EXTRA_DIST =							\
 	$(noinst_DATA)						\
 	$(icon_DATA)						\
-	$(desktop_DATA)						\
+	$(gqpe_desktop_in_file)					\
 	$(gresource_file)                       		\
         $(resource_files)
+
+CLEANFILES = $(desktop_DATA)
 
 if HAVE_VALADOC
 
@@ -99,4 +107,4 @@ clean-local: clean-docs
 
 endif
 
-SUBDIRS = po
+SUBDIRS = . po

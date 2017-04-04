@@ -2,40 +2,36 @@ Gtk+ Quick Photo Editor
 =======================
 
 Gtk+ Quick Photo Editor (GQPE for short) is a small image tag
-editor. It's a companion program for Gallery 3 Uploader[1].
+editor.
 
-Since I only need to set the Iptc.Application2.Caption and the
-Exif.Image.Orientation tags, this program is intended to set those
-tags as fast as possible. The program shows the picture, and allows
-the user to rotate it and to enter the Iptc.Application2.Caption
-tag.
+GQPE only cares for the Xmp.dc.subject, Iptc.Application2.Caption,
+Exif.Image.ImageDescription and the Exif.Image.Orientation tags, so this program
+is intended to set those tags as fast as possible. The program shows the
+picture, and allows the user to rotate it and to enter the Xmp.dc.subject,
+Iptc.Application2.Caption, and Exif.Image.ImageDescription tags.
 
 While it can be used with the mouse, that's not the way is intended
-to be used: all the available manipulations are possible using only
+to be used: All the available manipulations are possible using only
 the keyboard:
 
-* [ and ] will rotate the picture to the left and right,
-  respectively.
-* Enter in the text entry (if not empty) will update the relevant
-  tags in the picture and move to the next one. You need to do this
-  (or click on the save button) to update the tags in the picture,
-  otherwise all the changes are ignored.
-* Page Up and Page Down will move to the next or the previous
-  picture, respectively, without updating the current one.
+* [ and ] will rotate the picture to the left and right, respectively.
+
+* Enter in any text entry (if not empty) or Control-Enter will update the
+  relevant tags in the picture and move to the next one. You need to do this (or
+  click on the save button) to update the tags in the picture, otherwise all the
+  changes are ignored.
+
+* Page Up and Page Down will move to the next or the previous picture,
+  respectively, without updating the current one.
+
 * Esc will terminate the program.
 
-The idea is to select a bunch of pictures in Nautilus, open them
-with this program, and quickly update their information.
+The idea is to select a bunch of pictures in Nautilus, open them with this
+program, and quickly update their information.
 
-The Xmp.dc.subject tag is not handled by this program, since that is
-actually something that can be done quickly enough with the command
-line.
-
-With the Xmp.dc.subject and Iptc.Application2.Caption correctly set,
-you can call g3uploader to send the pictures tu a Gallery3
-installation, or/and import them in Shotwell[1], which also uses the
-Iptc.Application2.Caption as title, and Xmp.dc.subject as tag
-(inside Shotwell).
+With the Xmp.dc.subject and Iptc.Application2.Caption correctly set, you can
+import them in Shotwell[1], which also uses the Iptc.Application2.Caption as
+title, and Xmp.dc.subject as tag (inside Shotwell).
 
 
 Requirements
@@ -47,8 +43,8 @@ You need the following to compile GQPE:
 * libgee-0.8
 * gexiv2
 
-The program is written in Vala, but you only need Vala if you don't
-use tarballs.
+The program is written in Vala, but you only need Vala if you don't use
+tarballs.
 
 
 Homepage
@@ -60,5 +56,4 @@ https://github.com/canek-pelaez/gqpe
 Notes
 -----
 
-[1] https://github.com/canek-pelaez/g3uploader
-[2] http://yorba.org/shotwell/
+[1] http://yorba.org/shotwell/

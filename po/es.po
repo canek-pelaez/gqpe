@@ -7,53 +7,69 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-31 00:19-0500\n"
-"PO-Revision-Date: 2014-08-31 00:19-0500\n"
+"Report-Msgid-Bugs-To: https://github.com/canek-pelaez/gqpe/issues\n"
+"POT-Creation-Date: 2017-04-03 19:34-0500\n"
+"PO-Revision-Date: 2017-04-03 19:26-0500\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
-"Language: \n"
+"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/application.vala:68 ../data/gqpe.ui.h:1
+#: data/gqpe.desktop:3
+msgid "GQPE"
+msgstr ""
+
+#: data/gqpe.desktop:4
+#, fuzzy
+msgid "Gtk+ Quick Photo Editor"
+msgstr "Un rápido editor de fotos basado en Gtk+"
+
+#: data/gqpe.desktop:5
+msgid "Quick editor for photography tags"
+msgstr ""
+
+#: data/gqpe.desktop:7
+msgid "gqpe"
+msgstr ""
+
+#: data/gqpe.ui:32
 msgid "Previous picture"
 msgstr "Imagen anterior"
 
-#: ../src/application.vala:69 ../data/gqpe.ui.h:2
+#: data/gqpe.ui:50
 msgid "Next picture"
 msgstr "Imagen siguiente"
 
-#: ../src/application.vala:72 ../data/gqpe.ui.h:3
+#: data/gqpe.ui:78
 msgid "Rotate left"
 msgstr "Rotar a la izquierda"
 
-#: ../src/application.vala:73 ../data/gqpe.ui.h:4
+#: data/gqpe.ui:100
 msgid "Rotate right"
 msgstr "Rotar a la derecha"
 
-#: ../src/application.vala:76 ../data/gqpe.ui.h:5
+#: data/gqpe.ui:126
 msgid "Save picture"
 msgstr "Guardar imagen"
 
-#: ../src/application.vala:77
+#: data/gqpe.ui:251
+msgid "<b>Picture</b>"
+msgstr "<b>Imagen</b>"
+
+#: src/application.vala:49
+msgid "Save"
+msgstr "Guardar"
+
+#: src/application.vala:50
 msgid "About"
 msgstr "Acerca de"
 
-#: ../src/application.vala:78
+#: src/application.vala:51
 msgid "Quit"
 msgstr "Salir"
 
-#: ../src/application.vala:142
-#, c-format
-msgid "<b>%s (%d of %d)</b>"
-msgstr "<b>%s (%d de %d)</b>"
-
-#: ../src/application.vala:205
+#: src/application.vala:80
 msgid "A Gtk+ based quick photo editor"
 msgstr "Un rápido editor de fotos basado en Gtk+"
-
-#: ../data/gqpe.ui.h:6
-msgid "<b>Picture</b>"
-msgstr "<b>Imagen</b>"

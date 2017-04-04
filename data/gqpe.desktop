@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Exec=gqpe %F
-Name=Gtk+ Quick Photo Editor
-Categories=Graphics;Photography;GNOME;GTK;
-Icon=gqpe
-MimeType=image/jpeg;image/jpg;image/pjpeg;

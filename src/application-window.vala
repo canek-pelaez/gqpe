@@ -293,7 +293,7 @@ namespace GQPE {
 
         private void new_photograph() {
             var basename = photograph.file.get_basename();
-            var markup = _("<b>%s</b>").printf(basename);
+            var markup = "<b>%s</b>".printf(basename);
             label.set_markup(markup);
             header.subtitle = "%d / %d".printf(index, total);
             image.set_from_pixbuf(photograph.pixbuf);

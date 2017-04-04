@@ -1,5 +1,6 @@
+data/gqpe.desktop
+data/gqpe.ui
 src/application.vala
+src/application-main.vala
 src/application-window.vala
-src/main.vala
 src/photograph.vala
-[type: gettext/glade]data/gqpe.ui

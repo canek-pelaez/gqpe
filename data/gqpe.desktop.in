@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=GQPE
+GenericName=Gtk+ Quick Photo Editor
+Comment=Quick editor for photography tags
+Exec=gqpe %F
+Icon=gqpe
+Type=Application
+Categories=Graphics;Photography;GNOME;GTK;
+MimeType=image/jpeg;image/jpg;image/pjpeg;
