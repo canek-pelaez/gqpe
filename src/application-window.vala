@@ -110,7 +110,7 @@ namespace GQPE {
                 GLib.warning("There was a problem loading 'gqpe.css'");
             }
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
-                                                      provider, 999);
+                                                     provider, 999);
         }
 
         /**
