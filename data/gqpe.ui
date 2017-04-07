@@ -123,6 +123,7 @@
           <object class="GtkButton" id="save">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
+            <property name="sensitive">False</property>
             <property name="tooltip-text" translatable="yes">Save picture</property>
             <signal name="clicked" handler="on_save_clicked" swapped="no"/>
             <child>
