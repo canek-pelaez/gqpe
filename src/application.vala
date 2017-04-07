@@ -24,6 +24,10 @@ namespace GQPE {
      */
     public class Application : Gtk.Application {
 
+        /* The application menu. */
+        private static const string MENU =
+            "/mx/unam/GQPE/menu.ui";
+
         /* The window. */
         private ApplicationWindow window;
 
@@ -41,10 +45,34 @@ namespace GQPE {
         public override void startup() {
             base.startup();
 
-            var action = new GLib.SimpleAction("save", null);
+            var action = new GLib.SimpleAction("prev", null);
+            action.activate.connect(() => window.on_previous_clicked());
+            add_action(action);
+            string[] accels = { "Page_Up" };
+            set_accels_for_action("app.prev", accels);
+
+            action = new GLib.SimpleAction("next", null);
+            action.activate.connect(() => window.on_next_clicked());
+            add_action(action);
+            accels = { "Page_Down" };
+            set_accels_for_action("app.next", accels);
+
+            action = new GLib.SimpleAction("rotate-left", null);
+            action.activate.connect(() => window.on_rotate_left_clicked());
+            add_action(action);
+            accels = { "bracketleft" };
+            set_accels_for_action("app.rotate-left", accels);
+
+            action = new GLib.SimpleAction("rotate-right", null);
+            action.activate.connect(() => window.on_rotate_right_clicked());
+            add_action(action);
+            accels = { "bracketright" };
+            set_accels_for_action("app.rotate-right", accels);
+
+            action = new GLib.SimpleAction("save", null);
             action.activate.connect(() => window.on_data_activate());
             add_action(action);
-            string[] accels = { "<Ctrl>Return" };
+            accels = { "<Ctrl>Return" };
             set_accels_for_action("app.save", accels);
 
             action = new GLib.SimpleAction("about", null);
@@ -54,11 +82,12 @@ namespace GQPE {
             action = new GLib.SimpleAction("quit", null);
             action.activate.connect(() => this.quit());
             add_action(action);
+            accels = { "Escape" };
+            set_accels_for_action("app.quit", accels);
 
-            var menu = new GLib.Menu();
-            menu.append(_("Save"), "app.save");
-            menu.append(_("About"), "app.about");
-            menu.append(_("Quit"), "app.quit");
+            var builder = new Gtk.Builder.from_resource(MENU);
+            var menu = builder.get_object("menu") as GLib.MenuModel;
+
             set_app_menu(menu);
         }
 

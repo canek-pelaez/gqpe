@@ -26,7 +26,7 @@ namespace GQPE {
     public class ApplicationWindow : Gtk.ApplicationWindow {
 
         /* UI items. */
-        private enum Items {
+        private enum Item {
             PREVIOUS     = 1 << 0,
             NEXT         = 1 << 1,
             ROTATE_LEFT  = 1 << 2,
@@ -36,8 +36,8 @@ namespace GQPE {
             CAPTION      = 1 << 6,
             COMMENT      = 1 << 7,
             NAVIGATION   = 0x03,
-            PICTURE      = 0xF6,
-            ALL          = 0x3f
+            PICTURE      = 0xFC,
+            ALL          = 0xff
         }
 
         /* Rotate direction. */
@@ -136,9 +136,9 @@ namespace GQPE {
                 return;
             iterator.previous();
             index--;
-            enable_ui(Items.NEXT);
+            enable_ui(Item.NEXT);
             if (!iterator.has_previous())
-                disable_ui(Items.PREVIOUS);
+                disable_ui(Item.PREVIOUS);
             update_ui();
         }
 
@@ -151,9 +151,9 @@ namespace GQPE {
                 return;
             iterator.next();
             index++;
-            enable_ui(Items.PREVIOUS);
+            enable_ui(Item.PREVIOUS);
             if (!iterator.has_next())
-                disable_ui(Items.NEXT);
+                disable_ui(Item.NEXT);
             update_ui();
         }
 
@@ -188,7 +188,7 @@ namespace GQPE {
                 GLib.warning("There was an error saving the " +
                              "metadata of '%s'".printf(f));
             }
-            save.sensitive = false;
+            disable_ui(Item.SAVE);
         }
 
         /**
@@ -206,35 +206,7 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_data_changed() {
-            save.sensitive = true;
-        }
-
-        /**
-         * Callback for window key presses.
-         */
-        [GtkCallback]
-        public bool on_window_key_press(Gdk.EventKey e) {
-            if (e.keyval == Gdk.Key.bracketleft) {
-                on_rotate_left_clicked();
-                return true;
-            }
-            if (e.keyval == Gdk.Key.bracketright) {
-                on_rotate_right_clicked();
-                return true;
-            }
-            if (e.keyval == Gdk.Key.Page_Up) {
-                on_previous_clicked();
-                return true;
-            }
-            if (e.keyval == Gdk.Key.Page_Down) {
-                on_next_clicked();
-                return true;
-            }
-            if (e.keyval == Gdk.Key.Escape) {
-                application.quit();
-                return true;
-            }
-            return false;
+            enable_ui(Item.SAVE);
         }
 
         /**
@@ -294,16 +266,16 @@ namespace GQPE {
         /* Initializes the iterators. */
         private void set_iterators() {
             if (photographs.size == 0) {
-                disable_ui(Items.ALL);
+                disable_ui(Item.ALL);
             } else {
                 iterator = photographs.bidir_list_iterator();
                 loader = photographs.list_iterator();
                 on_next_clicked();
                 if (photographs.size == 1)
-                    disable_ui(Items.NEXT);
+                    disable_ui(Item.NEXT);
                 GLib.Idle.add(autoload_photographs);
             }
-            disable_ui(Items.PREVIOUS);
+            disable_ui(Item.PREVIOUS);
         }
 
         /* Autoloads the photographs asynchronously. */
@@ -323,31 +295,33 @@ namespace GQPE {
         }
 
         /* Turns on and off UI items. */
-        private void items_set_sensitive(Items flags, bool s) {
-            if ((flags & Items.PREVIOUS) != 0)
+        private void items_set_sensitive(Item items, bool s) {
+            if ((items & Item.PREVIOUS) != 0)
                 previous.sensitive = s;
-            if ((flags & Items.NEXT) != 0)
+            if ((items & Item.NEXT) != 0)
                 next.sensitive = s;
-            if ((flags & Items.ROTATE_LEFT) != 0)
+            if ((items & Item.ROTATE_LEFT) != 0)
                 rotate_left.sensitive = s;
-            if ((flags & Items.ROTATE_RIGHT) != 0)
+            if ((items & Item.ROTATE_RIGHT) != 0)
                 rotate_right.sensitive = s;
-            if ((flags & Items.SAVE) != 0)
+            if ((items & Item.SAVE) != 0)
                 save.sensitive = s;
-            if ((flags & Items.CAPTION) != 0) {
+            if ((items & Item.ALBUM) != 0)
+                album.sensitive = s;
+            if ((items & Item.CAPTION) != 0)
                 caption.sensitive = s;
+            if ((items & Item.COMMENT) != 0)
                 comment.sensitive = s;
-            }
         }
 
         /* Turns on UI items. */
-        private void enable_ui(Items flags) {
-            items_set_sensitive(flags, true);
+        private void enable_ui(Item items) {
+            items_set_sensitive(items, true);
         }
 
         /* Turns off UI items. */
-        private void disable_ui(Items flags) {
-            items_set_sensitive(flags, false);
+        private void disable_ui(Item items) {
+            items_set_sensitive(items, false);
         }
 
         /* Rotates the photograph. */
@@ -361,7 +335,7 @@ namespace GQPE {
                 break;
             }
             image.set_from_pixbuf(photograph.pixbuf);
-            enable_ui(Items.SAVE);
+            enable_ui(Item.SAVE);
         }
 
         /* Updates the UI. */
@@ -378,11 +352,11 @@ namespace GQPE {
             } catch (GLib.Error e) {
                 var p = photograph.file.get_path();
                 GLib.warning("Could not load '%s'".printf(p));
-                disable_ui(Items.PICTURE);
+                disable_ui(Item.PICTURE);
                 return;
             }
             image.set_from_pixbuf(photograph.pixbuf);
-            enable_ui(Items.PICTURE);
+            enable_ui(Item.PICTURE);
         }
 
         /* Updates the data. */
@@ -396,7 +370,7 @@ namespace GQPE {
             check_entries_length();
             comment.buffer.text = photograph.comment;
             caption.grab_focus();
-            disable_ui(Items.SAVE);
+            disable_ui(Item.SAVE);
         }
 
         /* Checks the length of both entries. */
