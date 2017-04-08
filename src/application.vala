@@ -25,8 +25,7 @@ namespace GQPE {
     public class Application : Gtk.Application {
 
         /* The application menu. */
-        private static const string MENU =
-            "/mx/unam/GQPE/menu.ui";
+        private static const string MENU = "/mx/unam/GQPE/menu.ui";
 
         /* The window. */
         private ApplicationWindow window;
@@ -121,6 +120,8 @@ namespace GQPE {
 
         /**
          * Opens files for the application.
+         * @param files the array of files to open.
+         * @param hint the hing.
          */
         public override void open(GLib.File[] files, string hint) {
             if (window == null)
