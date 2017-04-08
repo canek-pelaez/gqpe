@@ -68,7 +68,7 @@ namespace GQPE {
         /* The photograph metadata. */
         private GExiv2.Metadata metadata;
         /* Private the original pixbuf. */
-        private Gdk.Pixbuf pixbuf original;
+        private Gdk.Pixbuf original;
 
         /**
          * Creates a new photograph.
@@ -86,10 +86,10 @@ namespace GQPE {
             if (original != null)
                 return;
 
+            original = new Gdk.Pixbuf.from_file(file.get_path());
             metadata = new GExiv2.Metadata();
             metadata.open_path(file.get_path());
 
-            original = new Gdk.Pixbuf.from_file(file.get_path());
             if (metadata.has_tag(Tag.ORIENTATION)) {
                 var rot = Gdk.PixbufRotation.NONE;
                 switch (metadata.get_tag_long(Tag.ORIENTATION)) {
@@ -110,28 +110,32 @@ namespace GQPE {
                     break;
                 }
                 if (rot != Gdk.PixbufRotation.NONE)
-                    pixbuf = original.rotate_simple(rot);
+                    original = original.rotate_simple(rot);
             }
-            double scale = 500.0 / double.max(pixbuf.width, pixbuf.height);
-            pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
-                                         (int)(pixbuf.height*scale),
-                                         Gdk.InterpType.BILINEAR);
+            double scale = 490.0 / double.max(original.width, original.height);
+            pixbuf = original.scale_simple((int)(original.width*scale),
+                                           (int)(original.height*scale),
+                                           Gdk.InterpType.BILINEAR);
             album = (metadata.has_tag(Tag.SUBJECT)) ?
                 metadata.get_tag_string(Tag.SUBJECT).strip() : "";
             caption = (metadata.has_tag(Tag.CAPTION)) ?
                 metadata.get_tag_string(Tag.CAPTION).strip() : "";
             comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
                 metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
-
-            album.strip();
-            caption.strip();
-            comment.strip();
         }
 
-        public void scale(double scale) {
-            pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
-                                         (int)(pixbuf.height*scale),
-                                         Gdk.InterpType.BILINEAR);
+        /**
+         * Resizes the photograph so it fills the given width and height.
+         */
+        public void resize(double w, double h) {
+            double W = original.width;
+            double H = original.height;
+            double s1 = w / W;
+            double s2 = h / H;
+            double scale = (H * s1 <= h) ? s1 : s2;
+            pixbuf = original.scale_simple((int)(original.width*scale),
+                                           (int)(original.height*scale),
+                                           Gdk.InterpType.BILINEAR);
         }
 
         /**

@@ -71,6 +71,9 @@ namespace GQPE {
         /* The save button. */
         [GtkChild]
         private Gtk.Button save;
+        /* The image scroll. */
+        [GtkChild]
+        private Gtk.ScrolledWindow image_scroll;
         /* The image label. */
         [GtkChild]
         private Gtk.Label label;
@@ -175,6 +178,33 @@ namespace GQPE {
         }
 
         /**
+         * Callback for zoom in.
+         */
+        [GtkCallback]
+        public void on_zoom_in_clicked() {
+        }
+
+        /**
+         * Callback for zoom out.
+         */
+        [GtkCallback]
+        public void on_zoom_out_clicked() {
+        }
+
+        /**
+         * Callback for zoom fit.
+         */
+        [GtkCallback]
+        public void on_zoom_fit_clicked() {
+            double w = image_scroll.get_allocated_width();
+            double h = image_scroll.get_allocated_height();
+            if (w <= 0.0 || h <= 0.0)
+                return;
+            photograph.resize(w, h);
+            image.set_from_pixbuf(photograph.pixbuf);
+        }
+
+        /**
          * Callback for save button clicked.
          */
         [GtkCallback]
@@ -208,26 +238,6 @@ namespace GQPE {
         [GtkCallback]
         public void on_data_changed() {
             enable_ui(Item.SAVE);
-        }
-
-        /**
-         * Callback for image resized.
-         */
-        [GtkCallback]
-        public void on_image_resize() {
-            double w = image.get_allocated_width();
-            double h = image.get_allocated_height();
-            if (w <= 0.0 || h <= 0.0)
-                return;
-            double W = photograph.pixbuf.width;
-            double H = photograph.pixbuf.height;
-            double s1 = w / W;
-            double s2 = h / H;
-            if (H * s1 <= h)
-                photograph.scale(s1);
-            else
-                photograph.scale(s2);
-            
         }
 
         /**
