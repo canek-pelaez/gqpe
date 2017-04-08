@@ -67,6 +67,8 @@ namespace GQPE {
         private Orientation orientation;
         /* The photograph metadata. */
         private GExiv2.Metadata metadata;
+        /* Private the original pixbuf. */
+        private Gdk.Pixbuf pixbuf original;
 
         /**
          * Creates a new photograph.
@@ -81,13 +83,13 @@ namespace GQPE {
          * @throws GLib.Error if there is an error while loading.
          */
         public void load() throws GLib.Error {
-            if (pixbuf != null)
+            if (original != null)
                 return;
 
             metadata = new GExiv2.Metadata();
             metadata.open_path(file.get_path());
 
-            pixbuf = new Gdk.Pixbuf.from_file(file.get_path());
+            original = new Gdk.Pixbuf.from_file(file.get_path());
             if (metadata.has_tag(Tag.ORIENTATION)) {
                 var rot = Gdk.PixbufRotation.NONE;
                 switch (metadata.get_tag_long(Tag.ORIENTATION)) {
@@ -108,7 +110,7 @@ namespace GQPE {
                     break;
                 }
                 if (rot != Gdk.PixbufRotation.NONE)
-                    pixbuf = pixbuf.rotate_simple(rot);
+                    pixbuf = original.rotate_simple(rot);
             }
             double scale = 500.0 / double.max(pixbuf.width, pixbuf.height);
             pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
@@ -124,6 +126,12 @@ namespace GQPE {
             album.strip();
             caption.strip();
             comment.strip();
+        }
+
+        public void scale(double scale) {
+            pixbuf = pixbuf.scale_simple((int)(pixbuf.width*scale),
+                                         (int)(pixbuf.height*scale),
+                                         Gdk.InterpType.BILINEAR);
         }
 
         /**

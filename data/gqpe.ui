@@ -7,7 +7,6 @@
   <template class="GQPEApplicationWindow" parent="GtkApplicationWindow">
     <property name="visible">False</property>
     <property name="can-focus">False</property>
-    <property name="window-position">3</property>
     <signal name="destroy" handler="on_window_destroy" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header">
@@ -27,8 +26,7 @@
               <object class="GtkButton" id="previous">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes"
-                          >Previous picture</property>
+                <property name="tooltip-text" translatable="yes">Previous picture</property>
                 <property name="sensitive">False</property>
                 <signal name="clicked" handler="on_previous_clicked" swapped="no"/>
                 <child>
@@ -45,8 +43,7 @@
               <object class="GtkButton" id="next">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes"
-                          >Next picture</property>
+                <property name="tooltip-text" translatable="yes">Next picture</property>
                 <signal name="clicked" handler="on_next_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="next_image">
@@ -73,16 +70,14 @@
               <object class="GtkButton" id="rotate_left">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes"
-                          >Rotate left</property>
+                <property name="tooltip-text" translatable="yes">Rotate left</property>
                 <signal name="clicked" handler="on_rotate_left_clicked"
                         swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_left_image">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name"
-                              >object-rotate-left-symbolic</property>
+                    <property name="icon-name">object-rotate-left-symbolic</property>
                     <property name="icon-size">1</property>
                   </object>
                 </child>
@@ -95,16 +90,14 @@
               <object class="GtkButton" id="rotate_right">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes"
-                          >Rotate right</property>
+                <property name="tooltip-text" translatable="yes">Rotate right</property>
                 <signal name="clicked" handler="on_rotate_right_clicked"
                         swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_right_image">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="icon-name"
-                              >object-rotate-right-symbolic</property>
+                    <property name="icon-name">object-rotate-right-symbolic</property>
                     <property name="icon-size">1</property>
                   </object>
                 </child>
@@ -141,49 +134,71 @@
       </object>
     </child>
     <child>
-      <object class="GtkFrame" id="frame">
+      <object class="GtkPaned" id="paned">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="margin">6</property>
+        <property name="orientation">horizontal</property>
         <child>
-          <object class="GtkBox" id="picture_box">
+          <object class="GtkFrame" id="image_frame">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="orientation">horizontal</property>
+            <property name="margin">6</property>
             <child>
-              <object class="GtkImage" id="image">
-                <property name="width_request">500</property>
-                <property name="height_request">500</property>
+              <object class="GtkBox" id="image_vbox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin">6</property>
-                <property name="expand">True</property>
-                <property name="pixel-size">420</property>
-                <property name="icon-name">start-here-symbolic</property>
-                <style>
-                  <class name="dark-bg"/>
-                </style>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="label">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin-top">4</property>
+                    <property name="margin-left">8</property>
+                    <property name="xalign">0.0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkImage" id="image">
+                    <property name="width_request">500</property>
+                    <property name="height_request">500</property>
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="margin">6</property>
+                    <property name="expand">True</property>
+                    <property name="pixel-size">420</property>
+                    <property name="icon-name">start-here-symbolic</property>
+                    <signal name="size-allocate" handler="on_image_resize" swapped="no"/>
+                    <style>
+                      <class name="dark-bg"/>
+                    </style>
+                  </object>
+                </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
+          </object>
+          <packing>
+            <property name="shrink">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFrame" id="data_frame">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin">6</property>
             <child>
               <object class="GtkBox" id="vbox">
-                <property name="width_request">500</property>
-                <property name="height_request">500</property>
+                <property name="width-request">500</property>
+                <property name="height-request">400</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="margin">6</property>
+                <property name="spacing">6</property>
                 <child>
                   <object class="GtkEntry" id="album">
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
-                    <property name="margin-bottom">12</property>
                     <property name="invisible-char">●</property>
                     <property name="invisible-char-set">True</property>
                     <signal name="activate" handler="on_data_activate"
@@ -202,7 +217,6 @@
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="hexpand">True</property>
-                    <property name="margin-bottom">12</property>
                     <property name="invisible-char">●</property>
                     <property name="invisible-char-set">True</property>
                     <signal name="activate" handler="on_data_activate"
@@ -219,7 +233,8 @@
                 <child>
                   <object class="GtkScrolledWindow" id="comment_scroll">
                     <property name="visible">True</property>
-                    <property name="can-focus">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="shadow-type">GTK_SHADOW_IN</property>
                     <property name="hscrollbar-policy">automatic</property>
                     <property name="vscrollbar-policy">automatic</property>
                     <child>
@@ -232,6 +247,7 @@
                         <property name="top-margin">6</property>
                         <property name="right-margin">6</property>
                         <property name="bottom-margin">6</property>
+                        <property name="accepts-tab">False</property>
                         <property name="buffer">comment_buffer</property>
                       </object>
                     </child>
@@ -243,22 +259,16 @@
                   </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
+
+
+
+
+
           </object>
-        </child>
-        <child type="label">
-          <object class="GtkLabel" id="label">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="use-markup">True</property>
-            <property name="label" translatable="yes"
-                      >&lt;b&gt;Picture&lt;/b&gt;</property>
-          </object>
+          <packing>
+            <property name="shrink">False</property>
+          </packing>
         </child>
       </object>
     </child>

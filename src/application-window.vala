@@ -71,7 +71,7 @@ namespace GQPE {
         /* The save button. */
         [GtkChild]
         private Gtk.Button save;
-        /* The label button. */
+        /* The image label. */
         [GtkChild]
         private Gtk.Label label;
         /* The image. */
@@ -111,7 +111,8 @@ namespace GQPE {
                 var file = GLib.File.new_for_uri(CSS);
                 provider.load_from_file(file);
             } catch (GLib.Error e) {
-                GLib.warning("There was a problem loading 'gqpe.css'");
+                GLib.warning("There was a problem loading 'gqpe.css': %s",
+                             e.message);
             }
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
                                                      provider, 999);
@@ -186,7 +187,7 @@ namespace GQPE {
             } catch (GLib.Error e) {
                 var f = photograph.file.get_path();
                 GLib.warning("There was an error saving the " +
-                             "metadata of '%s'".printf(f));
+                             "metadata of '%s': %s", f, e.message);
             }
             disable_ui(Item.SAVE);
         }
@@ -207,6 +208,26 @@ namespace GQPE {
         [GtkCallback]
         public void on_data_changed() {
             enable_ui(Item.SAVE);
+        }
+
+        /**
+         * Callback for image resized.
+         */
+        [GtkCallback]
+        public void on_image_resize() {
+            double w = image.get_allocated_width();
+            double h = image.get_allocated_height();
+            if (w <= 0.0 || h <= 0.0)
+                return;
+            double W = photograph.pixbuf.width;
+            double H = photograph.pixbuf.height;
+            double s1 = w / W;
+            double s2 = h / H;
+            if (H * s1 <= h)
+                photograph.scale(s1);
+            else
+                photograph.scale(s2);
+            
         }
 
         /**
@@ -246,16 +267,14 @@ namespace GQPE {
                     info = file.query_info("standard::*",
                                            GLib.FileQueryInfoFlags.NONE);
                 } catch (GLib.Error e) {
-                    var p = file.get_path();
-                    var m = "Could not get info from '%s'".printf(p);
-                    GLib.warning(m);
+                    GLib.warning("Could not get info from '%s': %s",
+                                 file.get_path(), e.message);
                     continue;
                 }
                 var ctype = info.get_content_type();
                 if (ctype != "image/jpeg" && ctype != "image/png") {
-                    var p = file.get_path();
-                    var m = "The file '%s' is not a picture".printf(p);
-                    GLib.warning(m);
+                    GLib.warning("The file '%s' is not a picture",
+                                 file.get_path());
                     continue;
                 }
                 photographs.add(new Photograph(file));
@@ -287,8 +306,8 @@ namespace GQPE {
             try {
                 photograph.load();
             } catch (GLib.Error e) {
-                var p = photograph.file.get_path();
-                GLib.warning("Could not load '%s'".printf(p));
+                GLib.warning("Could not load '%s': %s",
+                             photograph.file.get_path(), e.message);
                 loader.remove();
             }
             return true;
@@ -350,8 +369,8 @@ namespace GQPE {
             try {
                 photograph.load();
             } catch (GLib.Error e) {
-                var p = photograph.file.get_path();
-                GLib.warning("Could not load '%s'".printf(p));
+                GLib.warning("Could not load '%s': %s",
+                             photograph.file.get_path(), e.message);
                 disable_ui(Item.PICTURE);
                 return;
             }
