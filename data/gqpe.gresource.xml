@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/mx/unam/GQPE">
     <file>gqpe.css</file>
+    <file preprocess="xml-stripblanks">geolocation.svg</file>
     <file preprocess="xml-stripblanks">gqpe.ui</file>
     <file preprocess="xml-stripblanks">menu.ui</file>
   </gresource>

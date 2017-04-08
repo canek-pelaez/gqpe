@@ -69,6 +69,8 @@ namespace GQPE {
         private GExiv2.Metadata metadata;
         /* Private the original pixbuf. */
         private Gdk.Pixbuf original;
+        /* The scale of the pixbuf. */
+        private double scale;
 
         /**
          * Creates a new photograph.
@@ -112,7 +114,7 @@ namespace GQPE {
                 if (rot != Gdk.PixbufRotation.NONE)
                     original = original.rotate_simple(rot);
             }
-            double scale = 490.0 / double.max(original.width, original.height);
+            scale = 500.0 / double.max(original.width, original.height);
             pixbuf = original.scale_simple((int)(original.width*scale),
                                            (int)(original.height*scale),
                                            Gdk.InterpType.BILINEAR);
@@ -132,7 +134,35 @@ namespace GQPE {
             double H = original.height;
             double s1 = w / W;
             double s2 = h / H;
-            double scale = (H * s1 <= h) ? s1 : s2;
+            scale = (H * s1 <= h) ? s1 : s2;
+            pixbuf = original.scale_simple((int)(original.width*scale),
+                                           (int)(original.height*scale),
+                                           Gdk.InterpType.BILINEAR);
+        }
+
+        /**
+         * Scales the photograph to a factor.
+         * @param factor the factor to use for scaling.
+         */
+        public void scale_by_factor(double factor) {
+            if ((factor == 1.0) ||
+                (factor > 1.0 &&
+                 (original.width  * scale > 2000.0 ||
+                  original.height * scale > 2000.0)) ||
+                (factor < 1.0 &&
+                 (original.width  * scale < 200.0 ||
+                  original.height * scale < 200.0)))
+                return;
+            scale *= factor;
+            pixbuf = original.scale_simple((int)(original.width*scale),
+                                           (int)(original.height*scale),
+                                           Gdk.InterpType.BILINEAR);
+        }
+
+        /**
+         * Undoes a rotation.
+         */
+        public void undo_rotation() {
             pixbuf = original.scale_simple((int)(original.width*scale),
                                            (int)(original.height*scale),
                                            Gdk.InterpType.BILINEAR);

@@ -31,20 +31,21 @@ namespace GQPE {
             NEXT         = 1 << 1,
             ROTATE_LEFT  = 1 << 2,
             ROTATE_RIGHT = 1 << 3,
-            SAVE         = 1 << 4,
-            ALBUM        = 1 << 5,
-            CAPTION      = 1 << 6,
-            COMMENT      = 1 << 7,
-            NAVIGATION   = 0x03,
-            PICTURE      = 0xFC,
-            ALL          = 0xff
+            ZOOM_IN      = 1 << 4,
+            ZOOM_OUT     = 1 << 5,
+            ZOOM_FIT     = 1 << 6,
+            GEOLOCATION  = 1 << 7,
+            SAVE         = 1 << 8,
+            ALBUM        = 1 << 9,
+            CAPTION      = 1 << 10,
+            COMMENT      = 1 << 11,
+            NAVIGATION   = 0x003,
+            PICTURE      = 0xFFC,
+            ALL          = 0xFFF;
         }
 
         /* Rotate direction. */
-        private enum Rotate {
-            LEFT,
-            RIGHT
-        }
+        private enum Rotate { LEFT, RIGHT; }
 
         /* CSS Resource. */
         private static const string CSS = "resource:///mx/unam/GQPE/gqpe.css";
@@ -68,6 +69,18 @@ namespace GQPE {
         /* The rotate right button. */
         [GtkChild]
         private Gtk.Button rotate_right;
+        /* The zoom in button. */
+        [GtkChild]
+        private Gtk.Button zoom_in;
+        /* The zoom out button. */
+        [GtkChild]
+        private Gtk.Button zoom_out;
+        /* The zoom fit button. */
+        [GtkChild]
+        private Gtk.Button zoom_fit;
+        /* The geolocation button. */
+        [GtkChild]
+        private Gtk.ToggleButton geolocation;
         /* The save button. */
         [GtkChild]
         private Gtk.Button save;
@@ -121,6 +134,8 @@ namespace GQPE {
                                                      provider, 999);
 
             GLib.Idle.add(check_entries_length);
+
+            disable_ui(Item.ALL);
         }
 
         /**
@@ -136,8 +151,10 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_previous_clicked() {
-            if (!iterator.has_previous())
+            if (!previous.sensitive || !iterator.has_previous())
                 return;
+            if (save.sensitive)
+                undo_rotation();
             iterator.previous();
             index--;
             enable_ui(Item.NEXT);
@@ -151,8 +168,10 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_next_clicked() {
-            if (!iterator.has_next())
+            if (!next.sensitive || !iterator.has_next())
                 return;
+            if (save.sensitive)
+                undo_rotation();
             iterator.next();
             index++;
             enable_ui(Item.PREVIOUS);
@@ -166,7 +185,8 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_rotate_left_clicked() {
-            rotate(Rotate.LEFT);
+            if (rotate_left.sensitive)
+                rotate(Rotate.LEFT);
         }
 
         /**
@@ -174,7 +194,8 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_rotate_right_clicked() {
-            rotate(Rotate.RIGHT);
+            if (rotate_right.sensitive)
+                rotate(Rotate.RIGHT);
         }
 
         /**
@@ -182,6 +203,10 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_zoom_in_clicked() {
+            if (!zoom_in.sensitive)
+                return;
+            photograph.scale_by_factor(1.1);
+            image.set_from_pixbuf(photograph.pixbuf);
         }
 
         /**
@@ -189,6 +214,10 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_zoom_out_clicked() {
+            if (!zoom_out.sensitive)
+                return;
+            photograph.scale_by_factor(0.9);
+            image.set_from_pixbuf(photograph.pixbuf);
         }
 
         /**
@@ -196,6 +225,8 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_zoom_fit_clicked() {
+            if (!zoom_fit.sensitive)
+                return;
             double w = image_scroll.get_allocated_width();
             double h = image_scroll.get_allocated_height();
             if (w <= 0.0 || h <= 0.0)
@@ -209,6 +240,8 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_save_clicked() {
+            if (!save.sensitive)
+                return;
             try {
                 photograph.album = album.text;
                 photograph.caption = caption.text;
@@ -333,6 +366,14 @@ namespace GQPE {
                 rotate_left.sensitive = s;
             if ((items & Item.ROTATE_RIGHT) != 0)
                 rotate_right.sensitive = s;
+            if ((items & Item.ZOOM_IN) != 0)
+                zoom_in.sensitive = s;
+            if ((items & Item.ZOOM_OUT) != 0)
+                zoom_out.sensitive = s;
+            if ((items & Item.ZOOM_FIT) != 0)
+                zoom_fit.sensitive = s;
+            if ((items & Item.GEOLOCATION) != 0)
+                geolocation.sensitive = s;
             if ((items & Item.SAVE) != 0)
                 save.sensitive = s;
             if ((items & Item.ALBUM) != 0)
@@ -425,6 +466,12 @@ namespace GQPE {
                 entry.secondary_icon_tooltip_text = null;
                 entry.secondary_icon_activatable = false;
             }
+        }
+
+        /* Undoes the rotation. */
+        private void undo_rotation() {
+            photograph.undo_rotation();
+            image.set_from_pixbuf(photograph.pixbuf);
         }
     }
 }

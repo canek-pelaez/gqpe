@@ -69,6 +69,24 @@ namespace GQPE {
             accels = { "bracketright" };
             set_accels_for_action("app.rotate-right", accels);
 
+            action = new GLib.SimpleAction("zoom-in", null);
+            action.activate.connect(() => window.on_zoom_in_clicked());
+            add_action(action);
+            accels = { "<Ctrl>KP_Add" };
+            set_accels_for_action("app.zoom-in", accels);
+
+            action = new GLib.SimpleAction("zoom-out", null);
+            action.activate.connect(() => window.on_zoom_out_clicked());
+            add_action(action);
+            accels = { "<Ctrl>KP_Subtract" };
+            set_accels_for_action("app.zoom-out", accels);
+
+            action = new GLib.SimpleAction("zoom-fit", null);
+            action.activate.connect(() => window.on_zoom_fit_clicked());
+            add_action(action);
+            accels = { "<Ctrl>KP_Multiply" };
+            set_accels_for_action("app.zoom-fit", accels);
+
             action = new GLib.SimpleAction("save", null);
             action.activate.connect(() => window.on_data_activate());
             add_action(action);

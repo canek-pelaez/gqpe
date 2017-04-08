@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <requires lib="gtk+" version="3.12"/>
+  <requires lib="gtk+" version="3.18"/>
   <object class="GtkTextBuffer" id="comment_buffer">
     <signal name="changed" handler="on_data_changed" swapped="no"/>
   </object>
@@ -71,8 +71,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Rotate left</property>
-                <signal name="clicked" handler="on_rotate_left_clicked"
-                        swapped="no"/>
+                <signal name="clicked" handler="on_rotate_left_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_left_image">
                     <property name="visible">True</property>
@@ -91,8 +90,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Rotate right</property>
-                <signal name="clicked" handler="on_rotate_right_clicked"
-                        swapped="no"/>
+                <signal name="clicked" handler="on_rotate_right_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="rotate_right_image">
                     <property name="visible">True</property>
@@ -122,8 +120,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Zoom in</property>
-                <signal name="clicked" handler="on_zoom_in_clicked"
-                        swapped="no"/>
+                <signal name="clicked" handler="on_zoom_in_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="zoom_in_image">
                     <property name="visible">True</property>
@@ -142,8 +139,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Zoom out</property>
-                <signal name="clicked" handler="on_zoom_out_clicked"
-                        swapped="no"/>
+                <signal name="clicked" handler="on_zoom_out_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="zoom_out_image">
                     <property name="visible">True</property>
@@ -162,8 +158,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="tooltip-text" translatable="yes">Zoom fit best</property>
-                <signal name="clicked" handler="on_zoom_fit_clicked"
-                        swapped="no"/>
+                <signal name="clicked" handler="on_zoom_fit_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="zoom_fit_image">
                     <property name="visible">True</property>
@@ -183,18 +178,41 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="save">
+          <object class="GtkBox" id="window_box">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="sensitive">False</property>
-            <property name="tooltip-text" translatable="yes">Save picture</property>
-            <signal name="clicked" handler="on_save_clicked" swapped="no"/>
+            <property name="spacing">6</property>
+            <property name="orientation">horizontal</property>
             <child>
-              <object class="GtkImage" id="save_image">
+              <object class="GtkToggleButton" id="geolocation">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="icon-name">document-save-symbolic</property>
-                <property name="icon-size">1</property>
+                <property name="tooltip-text" translatable="yes">Photo geolocation</property>
+                <child>
+                  <object class="GtkImage" id="geolocation_image">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="resource">/mx/unam/GQPE/geolocation.svg</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="save">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="sensitive">False</property>
+                <property name="tooltip-text" translatable="yes">Save picture</property>
+                <signal name="clicked" handler="on_save_clicked" swapped="no"/>
+                <child>
+                  <object class="GtkImage" id="save_image">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="icon-name">document-save-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -225,7 +243,7 @@
                     <property name="can-focus">False</property>
                     <property name="margin-top">4</property>
                     <property name="margin-left">8</property>
-                    <property name="xalign">0.0</property>
+                    <property name="halign">start</property>
                   </object>
                 </child>
                 <child>
@@ -282,10 +300,8 @@
                     <property name="hexpand">True</property>
                     <property name="invisible-char">●</property>
                     <property name="invisible-char-set">True</property>
-                    <signal name="activate" handler="on_data_activate"
-                            swapped="no"/>
-                    <signal name="changed" handler="on_data_changed"
-                            swapped="no"/>
+                    <signal name="activate" handler="on_data_activate" swapped="no"/>
+                    <signal name="changed" handler="on_data_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -300,10 +316,8 @@
                     <property name="hexpand">True</property>
                     <property name="invisible-char">●</property>
                     <property name="invisible-char-set">True</property>
-                    <signal name="activate" handler="on_data_activate"
-                            swapped="no"/>
-                    <signal name="changed" handler="on_data_changed"
-                            swapped="no"/>
+                    <signal name="activate" handler="on_data_activate" swapped="no"/>
+                    <signal name="changed" handler="on_data_changed" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
