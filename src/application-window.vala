@@ -102,6 +102,9 @@ namespace GQPE {
         /* The comment text view. */
         [GtkChild]
         private Gtk.TextView comment;
+        /* The progress bar. */
+        [GtkChild]
+        private Gtk.ProgressBar progress;
 
         /* The current photograph. */
         private Photograph photograph;
@@ -113,6 +116,17 @@ namespace GQPE {
         private Gee.BidirListIterator<Photograph> iterator;
         /* The index of the current photograph. */
         private int index;
+        /* Geolocation window. */
+        private GeolocationWindow geolocation_win;
+        /* The map view. */
+        private Champlain.View view;
+        /* The marker layer. */
+        private Champlain.MarkerLayer layer;
+        /* The marker. */
+        private Champlain.Label marker;
+
+        private int counter;
+        private bool updating;
 
         /**
          * Constructs a new application window.
@@ -120,6 +134,7 @@ namespace GQPE {
          */
         public ApplicationWindow(Gtk.Application application) {
             GLib.Object(application: application);
+
 
             Gtk.Window.set_default_icon_name("gqpe");
             var provider = new Gtk.CssProvider();
@@ -133,9 +148,32 @@ namespace GQPE {
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
                                                      provider, 999);
 
-            GLib.Idle.add(check_entries_length);
+            geolocation_win = new GeolocationWindow(application);
+            geolocation_win.set_transient_for(this);
+            geolocation.bind_property("active", geolocation_win, "visible",
+                                      GLib.BindingFlags.BIDIRECTIONAL);
+
+            view = new Champlain.View();
+            layer = new Champlain.MarkerLayer();
+            view.add_layer(layer);
+
+            view.set_size(600, 400);
+            view.animate_zoom = true;
+
+            view.zoom_level = 4;
+            view.kinetic_mode = false;
+            view.center_on(19.432647, -99.133199);
+
+            var geolocation_embed = geolocation_win.get_geolocation_embed();
+            var stage = geolocation_embed.get_stage() as Clutter.Stage;
+            stage.reactive = true;
+            stage.button_release_event.connect(map_button_release);
+            stage.add_child(view);
+
+            geolocation_win.view = view;
 
             disable_ui(Item.ALL);
+            GLib.Idle.add(check_entries_length);
         }
 
         /**
@@ -153,8 +191,6 @@ namespace GQPE {
         public void on_previous_clicked() {
             if (!previous.sensitive || !iterator.has_previous())
                 return;
-            if (save.sensitive)
-                undo_rotation();
             iterator.previous();
             index--;
             enable_ui(Item.NEXT);
@@ -170,8 +206,6 @@ namespace GQPE {
         public void on_next_clicked() {
             if (!next.sensitive || !iterator.has_next())
                 return;
-            if (save.sensitive)
-                undo_rotation();
             iterator.next();
             index++;
             enable_ui(Item.PREVIOUS);
@@ -243,9 +277,6 @@ namespace GQPE {
             if (!save.sensitive)
                 return;
             try {
-                photograph.album = album.text;
-                photograph.caption = caption.text;
-                photograph.comment = comment.buffer.text;
                 photograph.save_metadata();
             } catch (GLib.Error e) {
                 var f = photograph.file.get_path();
@@ -259,7 +290,7 @@ namespace GQPE {
          * Callback for any entry activation.
          */
         [GtkCallback]
-        public void on_data_activate() {
+        public void on_data_activated() {
             if (save.sensitive)
                 on_save_clicked();
             on_next_clicked();
@@ -270,6 +301,16 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_data_changed() {
+            if (updating)
+                return;
+            var a = album.text.strip();
+            photograph.album = a;
+            var t = caption.text.strip();
+            if (marker != null)
+                marker.text = t;
+            photograph.caption = t;
+            var c = comment.buffer.text.strip();
+            photograph.comment = c;
             enable_ui(Item.SAVE);
         }
 
@@ -280,6 +321,15 @@ namespace GQPE {
         public void open_files(GLib.File[] files) {
             load_photographs(files);
             set_iterators();
+        }
+
+        /**
+         * Toggle geolocation.
+         */
+        public void toggle_geolocation() {
+            if (!geolocation.sensitive)
+                return;
+            geolocation.active = !geolocation.active;
         }
 
         /**
@@ -330,6 +380,7 @@ namespace GQPE {
             if (photographs.size == 0) {
                 disable_ui(Item.ALL);
             } else {
+                enable_ui(Item.ALL);
                 iterator = photographs.bidir_list_iterator();
                 loader = photographs.list_iterator();
                 on_next_clicked();
@@ -342,12 +393,16 @@ namespace GQPE {
 
         /* Autoloads the photographs asynchronously. */
         private bool autoload_photographs() {
-            if (!loader.has_next())
+            if (!loader.has_next()) {
+                //progress.visible = false;
                 return false;
+            }
             loader.next();
             var photograph = loader.get();
             try {
                 photograph.load();
+                counter++;
+                progress.fraction = (1.0 * counter) / photographs.size;
             } catch (GLib.Error e) {
                 GLib.warning("Could not load '%s': %s",
                              photograph.file.get_path(), e.message);
@@ -412,6 +467,8 @@ namespace GQPE {
         private void update_ui() {
             update_picture();
             update_data();
+            update_map();
+            disable_ui(Item.SAVE);
         }
 
         /* Updates the picture. */
@@ -431,6 +488,7 @@ namespace GQPE {
 
         /* Updates the data. */
         private void update_data() {
+            updating = true;
             var basename = photograph.file.get_basename();
             var markup = "<b>%s</b>".printf(basename);
             label.set_markup(markup);
@@ -440,7 +498,63 @@ namespace GQPE {
             check_entries_length();
             comment.buffer.text = photograph.comment;
             caption.grab_focus();
-            disable_ui(Item.SAVE);
+            updating = false;
+        }
+
+        /* Updates the map. */
+        private void update_map() {
+            var header = geolocation_win.get_header();
+            header.subtitle = photograph.file.get_basename();
+            if (photograph.has_geolocation) {
+                update_location(photograph.latitude, photograph.longitude);
+                geolocation_win.on_zoom_fit_clicked();
+            }
+            marker.text = photograph.caption;
+        }
+
+        private void update_location(double latitude,
+                                     double longitude) {
+            if (marker != null) {
+                layer.remove_marker(marker);
+                marker = null;
+            }
+            marker = create_marker(latitude, longitude);
+            layer.add_marker(marker);
+            geolocation_win.latitude = latitude;
+            geolocation_win.longitude = longitude;
+        }
+
+        private Champlain.Label create_marker(double latitude,
+                                              double longitude) {
+            string photo_caption = (photograph != null &&
+                                    photograph.caption != "") ?
+                photograph.caption : "(%g,%g)".printf(latitude, longitude);
+            Clutter.Color green = { 0xb6, 0xff, 0x80, 0xdd };
+            Clutter.Color black = { 0x00, 0x00, 0x00, 0xff };
+            var marker = new Champlain.Label.with_text(photo_caption,
+                                                       "Serif 10",
+                                                       null, null);
+            marker.use_markup = true;
+            marker.alignment = Pango.Alignment.RIGHT;
+            marker.color = green;
+            marker.text_color = black;
+            marker.set_location(latitude, longitude);
+            return marker;
+        }
+
+        private bool map_button_release(Clutter.ButtonEvent event) {
+            double latitude  = view.y_to_latitude(event.y);
+            double longitude = view.x_to_longitude(event.x);
+
+            if (event.button == 1) {
+                update_location(latitude, longitude);
+                photograph.latitude = geolocation_win.latitude;
+                photograph.longitude = geolocation_win.longitude;
+            } else if (event.button == 2) {
+                view.center_on(latitude, longitude);
+            }
+
+            return true;
         }
 
         /* Checks the length of both entries. */
@@ -466,12 +580,6 @@ namespace GQPE {
                 entry.secondary_icon_tooltip_text = null;
                 entry.secondary_icon_activatable = false;
             }
-        }
-
-        /* Undoes the rotation. */
-        private void undo_rotation() {
-            photograph.undo_rotation();
-            image.set_from_pixbuf(photograph.pixbuf);
         }
     }
 }

@@ -24,20 +24,6 @@ namespace GQPE {
      */
     public class Photograph : GLib.Object, Gee.Comparable<Photograph> {
 
-        /* Constants for the used tags. */
-        private class Tag {
-            public static const string ORIENTATION =
-                "Exif.Image.Orientation";
-            public static const string TH_ORIENTATION =
-                "Exif.Thumbnail.Orientation";
-            public static const string SUBJECT =
-                "Xmp.dc.subject";
-            public static const string CAPTION =
-                "Iptc.Application2.Caption";
-            public static const string DESCRIPTION =
-                "Exif.Image.ImageDescription";
-        }
-
         /**
          * The album of the photograph.
          */
@@ -54,6 +40,24 @@ namespace GQPE {
         public string comment { get; set; }
 
         /**
+         * The latitude coordinate.
+         */
+        public double latitude {
+            get { return _latitude; }
+            set { _latitude = value; has_geolocation = true; }
+        }
+        private double _latitude;
+
+        /**
+         * The longitude coordinate.
+         */
+        public double longitude {
+            get { return _longitude; }
+            set { _longitude = value; has_geolocation = true; }
+        }
+        private double _longitude;
+
+        /**
          * The file for the photograph.
          */
         public GLib.File file { get; private set; }
@@ -62,6 +66,11 @@ namespace GQPE {
          * The pixbuf for the photograph.
          */
         public Gdk.Pixbuf pixbuf { get; private set; }
+
+        /**
+         * Wether the photograph has geolocation.
+         */
+        public bool has_geolocation { get; private set; }
 
         /* The photograph orientation. */
         private Orientation orientation;
@@ -85,8 +94,12 @@ namespace GQPE {
          * @throws GLib.Error if there is an error while loading.
          */
         public void load() throws GLib.Error {
-            if (original != null)
+            if (original != null) {
+                pixbuf = original.scale_simple((int)(original.width*scale),
+                                               (int)(original.height*scale),
+                                               Gdk.InterpType.BILINEAR);
                 return;
+            }
 
             original = new Gdk.Pixbuf.from_file(file.get_path());
             metadata = new GExiv2.Metadata();
@@ -124,6 +137,21 @@ namespace GQPE {
                 metadata.get_tag_string(Tag.CAPTION).strip() : "";
             comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
                 metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
+
+            if (metadata.has_tag(Tag.LATITUDE)     &&
+                metadata.has_tag(Tag.LONGITUDE)    &&
+                metadata.has_tag(Tag.LATITUDE_REF) &&
+                metadata.has_tag(Tag.LONGITUDE_REF)) {
+                string lat = metadata.get_tag_string(Tag.LATITUDE);
+                string lon = metadata.get_tag_string(Tag.LONGITUDE);
+                latitude  = decimals_to_double(lat);
+                longitude = decimals_to_double(lon);
+                if (metadata.get_tag_string(Tag.LATITUDE_REF) == "S")
+                    latitude *= -1.0;
+                if (metadata.get_tag_string(Tag.LONGITUDE_REF) == "W")
+                    longitude *= -1.0;
+                has_geolocation = true;
+            }
         }
 
         /**
@@ -154,15 +182,6 @@ namespace GQPE {
                   original.height * scale < 200.0)))
                 return;
             scale *= factor;
-            pixbuf = original.scale_simple((int)(original.width*scale),
-                                           (int)(original.height*scale),
-                                           Gdk.InterpType.BILINEAR);
-        }
-
-        /**
-         * Undoes a rotation.
-         */
-        public void undo_rotation() {
             pixbuf = original.scale_simple((int)(original.width*scale),
                                            (int)(original.height*scale),
                                            Gdk.InterpType.BILINEAR);
@@ -215,20 +234,45 @@ namespace GQPE {
          * @throws GLib.Error if there is an error while loading.
          */
         public void save_metadata() throws GLib.Error {
+            update_text_tags();
+            update_geolocation_tags();
+            metadata.save_file(file.get_path());
+        }
+
+        /* Updates the text tags. */
+        private void update_text_tags() throws GLib.Error {
             metadata.clear_tag(Tag.SUBJECT);
-            if (album != "")
-                metadata.set_tag_string(Tag.SUBJECT, album);
+            metadata.set_tag_string(Tag.SUBJECT, album);
             metadata.clear_tag(Tag.CAPTION);
-            if (caption != "")
-                metadata.set_tag_string(Tag.CAPTION, caption);
+            metadata.set_tag_string(Tag.CAPTION, caption);
             metadata.clear_tag(Tag.DESCRIPTION);
-            if (comment != "")
-                metadata.set_tag_string(Tag.DESCRIPTION, comment);
+            metadata.set_tag_string(Tag.DESCRIPTION, comment);
             metadata.set_tag_long(Tag.ORIENTATION, orientation);
             metadata.save_file(file.get_path());
-            if (metadata.has_tag(Tag.TH_ORIENTATION))
-                metadata.set_tag_long(Tag.TH_ORIENTATION, orientation);
-            metadata.save_file(file.get_path());
+            if (metadata.has_tag(Tag.THUMB_ORIENTATION))
+                metadata.set_tag_long(Tag.THUMB_ORIENTATION, orientation);
+        }
+
+        /* Updates the geolocation tags. */
+        private void update_geolocation_tags() {
+            if (!has_geolocation)
+                return;
+            var lat_ref = "N";
+            if (latitude < 0.0) {
+                latitude *= -1.0;
+                lat_ref = "S";
+            }
+            var lon_ref = "E";
+            if (longitude < 0.0) {
+                longitude *= -1.0;
+                lon_ref = "W";
+            }
+            var lat = double_to_decimals(latitude);
+            var lon = double_to_decimals(longitude);
+            metadata.set_tag_string(Tag.LATITUDE, lat);
+            metadata.set_tag_string(Tag.LONGITUDE, lon);
+            metadata.set_tag_string(Tag.LATITUDE_REF, lat_ref);
+            metadata.set_tag_string(Tag.LONGITUDE_REF, lon_ref);
         }
 
         /**
@@ -244,6 +288,35 @@ namespace GQPE {
             if (file.get_path() > photograph.file.get_path())
                 return 1;
             return 0;
+        }
+
+        /* Converts a double to GPS decimals. */
+        private string double_to_decimals(double d) {
+            double i = Math.floor(d);
+            double r = (d - i)*30000.0;
+            double m = Math.floor(r);
+            /* m*12 == (m/30000)*360000 */
+            double s = (d - i)*360000.0 - (m*12.0);
+            string decs = "%d/1 %d/500 %d/100".printf((int)i, (int)m, (int)s);
+            return decs;
+        }
+
+        /* Converts a GPS decimal to a double. */
+        private double decimal_to_double(string decimal) {
+            assert(decimal.index_of("/") != -1);
+            string[] s = decimal.split("/");
+            double num = double.parse(s[0]);
+            double den = double.parse(s[1]);
+            return num / den;
+        }
+
+        /* Converts GPS decimals to a double. */
+        private double decimals_to_double(string decimals) {
+            string[] s = decimals.split(" ");
+            double[] d = { 0.0, 0.0, 0.0 };
+            for (int i = 0; i < s.length; i++)
+                d[i] = decimal_to_double(s[i]);
+            return d[0] + d[1] / 60.0 + d[2] / 3600.0;
         }
     }
 }

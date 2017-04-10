@@ -34,6 +34,8 @@ namespace GQPE {
             Intl.textdomain(Config.GETTEXT_PACKAGE);
             GLib.Environment.set_application_name("GQPE");
             Gtk.init(ref args);
+            if (GtkClutter.init (ref args) != Clutter.InitError.SUCCESS)
+                return 1;
 
             var settings = Gtk.Settings.get_default();
             settings.gtk_application_prefer_dark_theme = true;

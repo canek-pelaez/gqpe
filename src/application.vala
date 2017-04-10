@@ -86,8 +86,14 @@ namespace GQPE {
             accels = { "<Ctrl>KP_Multiply" };
             set_accels_for_action("app.zoom-fit", accels);
 
+            action = new GLib.SimpleAction("geolocation", null);
+            action.activate.connect(() => window.toggle_geolocation());
+            add_action(action);
+            accels = { "<Ctrl>M" };
+            set_accels_for_action("app.geolocation", accels);
+
             action = new GLib.SimpleAction("save", null);
-            action.activate.connect(() => window.on_data_activate());
+            action.activate.connect(() => window.on_data_activated());
             add_action(action);
             accels = { "<Ctrl>Return" };
             set_accels_for_action("app.save", accels);
@@ -99,7 +105,7 @@ namespace GQPE {
             action = new GLib.SimpleAction("quit", null);
             action.activate.connect(() => this.quit());
             add_action(action);
-            accels = { "Escape" };
+            accels = { "<Ctrl>Q", "Escape" };
             set_accels_for_action("app.quit", accels);
 
             var builder = new Gtk.Builder.from_resource(MENU);

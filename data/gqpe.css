@@ -1,3 +1,15 @@
 .dark-bg {
     background-color: #111;
 }
+
+progressbar {
+    min-height: 20px;
+}
+
+progressbar.horizontal progress {
+    min-height: 20px;
+}
+
+.tall-bar {
+    min-height: 20px;
+}

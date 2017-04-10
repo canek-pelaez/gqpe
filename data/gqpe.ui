@@ -223,143 +223,163 @@
       </object>
     </child>
     <child>
-      <object class="GtkPaned" id="paned">
+      <object class="GtkBox" id="main_vbox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="orientation">horizontal</property>
+        <property name="orientation">vertical</property>
+
         <child>
-          <object class="GtkFrame" id="image_frame">
+          <object class="GtkPaned" id="paned">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="margin">6</property>
+            <property name="orientation">horizontal</property>
             <child>
-              <object class="GtkBox" id="image_vbox">
+              <object class="GtkFrame" id="image_frame">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="orientation">vertical</property>
+                <property name="margin">6</property>
                 <child>
-                  <object class="GtkLabel" id="label">
+                  <object class="GtkBox" id="image_vbox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="margin-top">4</property>
-                    <property name="margin-left">8</property>
-                    <property name="halign">start</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow" id="image_scroll">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="shadow-type">GTK_SHADOW_NONE</property>
-                    <property name="width_request">500</property>
-                    <property name="height_request">500</property>
-                    <property name="hscrollbar-policy">automatic</property>
-                    <property name="vscrollbar-policy">automatic</property>
+                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkImage" id="image">
-                        <property name="width_request">500</property>
-                        <property name="height_request">500</property>
+                      <object class="GtkLabel" id="label">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="margin">6</property>
-                        <property name="expand">True</property>
-                        <property name="pixel-size">420</property>
-                        <property name="icon-name">start-here-symbolic</property>
-                        <style>
-                          <class name="dark-bg"/>
-                        </style>
+                        <property name="margin-top">4</property>
+                        <property name="margin-left">8</property>
+                        <property name="halign">start</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow" id="image_scroll">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="shadow-type">GTK_SHADOW_NONE</property>
+                        <property name="width-request">500</property>
+                        <property name="height-request">500</property>
+                        <property name="hscrollbar-policy">automatic</property>
+                        <property name="vscrollbar-policy">automatic</property>
+                        <child>
+                          <object class="GtkImage" id="image">
+                            <property name="width-request">500</property>
+                            <property name="height-request">500</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="margin">6</property>
+                            <property name="expand">True</property>
+                            <property name="pixel-size">420</property>
+                            <property name="icon-name">start-here-symbolic</property>
+                            <style>
+                              <class name="dark-bg"/>
+                            </style>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
                 </child>
               </object>
+              <packing>
+                <property name="shrink">False</property>
+              </packing>
             </child>
-          </object>
-          <packing>
-            <property name="shrink">False</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkFrame" id="data_frame">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="margin">6</property>
             <child>
-              <object class="GtkBox" id="vbox">
-                <property name="width-request">500</property>
-                <property name="height-request">400</property>
+              <object class="GtkFrame" id="data_frame">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="orientation">vertical</property>
                 <property name="margin">6</property>
-                <property name="spacing">6</property>
                 <child>
-                  <object class="GtkEntry" id="album">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="invisible-char">●</property>
-                    <property name="invisible-char-set">True</property>
-                    <signal name="activate" handler="on_data_activate" swapped="no"/>
-                    <signal name="changed" handler="on_data_changed" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="caption">
-                    <property name="visible">True</property>
-                    <property name="can-focus">True</property>
-                    <property name="hexpand">True</property>
-                    <property name="invisible-char">●</property>
-                    <property name="invisible-char-set">True</property>
-                    <signal name="activate" handler="on_data_activate" swapped="no"/>
-                    <signal name="changed" handler="on_data_changed" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkScrolledWindow" id="comment_scroll">
+                  <object class="GtkBox" id="vbox">
+                    <property name="width-request">500</property>
+                    <property name="height-request">400</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="shadow-type">GTK_SHADOW_IN</property>
-                    <property name="hscrollbar-policy">automatic</property>
-                    <property name="vscrollbar-policy">automatic</property>
+                    <property name="orientation">vertical</property>
+                    <property name="margin">6</property>
+                    <property name="spacing">6</property>
                     <child>
-                      <object class="GtkTextView" id="comment">
+                      <object class="GtkEntry" id="album">
                         <property name="visible">True</property>
                         <property name="can-focus">True</property>
-                        <property name="expand">True</property>
-                        <property name="wrap-mode">GTK_WRAP_WORD</property>
-                        <property name="left-margin">6</property>
-                        <property name="top-margin">6</property>
-                        <property name="right-margin">6</property>
-                        <property name="bottom-margin">6</property>
-                        <property name="accepts-tab">False</property>
-                        <property name="buffer">comment_buffer</property>
+                        <property name="hexpand">True</property>
+                        <property name="invisible-char">●</property>
+                        <property name="invisible-char-set">True</property>
+                        <signal name="activate" handler="on_data_activated" swapped="no"/>
+                        <signal name="changed" handler="on_data_changed" swapped="no"/>
                       </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="caption">
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="hexpand">True</property>
+                        <property name="invisible-char">●</property>
+                        <property name="invisible-char-set">True</property>
+                        <signal name="activate" handler="on_data_activated" swapped="no"/>
+                        <signal name="changed" handler="on_data_changed" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkScrolledWindow" id="comment_scroll">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="shadow-type">GTK_SHADOW_IN</property>
+                        <property name="hscrollbar-policy">automatic</property>
+                        <property name="vscrollbar-policy">automatic</property>
+                        <child>
+                          <object class="GtkTextView" id="comment">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="expand">True</property>
+                            <property name="wrap-mode">GTK_WRAP_WORD</property>
+                            <property name="left-margin">6</property>
+                            <property name="top-margin">6</property>
+                            <property name="right-margin">6</property>
+                            <property name="bottom-margin">6</property>
+                            <property name="accepts-tab">False</property>
+                            <property name="buffer">comment_buffer</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
+                      </packing>
                     </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
               </object>
+              <packing>
+                <property name="shrink">False</property>
+              </packing>
             </child>
           </object>
-          <packing>
-            <property name="shrink">False</property>
-          </packing>
         </child>
+
+        <child>
+          <object class="GtkProgressBar" id="progress">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="height-request">20</property>
+            <style>
+              <class name="tall-bar"/>
+            </style>
+          </object>
+        </child>
+
       </object>
     </child>
   </template>
