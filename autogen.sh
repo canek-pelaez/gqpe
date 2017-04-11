@@ -2,13 +2,13 @@
 
 set -e # exit on errors
 
-srcdir=$(dirname $0)
-test -z "${srcdir}" && srcdir=.
+SRCDIR=$(dirname $0)
+test -z "${SRCDIR}" && SRCDIR=.
 
 mkdir -p m4
 
 autoreconf -v --force --install
 
 if [ -z "${NOCONFIGURE}" ]; then
-    "${srcdir}"/configure $@
+    "${SRCDIR}"/configure $@
 fi

@@ -1,5 +1,24 @@
+# This file is part of gqpe.
+
+# Copyright © 2013-2017 Canek Peláez Valdés
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+# Automake options
 AUTOMAKE_OPTIONS = subdir-objects
 
+# GQPE
 bin_PROGRAMS = src/gqpe
 
 GQPESOURCES =								\
@@ -48,6 +67,7 @@ src_gqpe_LDADD =							\
 	@GTK_LIBS@							\
 	-lm
 
+# Resource file
 gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
 resource_files = 							\
 	$(top_srcdir)/data/application-menu.ui				\
@@ -61,6 +81,7 @@ src/resources.c: $(gresource_file) $(resource_files)
 		--sourcedir=$(top_srcdir)/data				\
 		--generate-source $<
 
+# Desktop file
 MSGFMT_DESKTOP_OPTIONS =						\
 	--keyword=GenericName						\
 	--keyword=Comment
@@ -71,12 +92,14 @@ data/gqpe.desktop: $(gqpe_desktop_in_file)
 		--desktop --template $< 				\
 		-d $(top_srcdir)/po -o $@
 
-icondir = $(datadir)/icons/hicolor/scalable/apps
-icon_DATA = data/gqpe.svg
-
 desktopdir = $(datadir)/applications
 desktop_DATA = data/gqpe.desktop
 
+# Icons
+icondir = $(datadir)/icons/hicolor/scalable/apps
+icon_DATA = data/gqpe.svg
+
+# Extra files
 noinst_DATA =								\
 	vapi/config.vapi						\
 	$(gqpe_desktop_in_file)						\
@@ -92,6 +115,7 @@ EXTRA_DIST =								\
 
 CLEANFILES = $(desktop_DATA)
 
+# Valadoc
 if HAVE_VALADOC
 
 AM_V_VALADOC = $(AM_V_VALADOC_$(V))
@@ -124,4 +148,5 @@ clean-local: clean-docs
 
 endif
 
+# Internationalization
 SUBDIRS = . po

@@ -2,7 +2,7 @@
  *
  * This file is part of gqpe.
  *
- * Copyright 2017 Canek Peláez Valdés
+ * Copyright © 2013-2017 Canek Peláez Valdés
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
