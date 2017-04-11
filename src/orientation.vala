@@ -1,5 +1,5 @@
 /* orientation.vala
- * 
+ *
  * This file is part of gqpe.
  *
  * Copyright © 2013-2017 Canek Peláez Valdés
