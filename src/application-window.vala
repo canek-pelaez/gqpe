@@ -22,7 +22,7 @@ namespace GQPE {
     /**
      * Class for the application window.
      */
-    [GtkTemplate (ui = "/mx/unam/GQPE/gqpe.ui")]
+    [GtkTemplate (ui = "/mx/unam/GQPE/application-window.ui")]
     public class ApplicationWindow : Gtk.ApplicationWindow {
 
         /* UI items. */
@@ -34,7 +34,7 @@ namespace GQPE {
             ZOOM_IN      = 1 << 4,
             ZOOM_OUT     = 1 << 5,
             ZOOM_FIT     = 1 << 6,
-            GEOLOCATION  = 1 << 7,
+            PIN_MAP      = 1 << 7,
             SAVE         = 1 << 8,
             ALBUM        = 1 << 9,
             CAPTION      = 1 << 10,
@@ -78,9 +78,9 @@ namespace GQPE {
         /* The zoom fit button. */
         [GtkChild]
         private Gtk.Button zoom_fit;
-        /* The geolocation button. */
+        /* The pin map button. */
         [GtkChild]
-        private Gtk.ToggleButton geolocation;
+        private Gtk.Button pin_map;
         /* The save button. */
         [GtkChild]
         private Gtk.Button save;
@@ -102,6 +102,15 @@ namespace GQPE {
         /* The comment text view. */
         [GtkChild]
         private Gtk.TextView comment;
+        /* The latitude spin button. */
+        [GtkChild]
+        private Gtk.SpinButton latitude;
+        /* The longitude spin button. */
+        [GtkChild]
+        private Gtk.SpinButton longitude;
+        /* The clutter embed for the map. */
+        [GtkChild]
+        private GtkClutter.Embed map_embed;
         /* The progress bar. */
         [GtkChild]
         private Gtk.ProgressBar progress;
@@ -116,8 +125,6 @@ namespace GQPE {
         private Gee.BidirListIterator<Photograph> iterator;
         /* The index of the current photograph. */
         private int index;
-        /* Geolocation window. */
-        private GeolocationWindow geolocation_win;
         /* The map view. */
         private Champlain.View view;
         /* The marker layer. */
@@ -148,11 +155,6 @@ namespace GQPE {
             Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
                                                      provider, 999);
 
-            geolocation_win = new GeolocationWindow(application);
-            geolocation_win.set_transient_for(this);
-            geolocation.bind_property("active", geolocation_win, "visible",
-                                      GLib.BindingFlags.BIDIRECTIONAL);
-
             view = new Champlain.View();
             layer = new Champlain.MarkerLayer();
             view.add_layer(layer);
@@ -164,13 +166,10 @@ namespace GQPE {
             view.kinetic_mode = false;
             view.center_on(19.432647, -99.133199);
 
-            var geolocation_embed = geolocation_win.get_geolocation_embed();
-            var stage = geolocation_embed.get_stage() as Clutter.Stage;
+            var stage = map_embed.get_stage() as Clutter.Stage;
             stage.reactive = true;
             stage.button_release_event.connect(map_button_release);
             stage.add_child(view);
-
-            geolocation_win.view = view;
 
             disable_ui(Item.ALL);
             GLib.Idle.add(check_entries_length);
@@ -270,6 +269,15 @@ namespace GQPE {
         }
 
         /**
+         * Callback for pin map button clicked.
+         */
+        [GtkCallback]
+        public void on_pin_map_clicked() {
+            view.zoom_level = 16;
+            view.center_on(photograph.latitude, photograph.longitude);
+        }
+
+        /**
          * Callback for save button clicked.
          */
         [GtkCallback]
@@ -315,21 +323,27 @@ namespace GQPE {
         }
 
         /**
+         * Callback for the map size changed.
+         */
+        [GtkCallback]
+        public void on_map_size_changed(Gtk.Allocation allocation) {
+            int w = allocation.width;
+            int h = allocation.height;
+            if (w <= 0 || h <= 0)
+                return;
+            double latitude = view.get_center_latitude();
+            double longitude = view.get_center_longitude();
+            view.set_size(w, h);
+            view.center_on(latitude, longitude);
+        }
+
+        /**
          * Opens an array of files.
          * @param files the array of files.
          */
         public void open_files(GLib.File[] files) {
             load_photographs(files);
             set_iterators();
-        }
-
-        /**
-         * Toggle geolocation.
-         */
-        public void toggle_geolocation() {
-            if (!geolocation.sensitive)
-                return;
-            geolocation.active = !geolocation.active;
         }
 
         /**
@@ -394,13 +408,13 @@ namespace GQPE {
         /* Autoloads the photographs asynchronously. */
         private bool autoload_photographs() {
             if (!loader.has_next()) {
-                //progress.visible = false;
+                progress.visible = false;
                 return false;
             }
             loader.next();
             var photograph = loader.get();
             try {
-                photograph.load();
+                load_photograph(photograph);
                 counter++;
                 progress.fraction = (1.0 * counter) / photographs.size;
             } catch (GLib.Error e) {
@@ -427,8 +441,8 @@ namespace GQPE {
                 zoom_out.sensitive = s;
             if ((items & Item.ZOOM_FIT) != 0)
                 zoom_fit.sensitive = s;
-            if ((items & Item.GEOLOCATION) != 0)
-                geolocation.sensitive = s;
+            if ((items & Item.PIN_MAP) != 0)
+                pin_map.sensitive = s;
             if ((items & Item.SAVE) != 0)
                 save.sensitive = s;
             if ((items & Item.ALBUM) != 0)
@@ -475,7 +489,7 @@ namespace GQPE {
         private void update_picture() {
             photograph = iterator.get();
             try {
-                photograph.load();
+                load_photograph(photograph);
             } catch (GLib.Error e) {
                 GLib.warning("Could not load '%s': %s",
                              photograph.file.get_path(), e.message);
@@ -484,6 +498,8 @@ namespace GQPE {
             }
             image.set_from_pixbuf(photograph.pixbuf);
             enable_ui(Item.PICTURE);
+            if (!photograph.has_geolocation)
+                disable_ui(Item.PIN_MAP);
         }
 
         /* Updates the data. */
@@ -503,11 +519,9 @@ namespace GQPE {
 
         /* Updates the map. */
         private void update_map() {
-            var header = geolocation_win.get_header();
-            header.subtitle = photograph.file.get_basename();
             if (photograph.has_geolocation) {
                 update_location(photograph.latitude, photograph.longitude);
-                geolocation_win.on_zoom_fit_clicked();
+                on_pin_map_clicked();
             }
             marker.text = photograph.caption;
         }
@@ -520,8 +534,8 @@ namespace GQPE {
             }
             marker = create_marker(latitude, longitude);
             layer.add_marker(marker);
-            geolocation_win.latitude = latitude;
-            geolocation_win.longitude = longitude;
+            this.latitude.value = latitude;
+            this.longitude.value = longitude;
         }
 
         private Champlain.Label create_marker(double latitude,
@@ -548,8 +562,9 @@ namespace GQPE {
 
             if (event.button == 1) {
                 update_location(latitude, longitude);
-                photograph.latitude = geolocation_win.latitude;
-                photograph.longitude = geolocation_win.longitude;
+                photograph.latitude = this.latitude.value;
+                photograph.longitude = this.longitude.value;
+                enable_ui(Item.PIN_MAP);
             } else if (event.button == 2) {
                 view.center_on(latitude, longitude);
             }
@@ -580,6 +595,16 @@ namespace GQPE {
                 entry.secondary_icon_tooltip_text = null;
                 entry.secondary_icon_activatable = false;
             }
+        }
+
+        /* Loads the photograp. */
+        private void load_photograph(Photograph photograph)
+            throws GLib.Error {
+            Gtk.Allocation a;
+            image.get_allocation(out a);
+            double w = a.width  > 10 ? a.width  : 450;
+            double h = a.height > 10 ? a.height : 300;
+            photograph.load(w, h);
         }
     }
 }

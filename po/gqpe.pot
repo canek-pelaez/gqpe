@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/canek-pelaez/gqpe/issues\n"
-"POT-Creation-Date: 2017-04-04 13:19-0500\n"
+"POT-Creation-Date: 2017-04-10 17:24-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,42 +33,42 @@ msgstr ""
 msgid "gqpe"
 msgstr ""
 
-#: data/gqpe.ui:32
+#: data/application-window.ui:29
 msgid "Previous picture"
 msgstr ""
 
-#: data/gqpe.ui:50
+#: data/application-window.ui:46
 msgid "Next picture"
 msgstr ""
 
-#: data/gqpe.ui:78
+#: data/application-window.ui:73
 msgid "Rotate left"
 msgstr ""
 
-#: data/gqpe.ui:100
+#: data/application-window.ui:92
 msgid "Rotate right"
 msgstr ""
 
-#: data/gqpe.ui:126
+#: data/application-window.ui:122
+msgid "Zoom in"
+msgstr ""
+
+#: data/application-window.ui:141
+msgid "Zoom out"
+msgstr ""
+
+#: data/application-window.ui:160
+msgid "Zoom fit best"
+msgstr ""
+
+#: data/application-window.ui:190
+msgid "Photo geolocation"
+msgstr ""
+
+#: data/application-window.ui:206
 msgid "Save picture"
 msgstr ""
 
-#: data/gqpe.ui:251
-msgid "<b>Picture</b>"
-msgstr ""
-
-#: src/application.vala:59
-msgid "Save"
-msgstr ""
-
-#: src/application.vala:60
-msgid "About"
-msgstr ""
-
-#: src/application.vala:61
-msgid "Quit"
-msgstr ""
-
-#: src/application-window.vala:259
+#: src/application-window.vala:345
 msgid "A Gtk+ based quick photo editor"
 msgstr ""

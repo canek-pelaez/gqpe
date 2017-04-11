@@ -5,7 +5,6 @@ bin_PROGRAMS = src/gqpe
 GQPESOURCES =								\
 	src/application-window.vala					\
 	src/application.vala						\
-	src/geolocation-window.vala					\
 	src/namespace.vala						\
 	src/orientation.vala						\
 	src/photograph.vala						\
@@ -51,10 +50,10 @@ src_gqpe_LDADD =							\
 
 gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
 resource_files = 							\
+	$(top_srcdir)/data/application-window.ui			\
 	$(top_srcdir)/data/gqpe.css					\
-	$(top_srcdir)/data/gqpe.ui					\
-	$(top_srcdir)/data/geolocation.ui				\
-	$(top_srcdir)/data/menu.ui
+	$(top_srcdir)/data/menu.ui					\
+	$(top_srcdir)/data/pin-map.svg
 
 src/resources.c: $(gresource_file) $(resource_files)
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) 				\

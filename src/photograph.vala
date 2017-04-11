@@ -91,13 +91,13 @@ namespace GQPE {
 
         /**
          * Loads the pixbuf of the photograph.
+         * @param width the width.
+         * @param height the height.
          * @throws GLib.Error if there is an error while loading.
          */
-        public void load() throws GLib.Error {
+        public void load(double width, double height) throws GLib.Error {
             if (original != null) {
-                pixbuf = original.scale_simple((int)(original.width*scale),
-                                               (int)(original.height*scale),
-                                               Gdk.InterpType.BILINEAR);
+                resize(width, height);
                 return;
             }
 
@@ -127,10 +127,7 @@ namespace GQPE {
                 if (rot != Gdk.PixbufRotation.NONE)
                     original = original.rotate_simple(rot);
             }
-            scale = 500.0 / double.max(original.width, original.height);
-            pixbuf = original.scale_simple((int)(original.width*scale),
-                                           (int)(original.height*scale),
-                                           Gdk.InterpType.BILINEAR);
+
             album = (metadata.has_tag(Tag.SUBJECT)) ?
                 metadata.get_tag_string(Tag.SUBJECT).strip() : "";
             caption = (metadata.has_tag(Tag.CAPTION)) ?
@@ -152,17 +149,21 @@ namespace GQPE {
                     longitude *= -1.0;
                 has_geolocation = true;
             }
+
+            resize(width, height);
         }
 
         /**
          * Resizes the photograph so it fills the given width and height.
+         * @param width the width.
+         * @param height the height.
          */
-        public void resize(double w, double h) {
+        public void resize(double width, double height) {
             double W = original.width;
             double H = original.height;
-            double s1 = w / W;
-            double s2 = h / H;
-            scale = (H * s1 <= h) ? s1 : s2;
+            double s1 = width / W;
+            double s2 = height / H;
+            scale = (H * s1 <= height) ? s1 : s2;
             pixbuf = original.scale_simple((int)(original.width*scale),
                                            (int)(original.height*scale),
                                            Gdk.InterpType.BILINEAR);
