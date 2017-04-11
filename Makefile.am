@@ -50,9 +50,9 @@ src_gqpe_LDADD =							\
 
 gresource_file = $(top_srcdir)/data/gqpe.gresource.xml
 resource_files = 							\
+	$(top_srcdir)/data/application-menu.ui				\
 	$(top_srcdir)/data/application-window.ui			\
 	$(top_srcdir)/data/gqpe.css					\
-	$(top_srcdir)/data/menu.ui					\
 	$(top_srcdir)/data/pin-map.svg
 
 src/resources.c: $(gresource_file) $(resource_files)

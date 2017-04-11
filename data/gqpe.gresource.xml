@@ -2,8 +2,8 @@
 <gresources>
   <gresource prefix="/mx/unam/GQPE">
     <file>gqpe.css</file>
+    <file preprocess="xml-stripblanks">application-menu.ui</file>
     <file preprocess="xml-stripblanks">application-window.ui</file>
-    <file preprocess="xml-stripblanks">menu.ui</file>
     <file preprocess="xml-stripblanks">pin-map.svg</file>
   </gresource>
 </gresources>
