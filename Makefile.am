@@ -109,6 +109,8 @@ doc/gqpe/index.htm: $(GQPESOURCES)
 		--target-glib=2.38					\
 		--vapidir=vapi						\
 		--verbose						\
+		@CHAMPLAIN_PACKAGES@					\
+		@CLUTTER_GTK_PACKAGES@					\
 		@GEE_PACKAGES@						\
 		@GEXIV2_PACKAGES@					\
 		@GTK_PACKAGES@						\

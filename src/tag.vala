@@ -22,7 +22,7 @@ namespace GQPE {
     /**
      * Constants for the used tags.
      */
-    private class Tag {
+    public class Tag {
 
         /**
          * Orientation tag.

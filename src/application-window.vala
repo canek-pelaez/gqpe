@@ -131,8 +131,9 @@ namespace GQPE {
         private Champlain.MarkerLayer layer;
         /* The marker. */
         private Champlain.Label marker;
-
+        /* Counter for the loader. */
         private int counter;
+        /* Updating flag. */
         private bool updating;
 
         /**
@@ -520,14 +521,15 @@ namespace GQPE {
         /* Updates the map. */
         private void update_map() {
             if (photograph.has_geolocation) {
-                update_location(photograph.latitude, photograph.longitude);
+                update_map_location(photograph.latitude, photograph.longitude);
                 on_pin_map_clicked();
             }
             marker.text = photograph.caption;
         }
 
-        private void update_location(double latitude,
-                                     double longitude) {
+        /* Updates the map location. */
+        private void update_map_location(double latitude,
+                                         double longitude) {
             if (marker != null) {
                 layer.remove_marker(marker);
                 marker = null;
@@ -538,6 +540,7 @@ namespace GQPE {
             this.longitude.value = longitude;
         }
 
+        /* Creates a new marker. */
         private Champlain.Label create_marker(double latitude,
                                               double longitude) {
             string photo_caption = (photograph != null &&
@@ -556,12 +559,13 @@ namespace GQPE {
             return marker;
         }
 
+        /* Map button release callback. */
         private bool map_button_release(Clutter.ButtonEvent event) {
             double latitude  = view.y_to_latitude(event.y);
             double longitude = view.x_to_longitude(event.x);
 
             if (event.button == 1) {
-                update_location(latitude, longitude);
+                update_map_location(latitude, longitude);
                 photograph.latitude = this.latitude.value;
                 photograph.longitude = this.longitude.value;
                 enable_ui(Item.PIN_MAP);

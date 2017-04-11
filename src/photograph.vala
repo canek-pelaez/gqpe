@@ -148,15 +148,6 @@ namespace GQPE {
             update_data();
         }
 
-        private void update_data() {
-            album = (metadata.has_tag(Tag.SUBJECT)) ?
-                metadata.get_tag_string(Tag.SUBJECT).strip() : "";
-            caption = (metadata.has_tag(Tag.CAPTION)) ?
-                metadata.get_tag_string(Tag.CAPTION).strip() : "";
-            comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
-                metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
-        }
-
         /**
          * Resizes the photograph so it fills the given width and height.
          * @param width the width.
@@ -242,6 +233,16 @@ namespace GQPE {
             update_text_tags();
             update_geolocation_tags();
             metadata.save_file(file.get_path());
+        }
+
+        /* Updates the data from the metadata. */
+        private void update_data() {
+            album = (metadata.has_tag(Tag.SUBJECT)) ?
+                metadata.get_tag_string(Tag.SUBJECT).strip() : "";
+            caption = (metadata.has_tag(Tag.CAPTION)) ?
+                metadata.get_tag_string(Tag.CAPTION).strip() : "";
+            comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
+                metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
         }
 
         /* Updates the text tags. */
