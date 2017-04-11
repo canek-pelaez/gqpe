@@ -98,6 +98,7 @@ namespace GQPE {
         public void load(double width, double height) throws GLib.Error {
             if (original != null) {
                 resize(width, height);
+                update_data();
                 return;
             }
 
@@ -128,13 +129,6 @@ namespace GQPE {
                     original = original.rotate_simple(rot);
             }
 
-            album = (metadata.has_tag(Tag.SUBJECT)) ?
-                metadata.get_tag_string(Tag.SUBJECT).strip() : "";
-            caption = (metadata.has_tag(Tag.CAPTION)) ?
-                metadata.get_tag_string(Tag.CAPTION).strip() : "";
-            comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
-                metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
-
             if (metadata.has_tag(Tag.LATITUDE)     &&
                 metadata.has_tag(Tag.LONGITUDE)    &&
                 metadata.has_tag(Tag.LATITUDE_REF) &&
@@ -151,6 +145,16 @@ namespace GQPE {
             }
 
             resize(width, height);
+            update_data();
+        }
+
+        private void update_data() {
+            album = (metadata.has_tag(Tag.SUBJECT)) ?
+                metadata.get_tag_string(Tag.SUBJECT).strip() : "";
+            caption = (metadata.has_tag(Tag.CAPTION)) ?
+                metadata.get_tag_string(Tag.CAPTION).strip() : "";
+            comment = (metadata.has_tag(Tag.DESCRIPTION)) ?
+                metadata.get_tag_string(Tag.DESCRIPTION).strip() : "";
         }
 
         /**
