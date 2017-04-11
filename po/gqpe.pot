@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: https://github.com/canek-pelaez/gqpe/issues\n"
-"POT-Creation-Date: 2017-04-10 17:24-0500\n"
+"POT-Creation-Date: 2017-04-10 20:01-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,50 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: data/application-menu.ui:7
+msgid "_About"
+msgstr ""
+
+#: data/application-menu.ui:11
+msgid "Quit"
+msgstr ""
+
+#: data/application-window.ui:43
+msgid "Previous picture"
+msgstr ""
+
+#: data/application-window.ui:60
+msgid "Next picture"
+msgstr ""
+
+#: data/application-window.ui:87
+msgid "Rotate left"
+msgstr ""
+
+#: data/application-window.ui:106
+msgid "Rotate right"
+msgstr ""
+
+#: data/application-window.ui:136
+msgid "Zoom in"
+msgstr ""
+
+#: data/application-window.ui:155
+msgid "Zoom out"
+msgstr ""
+
+#: data/application-window.ui:174
+msgid "Zoom fit best"
+msgstr ""
+
+#: data/application-window.ui:204
+msgid "Pin geolocation"
+msgstr ""
+
+#: data/application-window.ui:221
+msgid "Save picture"
+msgstr ""
 
 #: data/gqpe.desktop:3
 msgid "GQPE"
@@ -33,42 +77,6 @@ msgstr ""
 msgid "gqpe"
 msgstr ""
 
-#: data/application-window.ui:29
-msgid "Previous picture"
-msgstr ""
-
-#: data/application-window.ui:46
-msgid "Next picture"
-msgstr ""
-
-#: data/application-window.ui:73
-msgid "Rotate left"
-msgstr ""
-
-#: data/application-window.ui:92
-msgid "Rotate right"
-msgstr ""
-
-#: data/application-window.ui:122
-msgid "Zoom in"
-msgstr ""
-
-#: data/application-window.ui:141
-msgid "Zoom out"
-msgstr ""
-
-#: data/application-window.ui:160
-msgid "Zoom fit best"
-msgstr ""
-
-#: data/application-window.ui:190
-msgid "Photo geolocation"
-msgstr ""
-
-#: data/application-window.ui:206
-msgid "Save picture"
-msgstr ""
-
-#: src/application-window.vala:345
+#: src/application-window.vala:359
 msgid "A Gtk+ based quick photo editor"
 msgstr ""

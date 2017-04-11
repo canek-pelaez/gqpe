@@ -1,6 +1,10 @@
-data/gqpe.desktop
+data/application-menu.ui
 data/application-window.ui
-src/application.vala
+data/gqpe.desktop
 src/application-main.vala
 src/application-window.vala
+src/application.vala
+src/namespace.vala
+src/orientation.vala
 src/photograph.vala
+src/tag.vala
