@@ -1,14 +1,24 @@
 Gtk+ Quick Photo Editor
 =======================
 
-Gtk+ Quick Photo Editor (GQPE for short) is a small image tag
-editor.
+Gtk+ Quick Photo Editor (GQPE for short) is a small image tag editor.
 
-GQPE only cares for the Xmp.dc.subject, Iptc.Application2.Caption,
-Exif.Image.ImageDescription and the Exif.Image.Orientation tags, so this program
-is intended to set those tags as fast as possible. The program shows the
-picture, and allows the user to rotate it and to enter the Xmp.dc.subject,
-Iptc.Application2.Caption, and Exif.Image.ImageDescription tags.
+GQPE only cares for the following tags:
+
+* Xmp.dc.subject
+* Iptc.Application2.Caption
+* Exif.Image.ImageDescription
+* Exif.GPSInfo.GPSLatitude
+* Exif.GPSInfo.GPSLongitude
+* Exif.GPSInfo.GPSLatitudeRef
+* Exif.GPSInfo.GPSLongitudeRef
+* Exif.Image.Orientation
+
+This program is intended to set those tags as fast as possible. The program
+shows the picture and a map for its geolocation, and allows the user to rotate
+it and to enter the Xmp.dc.subject, Iptc.Application2.Caption, and
+Exif.Image.ImageDescription tags. It also allows to click on the map to set the
+geolocation coordinates of the picture.
 
 While it can be used with the mouse, that's not the way is intended
 to be used: All the available manipulations are possible using only
@@ -33,25 +43,24 @@ With the Xmp.dc.subject and Iptc.Application2.Caption correctly set, you can
 import them in Shotwell[1], which also uses the Iptc.Application2.Caption as
 title, and Xmp.dc.subject as tag (inside Shotwell).
 
-
 Requirements
 ------------
 
 You need the following to compile GQPE:
 
-* Gtk+-3
-* libgee-0.8
+* champlain-0.12
+* clutter-gtk-1.0
 * gexiv2
+* gtk+-3.18
+* gee-0.8
 
 The program is written in Vala, but you only need Vala if you don't use
 tarballs.
-
 
 Homepage
 --------
 
 https://github.com/canek-pelaez/gqpe
-
 
 Notes
 -----
