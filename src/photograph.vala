@@ -24,6 +24,13 @@ namespace GQPE {
      */
     public class Photograph : GLib.Object, Gee.Comparable<Photograph> {
 
+        /* The default GPS tag. */
+        private static const long DEFAULT_GPS_TAG = 9208;
+        /* The default GPS string. */
+        private static const string DEFAULT_GPS_VERSION = "2 0 0 0";
+        /* The default GPS datum. */
+        private static const string DEFAULT_GPS_DATUM = "WGS-84";
+
         /**
          * The album of the photograph.
          */
@@ -273,6 +280,37 @@ namespace GQPE {
             metadata.set_tag_string(Tag.LONGITUDE, slon);
             metadata.set_tag_string(Tag.LATITUDE_REF, lat_ref);
             metadata.set_tag_string(Tag.LONGITUDE_REF, lon_ref);
+            if (!metadata.has_tag(Tag.GPS_TAG))
+                metadata.set_tag_long(Tag.GPS_TAG, DEFAULT_GPS_TAG);
+            if (!metadata.has_tag(Tag.GPS_VERSION))
+                metadata.set_tag_string(Tag.GPS_VERSION, DEFAULT_GPS_VERSION);
+            if (!metadata.has_tag(Tag.GPS_DATUM))
+                metadata.set_tag_string(Tag.GPS_DATUM, DEFAULT_GPS_DATUM);
+            if (!metadata.has_tag(Tag.GPS_DATE))
+                metadata.set_tag_string(Tag.GPS_DATE, get_gps_date());
+            if (!metadata.has_tag(Tag.GPS_TIME))
+                metadata.set_tag_string(Tag.GPS_TIME, get_gps_time());
+        }
+
+        /* Gets the GPS date. */
+        private string get_gps_date() {
+            var date = metadata.get_tag_string(Tag.DATE_TIME);
+            return parse_triad(date.split(" ")[0]);
+        }
+
+        /* Gets the GPS time. */
+        private string get_gps_time() {
+            var date = metadata.get_tag_string(Tag.DATE_TIME);
+            return parse_triad(date.split(" ")[1]);
+        }
+
+        /* Parse colon separated triad. */
+        private string parse_triad(string triad) {
+            var t = triad.split(":");
+            int a = int.parse(t[0]);
+            int b = int.parse(t[1]);
+            int c = int.parse(t[2]);
+            return "%d/1 %d/1 %d/1".printf(a, b, c);
         }
 
         /**

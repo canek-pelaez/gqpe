@@ -25,6 +25,12 @@ namespace GQPE {
     public class Tag {
 
         /**
+         * Date and time tag.
+         */
+        public static const string DATE_TIME =
+            "Exif.Photo.DateTimeOriginal";
+
+        /**
          * Orientation tag.
          */
         public static const string ORIENTATION =
@@ -77,5 +83,35 @@ namespace GQPE {
          */
         public static const string LONGITUDE_REF =
             "Exif.GPSInfo.GPSLongitudeRef";
+
+        /**
+         * GPS tag tag.
+         */
+        public static const string GPS_TAG =
+            "Exif.Image.GPSTag";
+
+        /**
+         * GPS version tag.
+         */
+        public static const string GPS_VERSION =
+            "Exif.GPSInfo.GPSVersionID";
+
+        /**
+         * GPS datum tag.
+         */
+        public static const string GPS_DATUM =
+            "Exif.GPSInfo.GPSMapDatum";
+
+        /**
+         * GPS date tag.
+         */
+        public static const string GPS_DATE =
+            "Exif.GPSInfo.GPSDateStamp";
+
+        /**
+         * GPS time tag.
+         */
+        public static const string GPS_TIME =
+            "Exif.GPSInfo.GPSTimeStamp";
     }
 }
