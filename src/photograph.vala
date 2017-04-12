@@ -263,20 +263,14 @@ namespace GQPE {
         private void update_geolocation_tags() {
             if (!has_geolocation)
                 return;
-            var lat_ref = "N";
-            if (latitude < 0.0) {
-                latitude *= -1.0;
-                lat_ref = "S";
-            }
-            var lon_ref = "E";
-            if (longitude < 0.0) {
-                longitude *= -1.0;
-                lon_ref = "W";
-            }
-            var lat = double_to_decimals(latitude);
-            var lon = double_to_decimals(longitude);
-            metadata.set_tag_string(Tag.LATITUDE, lat);
-            metadata.set_tag_string(Tag.LONGITUDE, lon);
+            var lat = (latitude  < 0.0) ? latitude  * -1.0 : latitude;
+            var lon = (longitude < 0.0) ? longitude * -1.0 : longitude;
+            var lat_ref = (latitude  < 0.0) ? "S" : "N";
+            var lon_ref = (longitude < 0.0) ? "W" : "E";
+            var slat = double_to_decimals(lat);
+            var slon = double_to_decimals(lon);
+            metadata.set_tag_string(Tag.LATITUDE, slat);
+            metadata.set_tag_string(Tag.LONGITUDE, slon);
             metadata.set_tag_string(Tag.LATITUDE_REF, lat_ref);
             metadata.set_tag_string(Tag.LONGITUDE_REF, lon_ref);
         }

@@ -520,43 +520,45 @@ namespace GQPE {
 
         /* Updates the map. */
         private void update_map() {
-            if (photograph.has_geolocation) {
-                update_map_location(photograph.latitude, photograph.longitude);
-                on_pin_map_clicked();
-            }
-            marker.text = photograph.caption;
-        }
-
-        /* Updates the map location. */
-        private void update_map_location(double latitude,
-                                         double longitude) {
             if (marker != null) {
                 layer.remove_marker(marker);
                 marker = null;
             }
-            marker = create_marker(latitude, longitude);
-            layer.add_marker(marker);
-            this.latitude.value = latitude;
-            this.longitude.value = longitude;
+            if (photograph.has_geolocation) {
+                update_map_location();
+                on_pin_map_clicked();
+            }
+        }
+
+        /* Updates the map location. */
+        private void update_map_location() {
+            if (marker == null)
+                create_marker();
+            marker.set_location(photograph.latitude,
+                                photograph.longitude);
+            latitude.value = photograph.latitude;
+            longitude.value = photograph.longitude;
+            marker.text = photograph.caption;
         }
 
         /* Creates a new marker. */
-        private Champlain.Label create_marker(double latitude,
-                                              double longitude) {
-            string photo_caption = (photograph != null &&
-                                    photograph.caption != "") ?
-                photograph.caption : "(%g,%g)".printf(latitude, longitude);
+        private void create_marker() {
+            string photo_caption = (photograph.caption != "") ?
+                photograph.caption :
+                "(%g,%g)".printf(photograph.latitude, photograph.longitude);
             Clutter.Color green = { 0xb6, 0xff, 0x80, 0xdd };
             Clutter.Color black = { 0x00, 0x00, 0x00, 0xff };
-            var marker = new Champlain.Label.with_text(photo_caption,
-                                                       "Serif 10",
-                                                       null, null);
+            marker = new Champlain.Label.with_text(photo_caption,
+                                                   "Serif 10",
+                                                   null, null);
             marker.use_markup = true;
             marker.alignment = Pango.Alignment.RIGHT;
             marker.color = green;
             marker.text_color = black;
-            marker.set_location(latitude, longitude);
-            return marker;
+            if (photograph.has_geolocation)
+                marker.set_location(photograph.latitude,
+                                    photograph.longitude);
+            layer.add_marker(marker);
         }
 
         /* Map button release callback. */
@@ -565,10 +567,10 @@ namespace GQPE {
             double longitude = view.x_to_longitude(event.x);
 
             if (event.button == 1) {
-                update_map_location(latitude, longitude);
-                photograph.latitude = this.latitude.value;
-                photograph.longitude = this.longitude.value;
-                enable_ui(Item.PIN_MAP);
+                photograph.latitude = latitude;
+                photograph.longitude = longitude;
+                update_map_location();
+                enable_ui(Item.PIN_MAP|Item.SAVE);
             } else if (event.button == 2) {
                 view.center_on(latitude, longitude);
             }
