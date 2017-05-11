@@ -111,9 +111,6 @@ namespace GQPE {
         /* The clutter embed for the map. */
         [GtkChild]
         private GtkClutter.Embed map_embed;
-        /* The progress bar. */
-        [GtkChild]
-        private Gtk.ProgressBar progress;
 
         /* The current photograph. */
         private Photograph photograph;
@@ -131,8 +128,6 @@ namespace GQPE {
         private Champlain.MarkerLayer layer;
         /* The marker. */
         private Champlain.Label marker;
-        /* Counter for the loader. */
-        private int counter;
         /* Updating flag. */
         private bool updating;
 
@@ -173,7 +168,6 @@ namespace GQPE {
             stage.add_child(view);
 
             disable_ui(Item.ALL);
-            GLib.Idle.add(check_entries_length);
         }
 
         /**
@@ -320,6 +314,7 @@ namespace GQPE {
             photograph.caption = t;
             var c = comment.buffer.text.strip();
             photograph.comment = c;
+            check_entries_length();
             enable_ui(Item.SAVE);
         }
 
@@ -401,29 +396,8 @@ namespace GQPE {
                 on_next_clicked();
                 if (photographs.size == 1)
                     disable_ui(Item.NEXT);
-                GLib.Idle.add(autoload_photographs);
             }
             disable_ui(Item.PREVIOUS);
-        }
-
-        /* Autoloads the photographs asynchronously. */
-        private bool autoload_photographs() {
-            if (!loader.has_next()) {
-                progress.visible = false;
-                return false;
-            }
-            loader.next();
-            var photograph = loader.get();
-            try {
-                load_photograph(photograph);
-                counter++;
-                progress.fraction = (1.0 * counter) / photographs.size;
-            } catch (GLib.Error e) {
-                GLib.warning("Could not load '%s': %s",
-                             photograph.file.get_path(), e.message);
-                loader.remove();
-            }
-            return true;
         }
 
         /* Turns on and off UI items. */
@@ -579,12 +553,9 @@ namespace GQPE {
         }
 
         /* Checks the length of both entries. */
-        private bool check_entries_length() {
-            if (save == null || !save.sensitive)
-                return true;
+        private void check_entries_length() {
             check_entry_length(album, ALBUM_LENGTH);
             check_entry_length(caption, CAPTION_LENGTH);
-            return true;
         }
 
         /* Checks the length of an entry. */
