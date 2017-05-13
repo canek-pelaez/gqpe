@@ -36,7 +36,6 @@ gexiv2 = dependency('gexiv2')
 gtk = dependency('gtk+-3.0')
 
 gnome = import('gnome')
-i18n = import('i18n')
 
 conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
@@ -105,4 +104,5 @@ if valadoc.found()
                       install: false)
 endif
 
+subdir('data')
 subdir('po')
