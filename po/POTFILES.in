@@ -1,5 +1,6 @@
 data/application-menu.ui
 data/application-window.ui
+data/gqpe.desktop.in
 src/application-main.vala
 src/application-window.vala
 src/application.vala
