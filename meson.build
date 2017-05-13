@@ -1,4 +1,21 @@
-project('gqpe', ['vala', 'c'], version : '0.1')
+# This file is part of gqpe.
+
+# Copyright © 2013-2017 Canek Peláez Valdés
+
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+# details.
+
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see <http://www.gnu.org/licenses/>.
+
+project('gqpe', ['vala', 'c'], version: '0.1')
 
 cc = meson.get_compiler('c')
 
@@ -11,7 +28,7 @@ add_project_arguments(['--vapidir=' + vapidir,
                        '--target-glib=2.38'],
                       language: 'vala')
 
-math = cc.find_library('m', required : true)
+math = cc.find_library('m', required: true)
 champlain = dependency('champlain-0.12')
 clutter_gtk = dependency('clutter-gtk-1.0')
 gee = dependency('gee-0.8')
@@ -28,18 +45,18 @@ conf.set_quoted('LOCALSTATEDIR', get_option('localstatedir'))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('VERSION', meson.project_version())
 
-valadoc = find_program('valadoc', required : false)
+valadoc = find_program('valadoc', required: false)
 if valadoc.found()
   conf.set('HAVE_VALADOC', 1)
 endif
 
 gresources = gnome.compile_resources(
   'gresources', 'data/gqpe.gresource.xml',
-  source_dir : 'data',
-  c_name : 'resources')
+  source_dir: 'data',
+  c_name: 'resources')
 
-configure_file(output : 'config.h',
-               configuration : conf)
+configure_file(output: 'config.h',
+               configuration: conf)
 
 gqpe_vala_sources = [
   'src/application-window.vala',
@@ -87,3 +104,5 @@ if valadoc.found()
                                 '@INPUT@'],
                       install: false)
 endif
+
+subdir('po')
