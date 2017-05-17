@@ -16,26 +16,20 @@
 # this program. If not, see <http://www.gnu.org/licenses/>.
 
 project('gqpe', ['vala', 'c'], version: '0.1')
-
-cc = meson.get_compiler('c')
-
 add_global_arguments('-DGETTEXT_PACKAGE="gqpe"', language: 'c')
-
 vapidir = join_paths(meson.current_source_dir(), 'vapi')
-
 add_project_arguments(['--vapidir=' + vapidir,
                        '--pkg=config',
                        '--target-glib=2.38'],
                       language: 'vala')
 
+cc = meson.get_compiler('c')
 math = cc.find_library('m', required: true)
 champlain = dependency('champlain-0.12')
 clutter_gtk = dependency('clutter-gtk-1.0')
 gee = dependency('gee-0.8')
 gexiv2 = dependency('gexiv2')
 gtk = dependency('gtk+-3.0')
-
-gnome = import('gnome')
 
 conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
@@ -49,13 +43,15 @@ if valadoc.found()
   conf.set('HAVE_VALADOC', 1)
 endif
 
+configure_file(output: 'config.h',
+               configuration: conf)
+
+gnome = import('gnome')
+
 gresources = gnome.compile_resources(
   'gresources', 'data/gqpe.gresource.xml',
   source_dir: 'data',
   c_name: 'resources')
-
-configure_file(output: 'config.h',
-               configuration: conf)
 
 gqpe_vala_sources = [
   'src/application-window.vala',
