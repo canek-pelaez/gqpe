@@ -1,5 +1,6 @@
 Gtk+ Quick Photo Editor
-=======================
+═══════════════════════
+
 
 Gtk+ Quick Photo Editor (GQPE for short) is a small image tag editor.
 
@@ -44,7 +45,7 @@ import them in Shotwell[1], which also uses the Iptc.Application2.Caption as
 title, and Xmp.dc.subject as tag (inside Shotwell).
 
 Requirements
-------------
+────────────
 
 You need the following to compile GQPE:
 
@@ -58,11 +59,11 @@ The program is written in Vala, but you only need Vala if you don't use
 tarballs.
 
 Homepage
---------
+────────
 
 https://github.com/canek-pelaez/gqpe
 
 Notes
------
+─────
 
 [1] http://yorba.org/shotwell/
