@@ -25,11 +25,11 @@ namespace GQPE {
     public class Photograph : GLib.Object, Gee.Comparable<Photograph> {
 
         /* The default GPS tag. */
-        private static const long DEFAULT_GPS_TAG = 9208;
+        private const long DEFAULT_GPS_TAG = 9208;
         /* The default GPS string. */
-        private static const string DEFAULT_GPS_VERSION = "2 0 0 0";
+        private const string DEFAULT_GPS_VERSION = "2 0 0 0";
         /* The default GPS datum. */
-        private static const string DEFAULT_GPS_DATUM = "WGS-84";
+        private const string DEFAULT_GPS_DATUM = "WGS-84";
 
         /**
          * The album of the photograph.

@@ -25,7 +25,7 @@ namespace GQPE {
     public class Application : Gtk.Application {
 
         /* The application menu. */
-        private static const string MENU = "/mx/unam/GQPE/application-menu.ui";
+        private const string MENU = "/mx/unam/GQPE/application-menu.ui";
 
         /* The window. */
         private ApplicationWindow window;

@@ -48,11 +48,11 @@ namespace GQPE {
         private enum Rotate { LEFT, RIGHT; }
 
         /* CSS Resource. */
-        private static const string CSS = "resource:///mx/unam/GQPE/gqpe.css";
+        private const string CSS = "resource:///mx/unam/GQPE/gqpe.css";
         /* Maximum length for the album. */
-        private static const int ALBUM_LENGTH = 50;
+        private const int ALBUM_LENGTH = 50;
         /* Maximum length for the caption. */
-        private static const int CAPTION_LENGTH = 40;
+        private const int CAPTION_LENGTH = 40;
 
         /* The head bar. */
         [GtkChild]

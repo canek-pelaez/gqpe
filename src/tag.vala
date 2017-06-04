@@ -27,91 +27,76 @@ namespace GQPE {
         /**
          * Date and time tag.
          */
-        public static const string DATE_TIME =
-            "Exif.Photo.DateTimeOriginal";
+        public const string DATE_TIME = "Exif.Photo.DateTimeOriginal";
 
         /**
          * Orientation tag.
          */
-        public static const string ORIENTATION =
-            "Exif.Image.Orientation";
+        public const string ORIENTATION = "Exif.Image.Orientation";
 
         /**
          * Thumbnail orientation tag.
          */
-        public static const string THUMB_ORIENTATION =
-            "Exif.Thumbnail.Orientation";
+        public const string THUMB_ORIENTATION = "Exif.Thumbnail.Orientation";
 
         /**
          * Subject tag.
          */
-        public static const string SUBJECT =
-            "Xmp.dc.subject";
+        public const string SUBJECT = "Xmp.dc.subject";
 
         /**
          * Caption tag.
          */
-        public static const string CAPTION =
-            "Iptc.Application2.Caption";
+        public const string CAPTION = "Iptc.Application2.Caption";
 
         /**
          * Description tag.
          */
-        public static const string DESCRIPTION =
-            "Exif.Image.ImageDescription";
+        public const string DESCRIPTION = "Exif.Image.ImageDescription";
 
         /**
          * Latitude tag.
          */
-        public static const string LATITUDE =
-            "Exif.GPSInfo.GPSLatitude";
+        public const string LATITUDE = "Exif.GPSInfo.GPSLatitude";
 
         /**
          * Longitude tag.
          */
-        public static const string LONGITUDE =
-            "Exif.GPSInfo.GPSLongitude";
+        public const string LONGITUDE = "Exif.GPSInfo.GPSLongitude";
 
         /**
          * Latitude reference tag.
          */
-        public static const string LATITUDE_REF =
-            "Exif.GPSInfo.GPSLatitudeRef";
+        public const string LATITUDE_REF = "Exif.GPSInfo.GPSLatitudeRef";
 
         /**
          * Longitude reference tag.
          */
-        public static const string LONGITUDE_REF =
-            "Exif.GPSInfo.GPSLongitudeRef";
+        public const string LONGITUDE_REF = "Exif.GPSInfo.GPSLongitudeRef";
 
         /**
          * GPS tag tag.
          */
-        public static const string GPS_TAG =
-            "Exif.Image.GPSTag";
+        public const string GPS_TAG = "Exif.Image.GPSTag";
 
         /**
          * GPS version tag.
          */
-        public static const string GPS_VERSION =
-            "Exif.GPSInfo.GPSVersionID";
+        public const string GPS_VERSION = "Exif.GPSInfo.GPSVersionID";
 
         /**
          * GPS datum tag.
          */
-        public static const string GPS_DATUM =
-            "Exif.GPSInfo.GPSMapDatum";
+        public const string GPS_DATUM = "Exif.GPSInfo.GPSMapDatum";
 
         /**
          * GPS date tag.
          */
-        public static const string GPS_DATE =
-            "Exif.GPSInfo.GPSDateStamp";
+        public const string GPS_DATE = "Exif.GPSInfo.GPSDateStamp";
 
         /**
          * GPS time tag.
          */
-        public static const string GPS_TIME =
-            "Exif.GPSInfo.GPSTimeStamp";
+        public const string GPS_TIME = "Exif.GPSInfo.GPSTimeStamp";
     }
 }
