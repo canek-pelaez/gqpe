@@ -342,25 +342,6 @@ namespace GQPE {
             set_iterators();
         }
 
-        /**
-         * Shows the about dialog.
-         */
-        public void about() {
-            string[] authors = {
-                "Canek Peláez Valdés <canek@ciencias.unam.mx>"
-            };
-            Gtk.show_about_dialog(
-                this,
-                "authors",        authors,
-                "comments",       _("A Gtk+ based quick photo editor"),
-                "copyright",      "Copyright © 2013-2017 Canek Peláez Valdés",
-                "license-type",   Gtk.License.GPL_3_0,
-                "logo-icon-name", "gqpe",
-                "version",        Config.PACKAGE_VERSION,
-                "website",        "http://github.com/canek-pelaez/gqpe",
-                "wrap-license",   true);
-        }
-
         /* Loads the photograps. */
         private void load_photographs(GLib.File[] files) {
             photographs = new Gee.ArrayList<Photograph>();
