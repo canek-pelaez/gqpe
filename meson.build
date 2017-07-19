@@ -74,8 +74,9 @@ gqpe_dependencies = [
   math
 ]
 
-executable('src/gqpe', gqpe_sources,
-           dependencies: gqpe_dependencies)
+executable('gqpe', gqpe_sources,
+           dependencies: gqpe_dependencies,
+           install: true)
 
 if valadoc.found()
   docdir = 'doc'
