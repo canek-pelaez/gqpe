@@ -111,15 +111,18 @@ namespace GQPE {
         /* The clutter embed for the map. */
         [GtkChild]
         private GtkClutter.Embed map_embed;
+        /* The loader progress bar. */
+        [GtkChild]
+        private Gtk.ProgressBar progress_bar;
 
         /* The current photograph. */
         private Photograph photograph;
         /* Photograph list. */
         private Gee.ArrayList<Photograph> photographs;
-        /* Loader iterator. */
-        private Gee.ListIterator<Photograph> loader;
         /* Photograp iterator. */
         private Gee.BidirListIterator<Photograph> iterator;
+        /* Loader map. */
+        private Gee.SortedMap<string, Photograph> loader;
         /* The index of the current photograph. */
         private int index;
         /* The map view. */
@@ -137,7 +140,6 @@ namespace GQPE {
          */
         public ApplicationWindow(Gtk.Application application) {
             GLib.Object(application: application);
-
 
             Gtk.Window.set_default_icon_name("gqpe");
             var provider = new Gtk.CssProvider();
@@ -415,6 +417,32 @@ namespace GQPE {
                 photographs.add(new Photograph(file));
             }
             photographs.sort();
+            loader = new Gee.TreeMap<string, Photograph>();
+            foreach (var photograph in photographs) {
+                loader[photograph.file.get_path()] = photograph;
+            }
+            GLib.Idle.add(lazy_load);
+        }
+
+        private bool lazy_load() {
+            if (loader.is_empty) {
+                progress_bar.visible = false;
+                return false;
+            }
+            var path = loader.ascending_keys.first();
+            var photo = loader[path];
+            if (!photo.is_loaded) {
+                try {
+                    load_photograph(photo);
+                } catch (GLib.Error e) {
+                    GLib.warning("Could not load '%s': %s",
+                                 path, e.message);
+                }
+            }
+            loader.unset(photo.file.get_path());
+            double t = photographs.size - loader.size;
+            progress_bar.fraction = t / photographs.size;
+            return true;
         }
 
         /* Initializes the iterators. */
@@ -424,7 +452,6 @@ namespace GQPE {
             } else {
                 enable_ui(Item.ALL);
                 iterator = photographs.bidir_list_iterator();
-                loader = photographs.list_iterator();
                 on_next_clicked();
                 if (photographs.size == 1)
                     disable_ui(Item.NEXT);
@@ -495,13 +522,15 @@ namespace GQPE {
         /* Updates the picture. */
         private void update_picture() {
             photograph = iterator.get();
-            try {
-                load_photograph(photograph);
-            } catch (GLib.Error e) {
-                GLib.warning("Could not load '%s': %s",
-                             photograph.file.get_path(), e.message);
-                disable_ui(Item.PICTURE);
-                return;
+            if (!photograph.is_loaded) {
+                try {
+                    load_photograph(photograph);
+                } catch (GLib.Error e) {
+                    GLib.warning("Could not load '%s': %s",
+                                 photograph.file.get_path(), e.message);
+                    disable_ui(Item.PICTURE);
+                    return;
+                }
             }
             image.set_from_pixbuf(photograph.pixbuf);
             enable_ui(Item.PICTURE);

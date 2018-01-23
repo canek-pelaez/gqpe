@@ -64,6 +64,8 @@ namespace GQPE {
         }
         private double _longitude;
 
+        public bool is_loaded { get { return original != null; } }
+
         /**
          * The file for the photograph.
          */
