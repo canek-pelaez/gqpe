@@ -10,3 +10,9 @@ custom_target(
   command: [msgfmt, '--desktop', '--template', '@INPUT@',
     '-d', podir, '-o', '@OUTPUT@'],
 )
+
+icondir = join_paths(get_option('datadir'), 'icons/hicolor')
+
+install_data('gqpe.svg',
+  install_dir: join_paths(icondir, 'scalable/apps'),
+)
