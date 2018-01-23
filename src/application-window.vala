@@ -170,6 +170,57 @@ namespace GQPE {
             disable_ui(Item.ALL);
         }
 
+        /* The on key press event callback. */
+        [GtkCallback]
+        private bool on_key_press_event(Gdk.EventKey event) {
+            var ctrl = (event.state & Gdk.ModifierType.CONTROL_MASK) != 0;
+            uint event_key;
+            Gdk.keyval_convert_case(event.keyval, null, out event_key);
+            if (ctrl)
+                control_shortcuts(event_key);
+            else
+                shortcuts(event_key);
+            return false;
+        }
+
+        /* Control shortcuts. */
+        private void control_shortcuts(uint event_key) {
+            switch (event_key) {
+            case Gdk.Key.KP_Add:
+                on_zoom_in_clicked();
+                break;
+            case Gdk.Key.KP_Subtract:
+                on_zoom_out_clicked();
+                break;
+            case Gdk.Key.KP_Multiply:
+                on_zoom_fit_clicked();
+                break;
+            case Gdk.Key.s:
+                on_data_activated();
+                break;
+            }
+        }
+
+        /* Normal shortcuts. */
+        private void shortcuts(uint event_key) {
+            switch (event_key) {
+            case Gdk.Key.KP_Page_Up:
+            case Gdk.Key.Page_Up:
+                on_previous_clicked();
+                break;
+            case Gdk.Key.KP_Page_Down:
+            case Gdk.Key.Page_Down:
+                on_next_clicked();
+                break;
+            case Gdk.Key.bracketleft:
+                on_rotate_left_clicked();
+                break;
+            case Gdk.Key.bracketright:
+                on_rotate_right_clicked();
+                break;
+            }
+        }
+
         /**
          * Callback for window destruction.
          */

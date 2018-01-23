@@ -270,8 +270,8 @@ namespace GQPE {
         private void update_geolocation_tags() {
             if (!has_geolocation)
                 return;
-            var lat = (latitude  < 0.0) ? latitude  * -1.0 : latitude;
-            var lon = (longitude < 0.0) ? longitude * -1.0 : longitude;
+            var lat = Math.fabs(latitude);
+            var lon = Math.fabs(longitude);
             var lat_ref = (latitude  < 0.0) ? "S" : "N";
             var lon_ref = (longitude < 0.0) ? "W" : "E";
             var slat = double_to_decimals(lat);
@@ -335,8 +335,7 @@ namespace GQPE {
             double m = Math.floor(r);
             /* m*12 == (m/30000)*360000 */
             double s = (d - i)*360000.0 - (m*12.0);
-            string decs = "%d/1 %d/500 %d/100".printf((int)i, (int)m, (int)s);
-            return decs;
+            return "%d/1 %d/500 %d/100".printf((int)i, (int)m, (int)s);
         }
 
         /* Converts a GPS decimal to a double. */
