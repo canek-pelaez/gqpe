@@ -197,7 +197,7 @@ namespace GQPE {
             case Gdk.Key.KP_Multiply:
                 on_zoom_fit_clicked();
                 break;
-            case Gdk.Key.s:
+            case Gdk.Key.S:
                 on_data_activated();
                 break;
             }
