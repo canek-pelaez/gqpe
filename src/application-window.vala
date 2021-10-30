@@ -56,64 +56,64 @@ namespace GQPE {
 
         /* The head bar. */
         [GtkChild]
-        private Gtk.HeaderBar header;
+        private unowned Gtk.HeaderBar header;
         /* The previous button. */
         [GtkChild]
-        private Gtk.Button previous;
+        private unowned Gtk.Button previous;
         /* The next button. */
         [GtkChild]
-        private Gtk.Button next;
+        private unowned Gtk.Button next;
         /* The rotate left button. */
         [GtkChild]
-        private Gtk.Button rotate_left;
+        private unowned Gtk.Button rotate_left;
         /* The rotate right button. */
         [GtkChild]
-        private Gtk.Button rotate_right;
+        private unowned Gtk.Button rotate_right;
         /* The zoom in button. */
         [GtkChild]
-        private Gtk.Button zoom_in;
+        private unowned Gtk.Button zoom_in;
         /* The zoom out button. */
         [GtkChild]
-        private Gtk.Button zoom_out;
+        private unowned Gtk.Button zoom_out;
         /* The zoom fit button. */
         [GtkChild]
-        private Gtk.Button zoom_fit;
+        private unowned Gtk.Button zoom_fit;
         /* The pin map button. */
         [GtkChild]
-        private Gtk.Button pin_map;
+        private unowned Gtk.Button pin_map;
         /* The save button. */
         [GtkChild]
-        private Gtk.Button save;
+        private unowned Gtk.Button save;
         /* The image scroll. */
         [GtkChild]
-        private Gtk.ScrolledWindow image_scroll;
+        private unowned Gtk.ScrolledWindow image_scroll;
         /* The image label. */
         [GtkChild]
-        private Gtk.Label label;
+        private unowned Gtk.Label label;
         /* The image. */
         [GtkChild]
-        private Gtk.Image image;
+        private unowned Gtk.Image image;
         /* The album entry. */
         [GtkChild]
-        private Gtk.Entry album;
+        private unowned Gtk.Entry album;
         /* The caption entry. */
         [GtkChild]
-        private Gtk.Entry caption;
+        private unowned Gtk.Entry caption;
         /* The comment text view. */
         [GtkChild]
-        private Gtk.TextView comment;
+        private unowned Gtk.TextView comment;
         /* The latitude spin button. */
         [GtkChild]
-        private Gtk.SpinButton latitude;
+        private unowned Gtk.SpinButton latitude;
         /* The longitude spin button. */
         [GtkChild]
-        private Gtk.SpinButton longitude;
+        private unowned Gtk.SpinButton longitude;
         /* The clutter embed for the map. */
         [GtkChild]
-        private GtkClutter.Embed map_embed;
+        private unowned GtkClutter.Embed map_embed;
         /* The loader progress bar. */
         [GtkChild]
-        private Gtk.ProgressBar progress_bar;
+        private unowned Gtk.ProgressBar progress_bar;
 
         /* The current photograph. */
         private Photograph photograph;
