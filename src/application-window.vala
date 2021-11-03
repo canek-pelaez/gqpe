@@ -2,7 +2,7 @@
  *
  * This file is part of gqpe.
  *
- * Copyright © 2013-2017 Canek Peláez Valdés
+ * Copyright © 2013-2021 Canek Peláez Valdés
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -53,6 +53,8 @@ namespace GQPE {
         private const int ALBUM_LENGTH = 50;
         /* Maximum length for the caption. */
         private const int CAPTION_LENGTH = 40;
+        /* Max length. */
+        private const int MAX_LENGTH = 600;
 
         /* The head bar. */
         [GtkChild]
@@ -111,7 +113,7 @@ namespace GQPE {
         /* The clutter embed for the map. */
         [GtkChild]
         private unowned GtkClutter.Embed map_embed;
-        /* The loader progress bar. */
+        /* The progress bar. */
         [GtkChild]
         private unowned Gtk.ProgressBar progress_bar;
 
@@ -121,8 +123,10 @@ namespace GQPE {
         private Gee.ArrayList<Photograph> photographs;
         /* Photograp iterator. */
         private Gee.BidirListIterator<Photograph> iterator;
-        /* Loader map. */
-        private Gee.SortedMap<string, Photograph> loader;
+        /* Photographs map. */
+        private Gee.SortedMap<string, Photograph> pmap;
+        /* Gdk.Pixbufs map */
+        private Gee.SortedMap<string, Gdk.Pixbuf> pixbufs;
         /* The index of the current photograph. */
         private int index;
         /* The map view. */
@@ -169,6 +173,7 @@ namespace GQPE {
             stage.button_release_event.connect(map_button_release);
             stage.add_child(view);
 
+            image.set_size_request(MAX_LENGTH, MAX_LENGTH);
             disable_ui(Item.ALL);
         }
 
@@ -286,8 +291,8 @@ namespace GQPE {
         public void on_zoom_in_clicked() {
             if (!zoom_in.sensitive)
                 return;
-            photograph.scale_by_factor(1.1);
-            image.set_from_pixbuf(photograph.pixbuf);
+            // photograph.scale_by_factor(1.1);
+            // image.set_from_pixbuf(photograph.pixbuf);
         }
 
         /**
@@ -297,8 +302,8 @@ namespace GQPE {
         public void on_zoom_out_clicked() {
             if (!zoom_out.sensitive)
                 return;
-            photograph.scale_by_factor(0.9);
-            image.set_from_pixbuf(photograph.pixbuf);
+            // photograph.scale_by_factor(0.9);
+            // image.set_from_pixbuf(photograph.pixbuf);
         }
 
         /**
@@ -312,8 +317,8 @@ namespace GQPE {
             double h = image_scroll.get_allocated_height();
             if (w <= 0.0 || h <= 0.0)
                 return;
-            photograph.resize(w, h);
-            image.set_from_pixbuf(photograph.pixbuf);
+            // photograph.resize(w, h);
+            // image.set_from_pixbuf(photograph.pixbuf);
         }
 
         /**
@@ -398,49 +403,49 @@ namespace GQPE {
         /* Loads the photograps. */
         private void load_photographs(GLib.File[] files) {
             photographs = new Gee.ArrayList<Photograph>();
+            pixbufs = new Gee.TreeMap<string, Gdk.Pixbuf>();
             foreach (var file in files) {
                 FileInfo info = null;
                 try {
                     info = file.query_info("standard::*",
                                            GLib.FileQueryInfoFlags.NONE);
+                    var ctype = info.get_content_type();
+                    if (ctype != "image/jpeg" && ctype != "image/png") {
+                        GLib.warning("The file '%s' is not a picture",
+                                     file.get_path());
+                        continue;
+                    }
+                    photographs.add(new Photograph(file));
                 } catch (GLib.Error e) {
                     GLib.warning("Could not get info from '%s': %s",
                                  file.get_path(), e.message);
                     continue;
                 }
-                var ctype = info.get_content_type();
-                if (ctype != "image/jpeg" && ctype != "image/png") {
-                    GLib.warning("The file '%s' is not a picture",
-                                 file.get_path());
-                    continue;
-                }
-                photographs.add(new Photograph(file));
             }
             photographs.sort();
-            loader = new Gee.TreeMap<string, Photograph>();
+            pmap = new Gee.TreeMap<string, Photograph>();
             foreach (var photograph in photographs) {
-                loader[photograph.file.get_path()] = photograph;
+                pmap[photograph.file.get_path()] = photograph;
             }
             GLib.Idle.add(lazy_load);
         }
 
         private bool lazy_load() {
-            if (loader.is_empty) {
+            if (pmap.is_empty) {
                 progress_bar.visible = false;
                 return false;
             }
-            var path = loader.ascending_keys.first();
-            var photo = loader[path];
-            if (!photo.is_loaded) {
+            var path = pmap.ascending_keys.first();
+            var photo = pmap[path];
+            if (!pixbufs.has_key(path)) {
                 try {
-                    load_photograph(photo);
+                    load_pixbuf(photo);
                 } catch (GLib.Error e) {
-                    GLib.warning("Could not load '%s': %s",
-                                 path, e.message);
+                    GLib.warning("Could not load '%s': %s", path, e.message);
                 }
             }
-            loader.unset(photo.file.get_path());
-            double t = photographs.size - loader.size;
+            pmap.unset(photo.file.get_path());
+            double t = photographs.size - pmap.size;
             progress_bar.fraction = t / photographs.size;
             return true;
         }
@@ -499,15 +504,20 @@ namespace GQPE {
 
         /* Rotates the photograph. */
         private void rotate(Rotate direction) {
+            var pixbuf = pixbufs[photograph.file.get_path()];
             switch (direction) {
             case Rotate.LEFT:
                 photograph.rotate_left();
+                pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.
+                                              COUNTERCLOCKWISE);
                 break;
             case Rotate.RIGHT:
                 photograph.rotate_right();
+                pixbuf = pixbuf.rotate_simple(Gdk.PixbufRotation.
+                                              CLOCKWISE);
                 break;
             }
-            image.set_from_pixbuf(photograph.pixbuf);
+            image.set_from_pixbuf(pixbuf);
             enable_ui(Item.SAVE);
         }
 
@@ -522,17 +532,17 @@ namespace GQPE {
         /* Updates the picture. */
         private void update_picture() {
             photograph = iterator.get();
-            if (!photograph.is_loaded) {
+            var path = photograph.file.get_path();
+            if (!pixbufs.has_key(path)) {
                 try {
-                    load_photograph(photograph);
+                    load_pixbuf(photograph);
                 } catch (GLib.Error e) {
-                    GLib.warning("Could not load '%s': %s",
-                                 photograph.file.get_path(), e.message);
+                    GLib.warning("Could not load '%s': %s", path, e.message);
                     disable_ui(Item.PICTURE);
                     return;
                 }
             }
-            image.set_from_pixbuf(photograph.pixbuf);
+            image.set_from_pixbuf(pixbufs[path]);
             enable_ui(Item.PICTURE);
             if (!photograph.has_geolocation)
                 disable_ui(Item.PIN_MAP);
@@ -635,14 +645,19 @@ namespace GQPE {
             }
         }
 
-        /* Loads the photograp. */
-        private void load_photograph(Photograph photograph)
+        /* Loads the pixbuf. */
+        private void load_pixbuf(Photograph photograph)
             throws GLib.Error {
-            Gtk.Allocation a;
-            image.get_allocation(out a);
-            double w = a.width  > 10 ? a.width  : 450;
-            double h = a.height > 10 ? a.height : 300;
-            photograph.load(w, h);
+            var path = photograph.file.get_path();
+            var pb = new Gdk.Pixbuf.from_file(path);
+            double scale = 1.0;
+            if (pb.width > pb.height)
+                scale = ((double)MAX_LENGTH) / pb.width;
+            else
+                scale = ((double)MAX_LENGTH) / pb.height;
+            pixbufs[path] = pb.scale_simple((int)(pb.width * scale),
+                                            (int)(pb.height * scale),
+                                            Gdk.InterpType.HYPER);
         }
     }
 }

@@ -29,6 +29,7 @@ champlain = dependency('champlain-0.12')
 clutter_gtk = dependency('clutter-gtk-1.0')
 gee = dependency('gee-0.8')
 gexiv2 = dependency('gexiv2')
+gdk = dependency('gdk-3.0')
 gtk = dependency('gtk+-3.0')
 
 conf = configuration_data()
@@ -48,6 +49,41 @@ configure_file(output: 'config.h',
 
 gnome = import('gnome')
 
+gqpelib_sources = [
+  'lib/namespace.vala',
+  'lib/orientation.vala',
+  'lib/photograph.vala',
+  'lib/tag.vala',
+]
+
+gqpelib_dependencies = [
+  gdk,
+  gee,
+  gexiv2,
+  math
+]
+
+gqpelib = static_library('gqpe', gqpelib_sources,
+                         dependencies: gqpelib_dependencies)
+
+gqpelib_includes = include_directories('lib')
+
+gqpetags_sources = [
+  'src/tags.vala'
+]
+
+gqpetags_dependencies = [
+  gdk,
+  gee,
+  gexiv2,
+  math
+]
+
+executable('gqpe-tags', gqpetags_sources,
+           dependencies: gqpetags_dependencies,
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
+
 gresources = gnome.compile_resources(
   'gresources', 'data/gqpe.gresource.xml',
   source_dir: 'data',
@@ -57,9 +93,6 @@ gqpe_vala_sources = [
   'src/application-window.vala',
   'src/application.vala',
   'src/namespace.vala',
-  'src/orientation.vala',
-  'src/photograph.vala',
-  'src/tag.vala',
   'src/application-main.vala'
 ]
 
@@ -76,7 +109,8 @@ gqpe_dependencies = [
 
 executable('gqpe', gqpe_sources,
            dependencies: gqpe_dependencies,
-           install: true)
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
 
 if valadoc.found()
   docdir = 'doc'
