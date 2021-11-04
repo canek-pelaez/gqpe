@@ -125,74 +125,6 @@
           </object>
         </child>
         <child>
-          <object class="GtkBox" id="zoom_box">
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="spacing">0</property>
-            <property name="orientation">horizontal</property>
-            <child>
-              <object class="GtkButton" id="zoom_in">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Zoom in</property>
-                <signal name="clicked" handler="on_zoom_in_clicked" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="zoom_in_image">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="icon-name">zoom-in-symbolic</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="pack-type">start</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="zoom_out">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Zoom out</property>
-                <signal name="clicked" handler="on_zoom_out_clicked" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="zoom_out_image">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="icon-name">zoom-out-symbolic</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="pack-type">start</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="zoom_fit">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="tooltip-text" translatable="yes">Zoom fit best</property>
-                <signal name="clicked" handler="on_zoom_fit_clicked" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="zoom_fit_image">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="icon-name">zoom-fit-best-symbolic</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="pack-type">start</property>
-              </packing>
-            </child>
-            <style>
-              <class name="linked"/>
-            </style>
-          </object>
-        </child>
-        <child>
           <object class="GtkBox" id="window_box">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
@@ -277,8 +209,8 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="shadow-type">GTK_SHADOW_NONE</property>
-                            <property name="width-request">450</property>
-                            <property name="height-request">300</property>
+                            <property name="width-request">500</property>
+                            <property name="height-request">500</property>
                             <property name="hscrollbar-policy">automatic</property>
                             <property name="vscrollbar-policy">automatic</property>
                             <child>
@@ -352,6 +284,23 @@
                           </packing>
                         </child>
                         <child>
+                          <object class="GtkEntry" id="date_time">
+                            <property name="visible">True</property>
+                            <property name="sensitive">False</property>
+                            <property name="can-focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="invisible-char">●</property>
+                            <property name="invisible-char-set">True</property>
+                            <signal name="activate" handler="on_data_activated" swapped="no"/>
+                            <signal name="changed" handler="on_data_changed" swapped="no"/>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkScrolledWindow" id="comment_scroll">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
@@ -376,7 +325,7 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">True</property>
-                            <property name="position">2</property>
+                            <property name="position">3</property>
                           </packing>
                         </child>
                         <child>

@@ -39,7 +39,9 @@ namespace GQPE {
         /**
          * The photograph orientation.
          */
-        private Orientation orientation;
+        public Orientation orientation {
+            get; set; default = Orientation.LANDSCAPE;
+        }
 
         /**
          * The album of the photograph.
@@ -112,28 +114,26 @@ namespace GQPE {
             metadata = new GExiv2.Metadata();
             metadata.open_path(file.get_path());
 
-            // if (metadata.has_tag(Tag.ORIENTATION.to_string())) {
-            //     orientation = (Orientation)
-            //         metadata.try_get_tag_long(Tag.ORIENTATION.to_string());
-            // } else {
-            orientation = Orientation.LANDSCAPE;
-            // }
+            if (metadata.has_tag(Tag.ORIENTATION.tag())) {
+                orientation = (Orientation)
+                    metadata.try_get_tag_long(Tag.ORIENTATION.tag());
+            }
 
-            if (metadata.has_tag(Tag.LATITUDE.to_string())     &&
-                metadata.has_tag(Tag.LONGITUDE.to_string())    &&
-                metadata.has_tag(Tag.LATITUDE_REF.to_string()) &&
-                metadata.has_tag(Tag.LONGITUDE_REF.to_string())) {
+            if (metadata.has_tag(Tag.LATITUDE.tag())     &&
+                metadata.has_tag(Tag.LONGITUDE.tag())    &&
+                metadata.has_tag(Tag.LATITUDE_REF.tag()) &&
+                metadata.has_tag(Tag.LONGITUDE_REF.tag())) {
                 string lat =
-                    metadata.try_get_tag_string(Tag.LATITUDE.to_string());
+                    metadata.try_get_tag_string(Tag.LATITUDE.tag());
                 string lon =
-                    metadata.try_get_tag_string(Tag.LONGITUDE.to_string());
+                    metadata.try_get_tag_string(Tag.LONGITUDE.tag());
                 latitude  = decimals_to_double(lat);
                 longitude = decimals_to_double(lon);
                 if (metadata.try_get_tag_string(
-                        Tag.LATITUDE_REF.to_string()) == "S")
+                        Tag.LATITUDE_REF.tag()) == "S")
                     latitude *= -1.0;
                 if (metadata.try_get_tag_string(
-                        Tag.LONGITUDE_REF.to_string()) == "W")
+                        Tag.LONGITUDE_REF.tag()) == "W")
                     longitude *= -1.0;
                 has_geolocation = true;
             }
@@ -145,40 +145,40 @@ namespace GQPE {
          * Rotates the photograph 90° to the left.
          */
         public void rotate_left() {
-            // switch (orientation) {
-            // case Orientation.PORTRAIT:
-            //     orientation = Orientation.LANDSCAPE;
-            //     break;
-            // case Orientation.LANDSCAPE:
-            //     orientation = Orientation.REVERSE_PORTRAIT;
-            //     break;
-            // case Orientation.REVERSE_PORTRAIT:
-            //     orientation = Orientation.REVERSE_LANDSCAPE;
-            //     break;
-            // case Orientation.REVERSE_LANDSCAPE:
-            //     orientation = Orientation.PORTRAIT;
-            //     break;
-            // }
+            switch (orientation) {
+            case Orientation.PORTRAIT:
+                orientation = Orientation.LANDSCAPE;
+                break;
+            case Orientation.LANDSCAPE:
+                orientation = Orientation.REVERSE_PORTRAIT;
+                break;
+            case Orientation.REVERSE_PORTRAIT:
+                orientation = Orientation.REVERSE_LANDSCAPE;
+                break;
+            case Orientation.REVERSE_LANDSCAPE:
+                orientation = Orientation.PORTRAIT;
+                break;
+            }
         }
 
         /**
          * Rotates the photograph 90° to the right.
          */
         public void rotate_right() {
-            // switch (orientation) {
-            // case Orientation.PORTRAIT:
-            //     orientation = Orientation.REVERSE_LANDSCAPE;
-            //     break;
-            // case Orientation.REVERSE_LANDSCAPE:
-            //     orientation = Orientation.REVERSE_PORTRAIT;
-            //     break;
-            // case Orientation.REVERSE_PORTRAIT:
-            //     orientation = Orientation.LANDSCAPE;
-            //     break;
-            // case Orientation.LANDSCAPE:
-            //     orientation = Orientation.PORTRAIT;
-            //     break;
-            // }
+            switch (orientation) {
+            case Orientation.PORTRAIT:
+                orientation = Orientation.REVERSE_LANDSCAPE;
+                break;
+            case Orientation.REVERSE_LANDSCAPE:
+                orientation = Orientation.REVERSE_PORTRAIT;
+                break;
+            case Orientation.REVERSE_PORTRAIT:
+                orientation = Orientation.LANDSCAPE;
+                break;
+            case Orientation.LANDSCAPE:
+                orientation = Orientation.PORTRAIT;
+                break;
+            }
         }
 
         /**
@@ -191,40 +191,44 @@ namespace GQPE {
             metadata.save_file(file.get_path());
         }
 
+        /* Updates the date time. */
+        private void update_date_time() {
+            var dt = metadata.try_get_tag_string(
+                Tag.DATE_TIME.tag()).strip();
+            var s = dt.split(" ");
+            var d = s[0].split(":");
+            var t = s[1].split(":");
+            int year = int.parse(d[0]);
+            int month = int.parse(d[1]);
+            int day = int.parse(d[2]);
+            int hour = int.parse(t[0]);
+            int minute = int.parse(t[1]);
+            int second = int.parse(t[2]);
+            int offset = (int)(
+                metadata.has_tag(Tag.TIMEZONE_OFFSET.tag()) ?
+                metadata.try_get_tag_long(
+                    Tag.TIMEZONE_OFFSET.tag()) : 0);
+            var tz = new GLib.TimeZone.offset(offset * 60 * 60);
+            date_time = new GLib.DateTime(tz, year, month, day,
+                                          hour, minute, second);
+        }
+
         /* Updates the data from the metadata. */
         private void update_data() throws GLib.Error {
             try {
-                if (metadata.has_tag(Tag.DATE_TIME.to_string())) {
-                    var dt = metadata.try_get_tag_string(
-                        Tag.DATE_TIME.to_string()).strip();
-                    var s = dt.split(" ");
-                    var d = s[0].split(":");
-                    var t = s[1].split(":");
-                    int year = int.parse(d[0]);
-                    int month = int.parse(d[1]);
-                    int day = int.parse(d[2]);
-                    int hour = int.parse(t[0]);
-                    int minute = int.parse(t[1]);
-                    int second = int.parse(t[2]);
-                    int offset = (int)(
-                        metadata.has_tag(Tag.TIMEZONE_OFFSET.to_string()) ?
-                        metadata.try_get_tag_long(
-                            Tag.TIMEZONE_OFFSET.to_string()) : 0);
-                    var tz = new GLib.TimeZone.offset(offset * 60 * 60);
-                    date_time = new GLib.DateTime(tz, year, month, day,
-                                                  hour, minute, second);
-                } else {
+                if (metadata.has_tag(Tag.DATE_TIME.tag()))
+                    update_date_time();
+                else
                     date_time = new GLib.DateTime.now_utc();
-                }
-                album = (metadata.has_tag(Tag.SUBJECT.to_string())) ?
+                album = (metadata.has_tag(Tag.SUBJECT.tag())) ?
                     metadata.try_get_tag_string(
-                        Tag.SUBJECT.to_string()).strip() : "";
-                caption = (metadata.has_tag(Tag.CAPTION.to_string())) ?
+                        Tag.SUBJECT.tag()).strip() : "";
+                caption = (metadata.has_tag(Tag.CAPTION.tag())) ?
                     metadata.try_get_tag_string(
-                        Tag.CAPTION.to_string()).strip() : "";
-                comment = (metadata.has_tag(Tag.DESCRIPTION.to_string())) ?
+                        Tag.CAPTION.tag()).strip() : "";
+                comment = (metadata.has_tag(Tag.DESCRIPTION.tag())) ?
                     metadata.try_get_tag_string(
-                        Tag.DESCRIPTION.to_string()).strip() : "";
+                        Tag.DESCRIPTION.tag()).strip() : "";
             } catch (GLib.Error e) {
                 GLib.warning(@"Error getting tag: $(e.message)");
             }
@@ -232,21 +236,17 @@ namespace GQPE {
 
         /* Updates the text tags. */
         private void update_text_tags() throws GLib.Error {
-            metadata.clear_tag(Tag.SUBJECT.to_string());
-            metadata.try_set_tag_string(Tag.SUBJECT.to_string(),
-                                        album);
-            metadata.clear_tag(Tag.CAPTION.to_string());
-            metadata.try_set_tag_string(Tag.CAPTION.to_string(),
-                                        caption);
-            metadata.clear_tag(Tag.DESCRIPTION.to_string());
-            metadata.try_set_tag_string(Tag.DESCRIPTION.to_string(),
-                                        comment);
-            metadata.try_set_tag_long(Tag.ORIENTATION.to_string(),
-                                      orientation);
+            metadata.clear_tag(Tag.SUBJECT.tag());
+            metadata.try_set_tag_string(Tag.SUBJECT.tag(), album);
+            metadata.clear_tag(Tag.CAPTION.tag());
+            metadata.try_set_tag_string(Tag.CAPTION.tag(), caption);
+            metadata.clear_tag(Tag.DESCRIPTION.tag());
+            metadata.try_set_tag_string(Tag.DESCRIPTION.tag(), comment);
+            metadata.try_set_tag_long(Tag.ORIENTATION.tag(), _orientation);
             metadata.save_file(file.get_path());
-            if (metadata.has_tag(Tag.THUMB_ORIENTATION.to_string()))
-                metadata.try_set_tag_long(Tag.THUMB_ORIENTATION.to_string(),
-                                          orientation);
+            if (metadata.has_tag(Tag.THUMB_ORIENTATION.tag()))
+                metadata.try_set_tag_long(Tag.THUMB_ORIENTATION.tag(),
+                                          _orientation);
         }
 
         /* Updates the geolocation tags. */
@@ -259,40 +259,33 @@ namespace GQPE {
             var lon_ref = (longitude < 0.0) ? "W" : "E";
             var slat = double_to_decimals(lat);
             var slon = double_to_decimals(lon);
-            metadata.try_set_tag_string(Tag.LATITUDE.to_string(),
-                                        slat);
-            metadata.try_set_tag_string(Tag.LONGITUDE.to_string(),
-                                        slon);
-            metadata.try_set_tag_string(Tag.LATITUDE_REF.to_string(),
-                                        lat_ref);
-            metadata.try_set_tag_string(Tag.LONGITUDE_REF.to_string(),
-                                        lon_ref);
-            if (!metadata.has_tag(Tag.GPS_TAG.to_string()))
-                metadata.try_set_tag_long(Tag.GPS_TAG.to_string(),
-                                          DEFAULT_GPS_TAG);
-            if (!metadata.has_tag(Tag.GPS_VERSION.to_string()))
-                metadata.try_set_tag_string(Tag.GPS_VERSION.to_string(),
+            metadata.try_set_tag_string(Tag.LATITUDE.tag(), slat);
+            metadata.try_set_tag_string(Tag.LONGITUDE.tag(), slon);
+            metadata.try_set_tag_string(Tag.LATITUDE_REF.tag(), lat_ref);
+            metadata.try_set_tag_string(Tag.LONGITUDE_REF.tag(), lon_ref);
+            if (!metadata.has_tag(Tag.GPS_TAG.tag()))
+                metadata.try_set_tag_long(Tag.GPS_TAG.tag(), DEFAULT_GPS_TAG);
+            if (!metadata.has_tag(Tag.GPS_VERSION.tag()))
+                metadata.try_set_tag_string(Tag.GPS_VERSION.tag(),
                                             DEFAULT_GPS_VERSION);
-            if (!metadata.has_tag(Tag.GPS_DATUM.to_string()))
-                metadata.try_set_tag_string(Tag.GPS_DATUM.to_string(),
+            if (!metadata.has_tag(Tag.GPS_DATUM.tag()))
+                metadata.try_set_tag_string(Tag.GPS_DATUM.tag(),
                                             DEFAULT_GPS_DATUM);
-            if (!metadata.has_tag(Tag.GPS_DATE.to_string()))
-                metadata.try_set_tag_string(Tag.GPS_DATE.to_string(),
-                                            get_gps_date());
-            if (!metadata.has_tag(Tag.GPS_TIME.to_string()))
-                metadata.try_set_tag_string(Tag.GPS_TIME.to_string(),
-                                            get_gps_time());
+            if (!metadata.has_tag(Tag.GPS_DATE.tag()))
+                metadata.try_set_tag_string(Tag.GPS_DATE.tag(), get_gps_date());
+            if (!metadata.has_tag(Tag.GPS_TIME.tag()))
+                metadata.try_set_tag_string(Tag.GPS_TIME.tag(), get_gps_time());
         }
 
         /* Gets the GPS date. */
         private string get_gps_date() throws GLib.Error {
-            var date = metadata.try_get_tag_string(Tag.DATE_TIME.to_string());
+            var date = metadata.try_get_tag_string(Tag.DATE_TIME.tag());
             return parse_triad(date.split(" ")[0]);
         }
 
         /* Gets the GPS time. */
         private string get_gps_time() throws GLib.Error {
-            var date = metadata.try_get_tag_string(Tag.DATE_TIME.to_string());
+            var date = metadata.try_get_tag_string(Tag.DATE_TIME.tag());
             return parse_triad(date.split(" ")[1]);
         }
 

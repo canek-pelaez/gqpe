@@ -31,9 +31,6 @@ namespace GQPE {
             NEXT         = 1 << 1,
             ROTATE_LEFT  = 1 << 2,
             ROTATE_RIGHT = 1 << 3,
-            ZOOM_IN      = 1 << 4,
-            ZOOM_OUT     = 1 << 5,
-            ZOOM_FIT     = 1 << 6,
             PIN_MAP      = 1 << 7,
             SAVE         = 1 << 8,
             ALBUM        = 1 << 9,
@@ -54,7 +51,7 @@ namespace GQPE {
         /* Maximum length for the caption. */
         private const int CAPTION_LENGTH = 40;
         /* Max length. */
-        private const int MAX_LENGTH = 600;
+        private const int MAX_LENGTH = 500;
 
         /* The head bar. */
         [GtkChild]
@@ -71,24 +68,12 @@ namespace GQPE {
         /* The rotate right button. */
         [GtkChild]
         private unowned Gtk.Button rotate_right;
-        /* The zoom in button. */
-        [GtkChild]
-        private unowned Gtk.Button zoom_in;
-        /* The zoom out button. */
-        [GtkChild]
-        private unowned Gtk.Button zoom_out;
-        /* The zoom fit button. */
-        [GtkChild]
-        private unowned Gtk.Button zoom_fit;
         /* The pin map button. */
         [GtkChild]
         private unowned Gtk.Button pin_map;
         /* The save button. */
         [GtkChild]
         private unowned Gtk.Button save;
-        /* The image scroll. */
-        [GtkChild]
-        private unowned Gtk.ScrolledWindow image_scroll;
         /* The image label. */
         [GtkChild]
         private unowned Gtk.Label label;
@@ -101,6 +86,9 @@ namespace GQPE {
         /* The caption entry. */
         [GtkChild]
         private unowned Gtk.Entry caption;
+        /* The date time entry. */
+        [GtkChild]
+        private unowned Gtk.Entry date_time;
         /* The comment text view. */
         [GtkChild]
         private unowned Gtk.TextView comment;
@@ -193,15 +181,6 @@ namespace GQPE {
         /* Control shortcuts. */
         private void control_shortcuts(uint event_key) {
             switch (event_key) {
-            case Gdk.Key.KP_Add:
-                on_zoom_in_clicked();
-                break;
-            case Gdk.Key.KP_Subtract:
-                on_zoom_out_clicked();
-                break;
-            case Gdk.Key.KP_Multiply:
-                on_zoom_fit_clicked();
-                break;
             case Gdk.Key.S:
                 on_data_activated();
                 break;
@@ -282,43 +261,6 @@ namespace GQPE {
         public void on_rotate_right_clicked() {
             if (rotate_right.sensitive)
                 rotate(Rotate.RIGHT);
-        }
-
-        /**
-         * Callback for zoom in.
-         */
-        [GtkCallback]
-        public void on_zoom_in_clicked() {
-            if (!zoom_in.sensitive)
-                return;
-            // photograph.scale_by_factor(1.1);
-            // image.set_from_pixbuf(photograph.pixbuf);
-        }
-
-        /**
-         * Callback for zoom out.
-         */
-        [GtkCallback]
-        public void on_zoom_out_clicked() {
-            if (!zoom_out.sensitive)
-                return;
-            // photograph.scale_by_factor(0.9);
-            // image.set_from_pixbuf(photograph.pixbuf);
-        }
-
-        /**
-         * Callback for zoom fit.
-         */
-        [GtkCallback]
-        public void on_zoom_fit_clicked() {
-            if (!zoom_fit.sensitive)
-                return;
-            double w = image_scroll.get_allocated_width();
-            double h = image_scroll.get_allocated_height();
-            if (w <= 0.0 || h <= 0.0)
-                return;
-            // photograph.resize(w, h);
-            // image.set_from_pixbuf(photograph.pixbuf);
         }
 
         /**
@@ -474,12 +416,6 @@ namespace GQPE {
                 rotate_left.sensitive = s;
             if ((items & Item.ROTATE_RIGHT) != 0)
                 rotate_right.sensitive = s;
-            if ((items & Item.ZOOM_IN) != 0)
-                zoom_in.sensitive = s;
-            if ((items & Item.ZOOM_OUT) != 0)
-                zoom_out.sensitive = s;
-            if ((items & Item.ZOOM_FIT) != 0)
-                zoom_fit.sensitive = s;
             if ((items & Item.PIN_MAP) != 0)
                 pin_map.sensitive = s;
             if ((items & Item.SAVE) != 0)
@@ -557,6 +493,7 @@ namespace GQPE {
             header.subtitle = "%d / %d".printf(index, photographs.size);
             album.text = photograph.album;
             caption.text = photograph.caption;
+            date_time.text = photograph.date_time.format("%Y/%m/%d %H:%M:%S [%z]");
             check_entries_length();
             comment.buffer.text = photograph.comment;
             caption.grab_focus();
@@ -650,6 +587,19 @@ namespace GQPE {
             throws GLib.Error {
             var path = photograph.file.get_path();
             var pb = new Gdk.Pixbuf.from_file(path);
+            switch (photograph.orientation) {
+            case Orientation.LANDSCAPE:
+                break;
+            case Orientation.REVERSE_LANDSCAPE:
+                pb = pb.rotate_simple(Gdk.PixbufRotation.UPSIDEDOWN);
+                break;
+            case Orientation.PORTRAIT:
+                pb = pb.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
+                break;
+            case Orientation.REVERSE_PORTRAIT:
+                pb = pb.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
+                break;
+            }
             double scale = 1.0;
             if (pb.width > pb.height)
                 scale = ((double)MAX_LENGTH) / pb.width;

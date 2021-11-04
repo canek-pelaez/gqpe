@@ -104,7 +104,7 @@ namespace GQPE {
          */
         GPS_TIME;
 
-        public string to_string() {
+        public string tag() {
             switch (this) {
             case DATE_TIME:         return "Exif.Photo.DateTimeOriginal";
             case TIMEZONE_OFFSET:   return "Exif.Image.TimeZoneOffset";

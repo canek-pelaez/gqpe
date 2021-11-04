@@ -57,7 +57,6 @@ gqpelib_sources = [
 ]
 
 gqpelib_dependencies = [
-  gdk,
   gee,
   gexiv2,
   math
@@ -101,6 +100,7 @@ gqpe_sources = gqpe_vala_sources + [ gresources ]
 gqpe_dependencies = [
   champlain,
   clutter_gtk,
+  gdk,
   gee,
   gexiv2,
   gtk,
