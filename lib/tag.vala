@@ -27,7 +27,7 @@ namespace GQPE {
         /**
          * Date and time tag.
          */
-        DATE_TIME,
+        DATETIME,
 
         /**
          * The timezone offset
@@ -106,7 +106,7 @@ namespace GQPE {
 
         public string tag() {
             switch (this) {
-            case DATE_TIME:         return "Exif.Photo.DateTimeOriginal";
+            case DATETIME:         return "Exif.Photo.DateTimeOriginal";
             case TIMEZONE_OFFSET:   return "Exif.Image.TimeZoneOffset";
             case ORIENTATION:       return "Exif.Image.Orientation";
             case THUMB_ORIENTATION: return "Exif.Thumbnail.Orientation";

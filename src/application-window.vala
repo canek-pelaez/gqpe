@@ -86,9 +86,9 @@ namespace GQPE {
         /* The caption entry. */
         [GtkChild]
         private unowned Gtk.Entry caption;
-        /* The date time entry. */
+        /* The datetime entry. */
         [GtkChild]
-        private unowned Gtk.Entry date_time;
+        private unowned Gtk.Entry datetime;
         /* The comment text view. */
         [GtkChild]
         private unowned Gtk.TextView comment;
@@ -277,7 +277,7 @@ namespace GQPE {
          */
         [GtkCallback]
         public void on_save_clicked() {
-            if (!save.sensitive)
+            if (!photograph.modified)
                 return;
             try {
                 photograph.save_metadata();
@@ -482,6 +482,8 @@ namespace GQPE {
             enable_ui(Item.PICTURE);
             if (!photograph.has_geolocation)
                 disable_ui(Item.PIN_MAP);
+            if (photograph.modified)
+                enable_ui(Item.SAVE);
         }
 
         /* Updates the data. */
@@ -493,7 +495,7 @@ namespace GQPE {
             header.subtitle = "%d / %d".printf(index, photographs.size);
             album.text = photograph.album;
             caption.text = photograph.caption;
-            date_time.text = photograph.date_time.format("%Y/%m/%d %H:%M:%S [%z]");
+            datetime.text = photograph.datetime.format("%Y/%m/%d %H:%M:%S [%z]");
             check_entries_length();
             comment.buffer.text = photograph.comment;
             caption.grab_focus();
@@ -549,8 +551,7 @@ namespace GQPE {
             double longitude = view.x_to_longitude(event.x);
 
             if (event.button == 1) {
-                photograph.latitude = latitude;
-                photograph.longitude = longitude;
+                photograph.set_coordinates(latitude, longitude);
                 update_map_location();
                 enable_ui(Item.PIN_MAP|Item.SAVE);
             } else if (event.button == 2) {

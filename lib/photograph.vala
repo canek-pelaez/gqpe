@@ -34,7 +34,7 @@ namespace GQPE {
         /**
          * The date and time of the photograph.
          */
-        public GLib.DateTime date_time { get; set; }
+        public GLib.DateTime datetime { get; set; }
 
         /**
          * The photograph orientation.
@@ -61,20 +61,12 @@ namespace GQPE {
         /**
          * The latitude coordinate.
          */
-        public double latitude {
-            get { return _latitude; }
-            set { _latitude = value; has_geolocation = true; }
-        }
-        private double _latitude;
+        public double latitude { get; private set; }
 
         /**
          * The longitude coordinate.
          */
-        public double longitude {
-            get { return _longitude; }
-            set { _longitude = value; has_geolocation = true; }
-        }
-        private double _longitude;
+        public double longitude { get; private set; }
 
         /**
          * The GPS tag.
@@ -90,6 +82,11 @@ namespace GQPE {
          * The GPS datum.
          */
         public string gps_datum { get; set; }
+
+        /**
+         * Whether the photograph has been modified.
+         */
+        public bool modified { get; private set; default = false; }
 
         /**
          * The file for the photograph.
@@ -189,37 +186,106 @@ namespace GQPE {
             update_text_tags();
             update_geolocation_tags();
             metadata.save_file(file.get_path());
+            modified = false;
         }
 
-        /* Updates the date time. */
-        private void update_date_time() {
-            var dt = metadata.try_get_tag_string(
-                Tag.DATE_TIME.tag()).strip();
-            var s = dt.split(" ");
-            var d = s[0].split(":");
-            var t = s[1].split(":");
-            int year = int.parse(d[0]);
-            int month = int.parse(d[1]);
-            int day = int.parse(d[2]);
-            int hour = int.parse(t[0]);
-            int minute = int.parse(t[1]);
-            int second = int.parse(t[2]);
+        public void set_coordinates(double latitude, double longitude) {
+            has_geolocation = true;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            modified = true;
+        }
+
+        /* Calculates the timezone. */
+        private GLib.TimeZone get_time_zone() throws GLib.Error {
             int offset = (int)(
                 metadata.has_tag(Tag.TIMEZONE_OFFSET.tag()) ?
                 metadata.try_get_tag_long(
                     Tag.TIMEZONE_OFFSET.tag()) : 0);
-            var tz = new GLib.TimeZone.offset(offset * 60 * 60);
-            date_time = new GLib.DateTime(tz, year, month, day,
-                                          hour, minute, second);
+            return new GLib.TimeZone.offset(offset * 60 * 60);
+        }
+
+        /* Updates the date and time from full data. */
+        private void update_datetime_full(GLib.TimeZone tz,
+                                          int year, int month, int day,
+                                          int hour, int minute, int second) {
+            datetime = new GLib.DateTime(tz,
+                                         year, month, day,
+                                         hour, minute, second);
+        }
+
+        /* Updates the date and time. */
+        private void update_datetime() throws GLib.Error {
+            var dt = metadata.try_get_tag_string(
+                Tag.DATETIME.tag()).strip();
+            var s = dt.split(" ");
+            var d = s[0].split(":");
+            var t = s[1].split(":");
+            update_datetime_full(get_time_zone(),
+                                 int.parse(d[0]), int.parse(d[1]),
+                                 int.parse(d[2]), int.parse(t[0]),
+                                 int.parse(t[1]), int.parse(t[2]));
+        }
+
+        /* Updates the date and time from GPS. */
+        private void update_datetime_gps() throws GLib.Error {
+            var dt = get_gps_datetime();
+            update_datetime_full(get_time_zone(),
+                                 dt.get_year(), dt.get_month(),
+                                 dt.get_day_of_month(), dt.get_hour(),
+                                 dt.get_minute(), dt.get_second());
+        }
+
+        /* Checks the GPS datetime against the datetime. */
+        private void check_gps_datetime() throws GLib.Error {
+            var dt = get_gps_datetime();
+            if (datetime.get_year()         != dt.get_year()         ||
+                datetime.get_month()        != dt.get_month()        ||
+                datetime.get_day_of_month() != dt.get_day_of_month() ||
+                datetime.get_hour()         != dt.get_hour()         ||
+                datetime.get_minute()       != dt.get_minute()       ||
+                datetime.get_second()       != dt.get_second())
+                set_gps_datetime(datetime);
+        }
+
+        /* Gets the GPS datetime. */
+        private GLib.DateTime get_gps_datetime() throws GLib.Error {
+            if (!has_geolocation)
+                return new GLib.DateTime.from_unix_utc(0);
+            var date = metadata.try_get_tag_string(Tag.GPS_DATE.tag()).strip();
+            var time = metadata.try_get_tag_string(Tag.GPS_TIME.tag()).strip();
+            double[] dd = decimals_to_doubles(date);
+            double[] td = decimals_to_doubles(time);
+            return new GLib.DateTime(get_time_zone(),
+                                     (int)dd[0], (int)dd[1], (int)dd[2],
+                                     (int)td[0], (int)td[1], (int)td[2]);
+        }
+
+        /* Sets the GPS datetime. */
+        private void set_gps_datetime(GLib.DateTime datetime)
+            throws GLib.Error {
+            var date = "%d/1 %d/1 %d/1".printf(datetime.get_year(),
+                                               datetime.get_month(),
+                                               datetime.get_day_of_month());
+            var time = "%d/1 %d/1 %d/1".printf(datetime.get_hour(),
+                                               datetime.get_minute(),
+                                               datetime.get_second());
+            metadata.try_set_tag_string(Tag.GPS_DATE.tag(), date);
+            metadata.try_set_tag_string(Tag.GPS_TIME.tag(), time);
+            modified = true;
         }
 
         /* Updates the data from the metadata. */
         private void update_data() throws GLib.Error {
             try {
-                if (metadata.has_tag(Tag.DATE_TIME.tag()))
-                    update_date_time();
-                else
-                    date_time = new GLib.DateTime.now_utc();
+                if (metadata.has_tag(Tag.DATETIME.tag())) {
+                    update_datetime();
+                } else if (has_geolocation) {
+                    update_datetime_gps();
+                } else {
+                    datetime = new GLib.DateTime.now_utc();
+                }
+                check_gps_datetime();
                 album = (metadata.has_tag(Tag.SUBJECT.tag())) ?
                     metadata.try_get_tag_string(
                         Tag.SUBJECT.tag()).strip() : "";
@@ -247,6 +313,7 @@ namespace GQPE {
             if (metadata.has_tag(Tag.THUMB_ORIENTATION.tag()))
                 metadata.try_set_tag_long(Tag.THUMB_ORIENTATION.tag(),
                                           _orientation);
+            modified = true;
         }
 
         /* Updates the geolocation tags. */
@@ -275,17 +342,18 @@ namespace GQPE {
                 metadata.try_set_tag_string(Tag.GPS_DATE.tag(), get_gps_date());
             if (!metadata.has_tag(Tag.GPS_TIME.tag()))
                 metadata.try_set_tag_string(Tag.GPS_TIME.tag(), get_gps_time());
+            modified = true;
         }
 
         /* Gets the GPS date. */
         private string get_gps_date() throws GLib.Error {
-            var date = metadata.try_get_tag_string(Tag.DATE_TIME.tag());
+            var date = metadata.try_get_tag_string(Tag.DATETIME.tag());
             return parse_triad(date.split(" ")[0]);
         }
 
         /* Gets the GPS time. */
         private string get_gps_time() throws GLib.Error {
-            var date = metadata.try_get_tag_string(Tag.DATE_TIME.tag());
+            var date = metadata.try_get_tag_string(Tag.DATETIME.tag());
             return parse_triad(date.split(" ")[1]);
         }
 
@@ -334,11 +402,17 @@ namespace GQPE {
 
         /* Converts GPS decimals to a double. */
         private double decimals_to_double(string decimals) {
+            double[] d = decimals_to_doubles(decimals);
+            return d[0] + d[1] / 60.0 + d[2] / 3600.0;
+        }
+
+        /* Converts decimals to an array of doubles. */
+        private double[] decimals_to_doubles(string decimals) {
             string[] s = decimals.split(" ");
             double[] d = { 0.0, 0.0, 0.0 };
             for (int i = 0; i < s.length; i++)
                 d[i] = decimal_to_double(s[i]);
-            return d[0] + d[1] / 60.0 + d[2] / 3600.0;
+            return d;
         }
     }
 }
