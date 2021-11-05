@@ -462,12 +462,10 @@ namespace GQPE {
             update_picture();
             update_data();
             update_map();
-            if (photograph != null) {
-                if (photograph.modified)
-                    enable_ui(Item.SAVE);
-            } else {
+            if (photograph != null && photograph.modified)
+                enable_ui(Item.SAVE);
+            else
                 disable_ui(Item.SAVE);
-            }
         }
 
         /* Updates the picture. */
