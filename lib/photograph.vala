@@ -194,7 +194,6 @@ namespace GQPE {
             has_geolocation = true;
             this.latitude = latitude;
             this.longitude = longitude;
-            modified = true;
         }
 
         /* Calculates the timezone. */
@@ -273,7 +272,6 @@ namespace GQPE {
                                                datetime.get_second());
             metadata.try_set_tag_string(Tag.GPS_DATE.tag(), date);
             metadata.try_set_tag_string(Tag.GPS_TIME.tag(), time);
-            modified = true;
         }
 
         /* Updates the data from the metadata. */
@@ -314,7 +312,6 @@ namespace GQPE {
             if (metadata.has_tag(Tag.THUMB_ORIENTATION.tag()))
                 metadata.try_set_tag_long(Tag.THUMB_ORIENTATION.tag(),
                                           _orientation);
-            modified = true;
         }
 
         /* Updates the geolocation tags. */
@@ -343,7 +340,6 @@ namespace GQPE {
                 metadata.try_set_tag_string(Tag.GPS_DATE.tag(), get_gps_date());
             if (!metadata.has_tag(Tag.GPS_TIME.tag()))
                 metadata.try_set_tag_string(Tag.GPS_TIME.tag(), get_gps_time());
-            modified = true;
         }
 
         /* Gets the GPS date. */
