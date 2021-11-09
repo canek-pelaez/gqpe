@@ -136,6 +136,7 @@ namespace GQPE {
             }
 
             update_data();
+            this.notify.connect ((s, p) => modified = true);
         }
 
         /**
