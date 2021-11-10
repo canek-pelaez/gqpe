@@ -1,8 +1,7 @@
-/* photograph.vala
- *
+/*
  * This file is part of gqpe.
  *
- * Copyright © 2013-2017 Canek Peláez Valdés
+ * Copyright © 2013-2021 Canek Peláez Valdés
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -174,6 +173,11 @@ namespace GQPE {
             modified = false;
         }
 
+        /**
+         * Sets the coordinates of the photograph.
+         * @param latitude the latitude in radians.
+         * @param longitude the longitude in radians.
+         */
         public void set_coordinates(double latitude, double longitude) {
             has_geolocation = true;
             this.latitude = latitude;
@@ -184,6 +188,21 @@ namespace GQPE {
                 gps_version = DEFAULT_GPS_VERSION;
             if (gps_datum == null)
                 gps_datum = DEFAULT_GPS_DATUM;
+        }
+
+        /**
+         * Compares the photograph with the one received.
+         * @param photograph the photograph to compare to.
+         * @return an integer less than zero if the photograph is less than the
+         *         one received; zero if they are both the same; and an integer
+         *         greater than zero otherwise.
+         */
+        public int compare_to(Photograph photograph) {
+            if (file.get_path() < photograph.file.get_path())
+                return -1;
+            if (file.get_path() > photograph.file.get_path())
+                return 1;
+            return 0;
         }
 
         /* Calculates the timezone. */
@@ -324,6 +343,7 @@ namespace GQPE {
             }
         }
 
+        /* Sets the metadata. */
         private void set_metadata() throws GLib.Error {
             metadata.clear_tag(Tag.TITLE.tag());
             metadata.try_set_tag_string(Tag.TITLE.tag(), title);
@@ -379,21 +399,6 @@ namespace GQPE {
                                                    datetime.get_minute(),
                                                    datetime.get_second());
             metadata.try_set_tag_string(Tag.GPS_TIME.tag(), gps_time);
-        }
-
-        /**
-         * Compares the photograph with the one received.
-         * @param photograph the photograph to compare to.
-         * @return an integer less than zero if the photograph is less than the
-         *         one received; zero if they are both the same; and an integer
-         *         greater than zero otherwise.
-         */
-        public int compare_to(Photograph photograph) {
-            if (file.get_path() < photograph.file.get_path())
-                return -1;
-            if (file.get_path() > photograph.file.get_path())
-                return 1;
-            return 0;
         }
 
         /* Converts a double to GPS decimals. */

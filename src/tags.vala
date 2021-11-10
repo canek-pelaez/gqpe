@@ -19,23 +19,41 @@
  */
 namespace GQPE {
 
+    /**
+     * Tags application.
+     */
     public class Tags {
 
-        private static string album;
+        /* The title argument. */
         private static string title;
+        /* The album argument. */
+        private static string album;
+        /* The comment argument. */
         private static string comment;
+        /* The orientation argument. */
         private static string s_orientation;
+        /* The orientation value. */
         private static int orientation;
+        /* The datetime argument. */
         private static string s_datetime;
+        /* The datetime value. */
         private static GLib.DateTime datetime;
+        /* The offset argument. */
         private static string s_offset;
+        /* The offset value. */
         private static int offset;
+        /* The latitude argument. */
         private static string s_latitude;
+        /* The latitude value. */
         private static double latitude;
+        /* The longitude argument. */
         private static string s_longitude;
+        /* The longitude value. */
         private static double longitude;
+        /* The shift_time argument. */
         private static int shift_time;
 
+        /* The options. */
         private const GLib.OptionEntry[] options = {
             { "title", 't', 0, GLib.OptionArg.STRING, ref title,
               "Set the title", "TITLE" },
@@ -58,12 +76,15 @@ namespace GQPE {
             { null }
         };
 
+        /* The option context. */
         private const string CONTEXT =
             "[FILENAME...] - Edit and show the image tags";
 
+        /* The option context. */
         private const string DESCRIPTION =
             """With no flags the tags are printed.""";
 
+        /* Loads the photograph. */
         private static Photograph get_photograph(string path) {
             Photograph photo = null;
             if (!FileUtils.test(path, FileTest.EXISTS)) {
@@ -80,7 +101,8 @@ namespace GQPE {
             return photo;
         }
 
-        private static string get_tag_box(string path) {
+        /* Returns the tags box. */
+        private static string get_tags_box(string path) {
             var photo = get_photograph(path);
             if (photo == null)
                 return "";
@@ -113,13 +135,15 @@ namespace GQPE {
             return box.to_string();
         }
 
+        /* Prints the tags. */
         private static void print_tags(string[] args) {
             string tags = "";
             for (int i = 1; i < args.length; i++)
-                tags += get_tag_box(args[i]);
+                tags += get_tags_box(args[i]);
             stderr.printf("%s", tags);
         }
 
+        /* Shifts time. */
         private static void do_shift_time(string[] args) {
             for (int i = 1; i < args.length; i++) {
                 var photo = get_photograph(args[i]);
@@ -130,6 +154,7 @@ namespace GQPE {
             }
         }
 
+        /* Handles the tag. */
         private static void handle_tag(string path) {
             var photo = get_photograph(path);
             if (photo == null)
@@ -160,6 +185,7 @@ namespace GQPE {
             save(photo);
         }
 
+        /* Saves the photograph. */
         private static void save(Photograph photo) {
             try {
                 photo.save_metadata();
@@ -169,7 +195,8 @@ namespace GQPE {
             }
         }
 
-        private static bool edit_props() {
+        /* Whether there will be properties edited. */
+        private static bool edit_properties() {
             return album != null || title != null ||
                 comment != null || orientation != -1 ||
                 latitude != double.MAX || longitude != double.MAX ||
@@ -198,7 +225,7 @@ namespace GQPE {
                 return 1;
             }
 
-            if (shift_time != 0 && edit_props()) {
+            if (shift_time != 0 && edit_properties()) {
                 stderr.printf("You cannot shift time and " +
                               "edit at the same time");
                 return 1;
@@ -252,7 +279,7 @@ namespace GQPE {
                 return 0;
             }
 
-            if (!edit_props()) {
+            if (!edit_properties()) {
                 print_tags(args);
                 return 0;
             }

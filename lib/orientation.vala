@@ -1,8 +1,7 @@
-/* orientation.vala
- *
+/*
  * This file is part of gqpe.
  *
- * Copyright © 2013-2017 Canek Peláez Valdés
+ * Copyright © 2013-2021 Canek Peláez Valdés
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -29,7 +28,7 @@ namespace GQPE {
         /**
          * 0° clockwise orientation.
          */
-        LANDSCAPE         = 1,
+        LANDSCAPE = 1,
 
         /**
          * 180° orientation.
@@ -39,12 +38,12 @@ namespace GQPE {
         /**
          * 90° orientation.
          */
-        PORTRAIT          = 6,
+        PORTRAIT = 6,
 
         /**
          * 270° orientation.
          */
-        REVERSE_PORTRAIT  = 8;
+        REVERSE_PORTRAIT = 8;
 
         public string to_string() {
             switch (this) {
@@ -56,6 +55,11 @@ namespace GQPE {
             }
         }
 
+        /**
+         * Parses a string into orientation.
+         * @param orientation the string to parse.
+         * @return the orientation parsed, or -1 if the string is not parseable.
+         */
         public static int parse_orientation(string orientation) {
             switch (orientation.down()) {
             case "landscape": return Orientation.LANDSCAPE;
