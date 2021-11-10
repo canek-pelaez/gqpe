@@ -34,7 +34,7 @@ namespace GQPE {
             PIN_MAP      = 1 << 7,
             SAVE         = 1 << 8,
             ALBUM        = 1 << 9,
-            CAPTION      = 1 << 10,
+            TITLE        = 1 << 10,
             COMMENT      = 1 << 11,
             NAVIGATION   = 0x003,
             PICTURE      = 0xFFC,
@@ -48,8 +48,8 @@ namespace GQPE {
         private const string CSS = "resource:///mx/unam/GQPE/gqpe.css";
         /* Maximum length for the album. */
         private const int ALBUM_LENGTH = 50;
-        /* Maximum length for the caption. */
-        private const int CAPTION_LENGTH = 40;
+        /* Maximum length for the title. */
+        private const int TITLE_LENGTH = 40;
         /* Max length. */
         private const int MAX_LENGTH = 500;
 
@@ -83,9 +83,9 @@ namespace GQPE {
         /* The album entry. */
         [GtkChild]
         private unowned Gtk.Entry album;
-        /* The caption entry. */
+        /* The title entry. */
         [GtkChild]
-        private unowned Gtk.Entry caption;
+        private unowned Gtk.Entry _title;
         /* The datetime entry. */
         [GtkChild]
         private unowned Gtk.Entry datetime;
@@ -308,10 +308,10 @@ namespace GQPE {
                 return;
             var a = album.text.strip();
             photograph.album = a;
-            var t = caption.text.strip();
+            var t = _title.text.strip();
             if (marker != null)
                 marker.text = t;
-            photograph.caption = t;
+            photograph.title = t;
             var c = comment.buffer.text.strip();
             photograph.comment = c;
             check_entries_length();
@@ -422,8 +422,8 @@ namespace GQPE {
                 save.sensitive = s;
             if ((items & Item.ALBUM) != 0)
                 album.sensitive = s;
-            if ((items & Item.CAPTION) != 0)
-                caption.sensitive = s;
+            if ((items & Item.TITLE) != 0)
+                _title.sensitive = s;
             if ((items & Item.COMMENT) != 0)
                 comment.sensitive = s;
         }
@@ -497,11 +497,11 @@ namespace GQPE {
             label.set_markup(markup);
             header.subtitle = "%d / %d".printf(index, photographs.size);
             album.text = photograph.album;
-            caption.text = photograph.caption;
+            _title.text = photograph.title;
             datetime.text = photograph.datetime.format("%Y/%m/%d %H:%M:%S [%z]");
             check_entries_length();
             comment.buffer.text = photograph.comment;
-            caption.grab_focus();
+            _title.grab_focus();
             updating = false;
         }
 
@@ -525,17 +525,17 @@ namespace GQPE {
                                 photograph.longitude);
             latitude.value = photograph.latitude;
             longitude.value = photograph.longitude;
-            marker.text = photograph.caption;
+            marker.text = photograph.title;
         }
 
         /* Creates a new marker. */
         private void create_marker() {
-            string photo_caption = (photograph.caption != "") ?
-                photograph.caption :
+            string photo_title = (photograph.title != "") ?
+                photograph.title :
                 "(%g,%g)".printf(photograph.latitude, photograph.longitude);
             Clutter.Color green = { 0xb6, 0xff, 0x80, 0xdd };
             Clutter.Color black = { 0x00, 0x00, 0x00, 0xff };
-            marker = new Champlain.Label.with_text(photo_caption,
+            marker = new Champlain.Label.with_text(photo_title,
                                                    "Serif 10",
                                                    null, null);
             marker.use_markup = true;
@@ -567,7 +567,7 @@ namespace GQPE {
         /* Checks the length of both entries. */
         private void check_entries_length() {
             check_entry_length(album, ALBUM_LENGTH);
-            check_entry_length(caption, CAPTION_LENGTH);
+            check_entry_length(_title, TITLE_LENGTH);
         }
 
         /* Checks the length of an entry. */

@@ -268,7 +268,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkEntry" id="caption">
+                          <object class="GtkEntry" id="_title">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="hexpand">True</property>

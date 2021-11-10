@@ -44,6 +44,28 @@ namespace GQPE {
         /**
          * 270° orientation.
          */
-        REVERSE_PORTRAIT  = 8
+        REVERSE_PORTRAIT  = 8;
+
+        public string to_string() {
+            switch (this) {
+            case LANDSCAPE: return "landscape";
+            case REVERSE_LANDSCAPE: return "reverse landscape";
+            case PORTRAIT: return "portrait";
+            case REVERSE_PORTRAIT: return "reverse portrait";
+            default: return "";
+            }
+        }
+
+        public static int parse_orientation(string orientation) {
+            switch (orientation.down()) {
+            case "landscape": return Orientation.LANDSCAPE;
+            case "reverse_landscape": return Orientation.REVERSE_LANDSCAPE;
+            case "reverse landscape": return Orientation.REVERSE_LANDSCAPE;
+            case "portrait": return Orientation.PORTRAIT;
+            case "reverse_portrait": return Orientation.REVERSE_PORTRAIT;
+            case "reverse portrait": return Orientation.REVERSE_PORTRAIT;
+            default: return -1;;
+            }
+        }
     }
 }

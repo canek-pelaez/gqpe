@@ -52,7 +52,7 @@ namespace GQPE {
         /**
          * Caption tag.
          */
-        CAPTION,
+        TITLE,
 
         /**
          * Description tag.
@@ -106,12 +106,12 @@ namespace GQPE {
 
         public string tag() {
             switch (this) {
-            case DATETIME:         return "Exif.Photo.DateTimeOriginal";
+            case DATETIME:          return "Exif.Photo.DateTimeOriginal";
             case TIMEZONE_OFFSET:   return "Exif.Image.TimeZoneOffset";
             case ORIENTATION:       return "Exif.Image.Orientation";
             case THUMB_ORIENTATION: return "Exif.Thumbnail.Orientation";
             case SUBJECT:           return "Xmp.dc.subject";
-            case CAPTION:           return "Iptc.Application2.Caption";
+            case TITLE:             return "Iptc.Application2.Caption";
             case DESCRIPTION:       return "Exif.Image.ImageDescription";
             case LATITUDE:          return "Exif.GPSInfo.GPSLatitude";
             case LONGITUDE:         return "Exif.GPSInfo.GPSLongitude";
