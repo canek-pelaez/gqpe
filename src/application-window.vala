@@ -497,7 +497,7 @@ namespace GQPE {
             header.subtitle = "%d / %d".printf(index, photographs.size);
             album.text = photograph.album;
             _title.text = photograph.title;
-            datetime.text = photograph.datetime.format("%Y/%m/%d %H:%M:%S [%z]");
+            datetime.text = photograph.datetime.format("%Y/%m/%d %H:%M:%S [%:z]");
             check_entries_length();
             comment.buffer.text = photograph.comment;
             _title.grab_focus();

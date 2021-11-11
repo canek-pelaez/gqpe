@@ -182,7 +182,11 @@ namespace GQPE {
             } else if (latitude != double.MAX && longitude != double.MAX) {
                 photo.set_coordinates(latitude, longitude);
             }
+            stderr.printf("Updating %s...\n",
+                          GLib.Filename.display_basename(path));
             save(photo);
+            stderr.printf("%s updated.\n",
+                          GLib.Filename.display_basename(path));
         }
 
         /* Saves the photograph. */
@@ -200,7 +204,7 @@ namespace GQPE {
             return album != null || title != null ||
                 comment != null || orientation != -1 ||
                 latitude != double.MAX || longitude != double.MAX ||
-                datetime != null;
+                datetime != null || offset != int.MAX;
         }
 
         public static int main(string[] args) {
