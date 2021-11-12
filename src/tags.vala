@@ -54,6 +54,7 @@ namespace GQPE {
         private static int shift_time;
         /* The print format argument. */
         private static string print_format;
+        private static bool quiet;
 
         /* The options. */
         private const GLib.OptionEntry[] options = {
@@ -77,6 +78,8 @@ namespace GQPE {
               "Shift the time in this amount of hours", "HOURS" },
             { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
               "Prints the tags with format", "FORMAT" },
+            { "quiet", 'q', 0, GLib.OptionArg.NONE, ref quiet,
+              "Be quiet", null },
             { null }
         };
 
@@ -231,11 +234,13 @@ namespace GQPE {
             } else if (latitude != double.MAX && longitude != double.MAX) {
                 photo.set_coordinates(latitude, longitude);
             }
-            stderr.printf("Updating %s...\n",
-                          GLib.Filename.display_basename(path));
+            if (!quiet)
+                stderr.printf("Updating %s...\n",
+                              GLib.Filename.display_basename(path));
             save(photo);
-            stderr.printf("%s updated.\n",
-                          GLib.Filename.display_basename(path));
+            if (!quiet)
+                stderr.printf("%s updated.\n",
+                              GLib.Filename.display_basename(path));
         }
 
         /* Saves the photograph. */
@@ -257,6 +262,7 @@ namespace GQPE {
         }
 
         public static int main(string[] args) {
+            quiet = false;
             orientation = -1;
             offset = int.MAX;
             latitude = longitude = double.MAX;
