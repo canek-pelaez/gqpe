@@ -50,8 +50,10 @@ namespace GQPE {
         private static string s_longitude;
         /* The longitude value. */
         private static double longitude;
-        /* The shift_time argument. */
+        /* The shift time argument. */
         private static int shift_time;
+        /* The print format argument. */
+        private static string print_format;
 
         /* The options. */
         private const GLib.OptionEntry[] options = {
@@ -73,16 +75,29 @@ namespace GQPE {
               "Set the longitude", "LONGITUDE" },
             { "shift-time", 's', 0, GLib.OptionArg.INT, ref shift_time,
               "Shift the time in this amount of hours", "HOURS" },
+            { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
+              "Prints the tags with format", "FORMAT" },
             { null }
         };
 
         /* The option context. */
         private const string CONTEXT =
-            "[FILENAME...] - Edit and show the image tags";
+            "[FILENAME...] - Edit and show the image tags.";
 
         /* The option context. */
         private const string DESCRIPTION =
-            """With no flags the tags are printed.""";
+            ("With no flags the tags are printed. An empty string " +
+             "as parameter\nremoves an individual tag.\n\n" +
+             "Format for printing:\n\n" +
+             "  %b: The basename\n" +
+             "  %t: The title\n" +
+             "  %a: The album\n" +
+             "  %D: The description\n" +
+             "  %T: The datetime\n" +
+             "  %z: The timezone offset\n" +
+             "  %o: The orientation\n" +
+             "  %Y: The latitude\n" +
+             "  %X: The longitude\n");
 
         /* Loads the photograph. */
         private static Photograph get_photograph(string path) {
@@ -135,9 +150,43 @@ namespace GQPE {
             return box.to_string();
         }
 
+        /* Prints the tags with a format. */
+        private static void print_with_format(string[] args) {
+            for (int i = 1; i < args.length; i++) {
+                var photo = get_photograph(args[i]);
+                if (photo == null)
+                    continue;
+                var b = photo.file.get_basename();
+                var t = (photo.title != null) ? photo.title : "";
+                var a = (photo.album != null) ? photo.album : "";
+                var d = (photo.comment != null) ? photo.comment : "";
+                var dt = (photo.datetime != null) ?
+                    photo.datetime.format_iso8601() : "";
+                var z = "%d".printf(photo.timezone_offset);
+                var o = photo.orientation.to_string();
+                var y = !photo.has_geolocation ? "" :
+                    "%2.11f".printf(photo.latitude);
+                var x = !photo.has_geolocation ? "" :
+                    "%2.11f".printf(photo.longitude);
+                var s = print_format
+                    .replace("%b", b)
+                    .replace("%t", t)
+                    .replace("%a", a)
+                    .replace("%D", d)
+                    .replace("%T", dt)
+                    .replace("%z", z)
+                    .replace("%o", o)
+                    .replace("%Y", y)
+                    .replace("%X", x)
+                    .replace("\\n", "\n")
+                    .replace("\\t", "\t");
+                stderr.printf("%s", s);
+            }
+        }
+
         /* Prints the tags. */
         private static void print_tags(string[] args) {
-            string tags = "";
+            var tags = "";
             for (int i = 1; i < args.length; i++)
                 tags += get_tags_box(args[i]);
             stderr.printf("%s", tags);
@@ -280,6 +329,11 @@ namespace GQPE {
 
             if (shift_time != 0) {
                 do_shift_time(args);
+                return 0;
+            }
+
+            if (print_format != null) {
+                print_with_format(args);
                 return 0;
             }
 
