@@ -106,14 +106,14 @@ namespace GQPE {
         private static Photograph get_photograph(string path) {
             Photograph photo = null;
             if (!FileUtils.test(path, FileTest.EXISTS)) {
-                stderr.printf("No such file: ‘%s’", path);
+                stderr.printf("No such file: ‘%s’\n", path);
                 return photo;
             }
             var file = GLib.File.new_for_commandline_arg(path);
             try {
                 photo = new Photograph(file);
             } catch (GLib.Error e) {
-                stderr.printf("Error loading: ‘%s’", path);
+                stderr.printf("Error loading: ‘%s’\n", path);
                 return photo;
             }
             return photo;
@@ -262,6 +262,7 @@ namespace GQPE {
         }
 
         public static int main(string[] args) {
+            GLib.Intl.setlocale();
             quiet = false;
             orientation = -1;
             offset = int.MAX;
@@ -273,20 +274,20 @@ namespace GQPE {
                 opt.set_description(DESCRIPTION);
                 opt.parse(ref args);
             } catch (GLib.Error e) {
-                stderr.printf(e.message + "\n");
+                stderr.printf("%s\n", e.message);
                 stderr.printf("Run ‘%s --help’ for a list of options.\n",
                               args[0]);
                 GLib.Process.exit(1);
             }
 
             if (args.length < 2) {
-                stderr.printf("Missing files");
+                stderr.printf("Missing files.\n");
                 return 1;
             }
 
             if (shift_time != 0 && edit_properties()) {
                 stderr.printf("You cannot shift time and " +
-                              "edit at the same time");
+                              "edit at the same time\n");
                 return 1;
             }
 
