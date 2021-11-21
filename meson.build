@@ -50,6 +50,7 @@ configure_file(output: 'config.h',
 gnome = import('gnome')
 
 gqpelib_sources = [
+  'lib/city.vala',
   'lib/color.vala',
   'lib/namespace.vala',
   'lib/orientation.vala',
