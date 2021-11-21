@@ -27,12 +27,15 @@ namespace GQPE {
         private static string input;
         private static string output;
         private static bool location;
+        private static bool update;
         private static bool quiet;
 
         /* The options. */
         private const GLib.OptionEntry[] options = {
             { "location", 'l', 0, GLib.OptionArg.NONE, ref location,
               "Use location look up for descriptions and album names", null },
+            { "update", 'u', 0, GLib.OptionArg.NONE, ref update,
+              "Update the metadata of the photograph", null },
             { "quiet", 'q', 0, GLib.OptionArg.NONE, ref quiet,
               "Be quiet", null },
             { null }
@@ -102,6 +105,10 @@ namespace GQPE {
                             FileCopyFlags.OVERWRITE);
             dt = Util.get_file_datetime(path);
             Util.set_file_datetime(dest, dt);
+            if (update) {
+                photo = new Photograph(GLib.File.new_for_commandline_arg(dest));
+                photo.save_metadata();
+            }
             stderr.printf("%s → %s\n", path, dest);
         }
 
@@ -129,168 +136,9 @@ namespace GQPE {
             }
         }
 
-        /* Loads the photograph. */
-        // private static Photograph get_photograph(string path) {
-        //     Photograph photo = null;
-        //     if (!FileUtils.test(path, FileTest.EXISTS)) {
-        //         stderr.printf("No such file: ‘%s’\n", path);
-        //         return photo;
-        //     }
-        //     var file = GLib.File.new_for_commandline_arg(path);
-        //     try {
-        //         photo = new Photograph(file);
-        //     } catch (GLib.Error e) {
-        //         stderr.printf("Error loading: ‘%s’\n", path);
-        //         return photo;
-        //     }
-        //     return photo;
-        // }
-
-        // /* Returns the tags box. */
-        // private static string get_tags_box(string path) {
-        //     var photo = get_photograph(path);
-        //     if (photo == null)
-        //         return "";
-        //     var box = new PrettyBox(80, Color.RED);
-        //     box.set_title(GLib.Filename.display_basename(path), Color.CYAN);
-        //     if (photo.title != null && photo.title != "")
-        //         box.add_body_key_value("Title", photo.title);
-        //     if (photo.album != null && photo.album != "")
-        //         box.add_body_key_value("Album", photo.album);
-        //     if (photo.comment != null && photo.comment != "")
-        //         box.add_body_key_value("Comment", photo.comment);
-        //     if (photo.datetime != null) {
-        //         var dt = photo.datetime.format("%Y/%m/%d %H:%M:%S ");
-        //         var s = (photo.timezone_offset < 0) ? "-" : "+";
-        //         var mul = (photo.timezone_offset < 0) ? -1 : 1;
-        //         dt += "[%s%04d]".printf(s, photo.timezone_offset * mul);
-        //         box.add_body_key_value("Datetime", dt);
-        //     }
-        //     box.add_body_key_value("Orientation",
-        //                            photo.orientation.to_string());
-        //     if (photo.has_geolocation) {
-        //         box.add_body_key_value("Latitude",
-        //                                "%2.11f".printf(photo.latitude));
-        //         box.add_body_key_value("Longitude",
-        //                                "%2.11f".printf(photo.longitude));
-        //         box.add_body_key_value("GPS tag", "%ld".printf(photo.gps_tag));
-        //         box.add_body_key_value("GPS version", photo.gps_version);
-        //         box.add_body_key_value("GPS datum", photo.gps_datum);
-        //     }
-        //     return box.to_string();
-        // }
-
-        // /* Prints the tags with a format. */
-        // private static void print_with_format(string[] args) {
-        //     for (int i = 1; i < args.length; i++) {
-        //         var photo = get_photograph(args[i]);
-        //         if (photo == null)
-        //             continue;
-        //         var b = photo.file.get_basename();
-        //         var t = (photo.title != null) ? photo.title : "";
-        //         var a = (photo.album != null) ? photo.album : "";
-        //         var d = (photo.comment != null) ? photo.comment : "";
-        //         var dt = (photo.datetime != null) ?
-        //             photo.datetime.format_iso8601() : "";
-        //         var z = "%d".printf(photo.timezone_offset);
-        //         var o = photo.orientation.to_string();
-        //         var y = !photo.has_geolocation ? "" :
-        //             "%2.11f".printf(photo.latitude);
-        //         var x = !photo.has_geolocation ? "" :
-        //             "%2.11f".printf(photo.longitude);
-        //         var s = print_format
-        //             .replace("%b", b)
-        //             .replace("%t", t)
-        //             .replace("%a", a)
-        //             .replace("%D", d)
-        //             .replace("%T", dt)
-        //             .replace("%z", z)
-        //             .replace("%o", o)
-        //             .replace("%Y", y)
-        //             .replace("%X", x)
-        //             .replace("\\n", "\n")
-        //             .replace("\\t", "\t");
-        //         stderr.printf("%s", s);
-        //     }
-        // }
-
-        // /* Prints the tags. */
-        // private static void print_tags(string[] args) {
-        //     var tags = "";
-        //     for (int i = 1; i < args.length; i++)
-        //         tags += get_tags_box(args[i]);
-        //     stderr.printf("%s", tags);
-        // }
-
-        // /* Shifts time. */
-        // private static void do_shift_time(string[] args) {
-        //     for (int i = 1; i < args.length; i++) {
-        //         var photo = get_photograph(args[i]);
-        //         if (photo == null)
-        //             continue;
-        //         photo.timezone_offset += shift_time;
-        //         save(photo);
-        //     }
-        // }
-
-        // /* Handles the tag. */
-        // private static void handle_tag(string path) {
-        //     var photo = get_photograph(path);
-        //     if (photo == null)
-        //         return;
-        //     if (album != null)
-        //         photo.album = album;
-        //     if (title != null)
-        //         photo.title = title;
-        //     if (comment != null)
-        //         photo.comment = comment;
-        //     if (orientation != -1)
-        //         photo.orientation = (Orientation)orientation;
-        //     if (datetime != null)
-        //         photo.datetime = datetime;
-        //     if (offset != int.MAX)
-        //         photo.timezone_offset = offset;
-        //     if (photo.has_geolocation) {
-        //         var lat = photo.latitude;
-        //         var lon = photo.longitude;
-        //         if (latitude != double.MAX)
-        //             lat = latitude;
-        //         if (longitude != double.MAX)
-        //             lon = longitude;
-        //         photo.set_coordinates(lat, lon);
-        //     } else if (latitude != double.MAX && longitude != double.MAX) {
-        //         photo.set_coordinates(latitude, longitude);
-        //     }
-        //     if (!quiet)
-        //         stderr.printf("Updating %s...\n",
-        //                       GLib.Filename.display_basename(path));
-        //     save(photo);
-        //     if (!quiet)
-        //         stderr.printf("%s updated.\n",
-        //                       GLib.Filename.display_basename(path));
-        // }
-
-        // /* Saves the photograph. */
-        // private static void save(Photograph photo) {
-        //     try {
-        //         photo.save_metadata();
-        //     } catch (GLib.Error error) {
-        //         stderr.printf("There was an error saving %s: %s\n",
-        //                       photo.file.get_path(), error.message);
-        //     }
-        // }
-
-        // /* Whether there will be properties edited. */
-        // private static bool edit_properties() {
-        //     return album != null || title != null ||
-        //         comment != null || orientation != -1 ||
-        //         latitude != double.MAX || longitude != double.MAX ||
-        //         datetime != null || offset != int.MAX;
-        // }
-
         public static int main(string[] args) {
             GLib.Intl.setlocale();
-            location = quiet = false;
+            location = update = quiet = false;
             try {
                 var opt = new GLib.OptionContext(CONTEXT);
                 opt.set_help_enabled(true);
