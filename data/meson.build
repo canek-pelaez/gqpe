@@ -11,7 +11,8 @@ custom_target(
     '-d', podir, '-o', '@OUTPUT@'],
 )
 
-icondir = join_paths(get_option('datadir'), 'icons', 'hicolor')
+datadir = get_option('datadir')
+icondir = join_paths(datadir, 'icons', 'hicolor')
 
 install_data('gqpe.svg',
   install_dir: join_paths(icondir, 'scalable', 'apps'),
