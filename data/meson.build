@@ -18,5 +18,5 @@ install_data('gqpe.svg',
 )
 
 install_data('cities.csv',
-  install_dir: join_paths(icondir, 'gqpe'),
+  install_dir: join_paths(datadir, 'gqpe'),
 )
