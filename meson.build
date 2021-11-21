@@ -86,6 +86,22 @@ executable('gqpe-tags', gqpetags_sources,
            include_directories: [ gqpelib_includes ],
            install: true, link_with: [ gqpelib ])
 
+gqpestore_sources = [
+  'src/store.vala'
+]
+
+gqpestore_dependencies = [
+  gdk,
+  gee,
+  gexiv2,
+  math
+]
+
+executable('gqpe-store', gqpestore_sources,
+           dependencies: gqpestore_dependencies,
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
+
 gresources = gnome.compile_resources(
   'gresources', 'data/gqpe.gresource.xml',
   source_dir: 'data',

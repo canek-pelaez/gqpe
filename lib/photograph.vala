@@ -303,7 +303,7 @@ namespace GQPE {
                 timezone_offset = get_tz_offset();
                 get_dt_gps();
             } else {
-                datetime = new GLib.DateTime.now_utc();
+                datetime = Util.get_file_datetime(file.get_path());
                 timezone_offset = 0;
             }
             check_gps_datetime();
