@@ -205,6 +205,21 @@ namespace GQPE {
             return 0;
         }
 
+        public void copy_metadata(Photograph photo) {
+            title = photo.title;
+            album = photo.album;
+            comment = photo.comment;
+            datetime = photo.datetime;
+            timezone_offset = photo.timezone_offset;
+            orientation = photo.orientation;
+            latitude = photo.latitude;
+            longitude = photo.longitude;
+            gps_tag = photo.gps_tag;
+            gps_version = photo.gps_version;
+            gps_datum = photo.gps_datum;
+            has_geolocation = photo.has_geolocation;
+        }
+
         /* Calculates the timezone. */
         private GLib.TimeZone get_time_zone() throws GLib.Error {
             return new GLib.TimeZone.offset(timezone_offset * 60 * 60);

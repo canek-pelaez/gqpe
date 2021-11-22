@@ -19,6 +19,7 @@ project('gqpe', ['vala', 'c'], version: '0.1')
 add_global_arguments('-DGETTEXT_PACKAGE="gqpe"', language: 'c')
 vapidir = join_paths(meson.current_source_dir(), 'vapi')
 add_project_arguments(['--vapidir=' + vapidir,
+                       '--vapidir=.',
                        '--pkg=config',
                        '--target-glib=2.38'],
                       language: 'vala')
@@ -36,6 +37,7 @@ conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set_quoted('LOCALEDIR', get_option('localedir'))
 conf.set_quoted('LOCALSTATEDIR', get_option('localstatedir'))
+conf.set_quoted('PACKAGE_NAME', meson.project_name())
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('VERSION', meson.project_version())
 

@@ -12,12 +12,11 @@ custom_target(
 )
 
 datadir = get_option('datadir')
-icondir = join_paths(datadir, 'icons', 'hicolor')
-
-install_data('gqpe.svg',
-  install_dir: join_paths(icondir, 'scalable', 'apps'),
-)
-
 install_data('cities.csv',
   install_dir: join_paths(datadir, 'gqpe'),
+)
+
+icondir = join_paths(datadir, 'icons', 'hicolor')
+install_data('gqpe.svg',
+  install_dir: join_paths(icondir, 'scalable', 'apps'),
 )

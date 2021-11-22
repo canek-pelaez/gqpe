@@ -90,7 +90,7 @@ namespace GQPE {
          * @param longitude the longitude of the coordinate.
          * @return the natural distance with the coordinate.
          */
-        public double natural_distance(double latitude, double longitude) {
+        public double distance(double latitude, double longitude) {
             double lat1 = deg_to_rad(this.latitude);
             double lat2 = deg_to_rad(latitude);
             double lon1 = deg_to_rad(this.longitude);

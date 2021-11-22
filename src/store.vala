@@ -24,11 +24,22 @@ namespace GQPE {
      */
     public class Store {
 
+        private enum CityField {
+            ID,
+            NAME,
+            COUNTRY,
+            POPULATION,
+            LATITUDE,
+            LONGITUDE;
+        }
+
         private static string input;
         private static string output;
         private static bool location;
         private static bool update;
         private static bool quiet;
+
+        private static Gee.TreeMap<int, City> cities;
 
         /* The options. */
         private const GLib.OptionEntry[] options = {
@@ -43,10 +54,61 @@ namespace GQPE {
 
         /* The option context. */
         private const string CONTEXT =
-            "INPUTDIR OUTPUTDIR - Move images to a normalized location.";
+            _("INPUTDIR OUTPUTDIR - Move images to a normalized location.");
+
+        private static void load_cities() {
+            cities = new Gee.TreeMap<int, City>();
+            string[] data_dirs =  GLib.Environment.get_system_data_dirs();
+            for (int i = 0; i < data_dirs.length; i++) {
+                var path = string.join(GLib.Path.DIR_SEPARATOR_S, data_dirs[i],
+                                       Config.PACKAGE_NAME, "cities.csv");
+                if (!FileUtils.test(path, FileTest.EXISTS))
+                    continue;
+                File file = GLib.File.new_for_path(path);
+                try {
+                    var fin = new GLib.DataInputStream(file.read());
+                    string line;
+                    while ((line = fin.read_line(null)) != null) {
+                        if (line.has_prefix("#"))
+                            continue;
+                        var fields = line.split(",");
+                        if (fields.length != 6) {
+                            stderr.printf(_("Invalid city record: %s"), line);
+                            continue;
+                        }
+                        var city = new City(
+                            int.parse(fields[CityField.ID]),
+                            fields[CityField.NAME],
+                            fields[CityField.COUNTRY],
+                            int.parse(fields[CityField.POPULATION]),
+                            double.parse(fields[CityField.LATITUDE]),
+                            double.parse(fields[CityField.LONGITUDE]));
+                        cities[city.id] = city;
+                    }
+                    if (!cities.is_empty)
+                        return;
+                } catch (GLib.Error e) {
+                    stderr.printf(_("An error ocurred while parsing %s"), path);
+                }
+            }
+            stderr.printf(_("Cities database not found"));
+        }
 
         private static string get_location(Photograph photo) {
-            return "Tlacochiztlahuaca";
+            if (cities == null || cities.is_empty)
+                return "";
+            City c = null;
+            double d = double.MAX;
+            foreach (var city in cities.values) {
+                double nd = city.distance(photo.latitude, photo.longitude);
+                if (nd > d)
+                    continue;
+                c = city;
+                d = nd;
+            }
+            if (c == null)
+                return "";
+            return _(", near %s").printf(c.name);
         }
 
         private static string get_album(Photograph photo) {
@@ -55,7 +117,7 @@ namespace GQPE {
             var dt = photo.datetime;
             var r = "%s %d".printf(dt.format("%A"), dt.get_day_of_month());
             if (location && photo.has_geolocation)
-                r += ", near %s".printf(get_location(photo));
+                r += get_location(photo);
             return r;
         }
 
@@ -106,8 +168,9 @@ namespace GQPE {
             dt = Util.get_file_datetime(path);
             Util.set_file_datetime(dest, dt);
             if (update) {
-                photo = new Photograph(GLib.File.new_for_commandline_arg(dest));
-                photo.save_metadata();
+                var p = new Photograph(GLib.File.new_for_commandline_arg(dest));
+                p.copy_metadata(photo);
+                p.save_metadata();
             }
             stderr.printf("%s → %s\n", path, dest);
         }
@@ -157,6 +220,9 @@ namespace GQPE {
                 GLib.Process.exit(1);
             }
 
+            if (location)
+                load_cities();
+
             input = args[1];
             output = args[2];
 
@@ -168,7 +234,7 @@ namespace GQPE {
             try {
                 move_photos();
             } catch (GLib.Error e) {
-                stderr.printf("There was an error while moving: %s\n",
+                stderr.printf("There was an error while storing: %s\n",
                               e.message);
                 GLib.Process.exit(1);
             }
