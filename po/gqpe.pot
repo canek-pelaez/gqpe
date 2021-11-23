@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-14 19:05-0500\n"
+"POT-Creation-Date: 2021-11-23 00:43-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,39 +25,27 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: data/application-window.ui:43
+#: data/application-window.ui:44
 msgid "Previous picture"
 msgstr ""
 
-#: data/application-window.ui:60
+#: data/application-window.ui:61
 msgid "Next picture"
 msgstr ""
 
-#: data/application-window.ui:87
+#: data/application-window.ui:88
 msgid "Rotate left"
 msgstr ""
 
-#: data/application-window.ui:106
+#: data/application-window.ui:107
 msgid "Rotate right"
 msgstr ""
 
-#: data/application-window.ui:136
-msgid "Zoom in"
-msgstr ""
-
-#: data/application-window.ui:155
-msgid "Zoom out"
-msgstr ""
-
-#: data/application-window.ui:174
-msgid "Zoom fit best"
-msgstr ""
-
-#: data/application-window.ui:204
+#: data/application-window.ui:137
 msgid "Pin geolocation"
 msgstr ""
 
-#: data/application-window.ui:221
+#: data/application-window.ui:154
 msgid "Save picture"
 msgstr ""
 
@@ -73,10 +61,29 @@ msgstr ""
 msgid "Quick editor for photography tags"
 msgstr ""
 
-#: data/gqpe.desktop.in:7
-msgid "gqpe"
+#: src/application.vala:94
+msgid "A Gtk+ based quick photo editor"
 msgstr ""
 
-#: src/application-window.vala:355
-msgid "A Gtk+ based quick photo editor"
+#: src/store.vala:57
+msgid "INPUTDIR OUTPUTDIR - Move images to a normalized location."
+msgstr ""
+
+#: src/store.vala:76
+#, c-format
+msgid "Invalid city record: %s"
+msgstr ""
+
+#: src/store.vala:91
+#, c-format
+msgid "An error ocurred while parsing %s"
+msgstr ""
+
+#: src/store.vala:94
+msgid "Cities database not found"
+msgstr ""
+
+#: src/store.vala:119
+#, c-format
+msgid "%s, near %s"
 msgstr ""

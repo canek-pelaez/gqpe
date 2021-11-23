@@ -7,9 +7,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
-"Report-Msgid-Bugs-To: https://aztlan.fciencias.unam.mx/gitlab/canek/gqpe/issues\n"
-"POT-Creation-Date: 2017-05-14 19:05-0500\n"
-"PO-Revision-Date: 2017-05-30 00:24-0500\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-11-23 00:43-0600\n"
+"PO-Revision-Date: 2021-11-23 00:44-0600\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: es\n"
@@ -25,39 +25,27 @@ msgstr "Acerca de"
 msgid "Quit"
 msgstr "Salir"
 
-#: data/application-window.ui:43
+#: data/application-window.ui:44
 msgid "Previous picture"
 msgstr "Imagen anterior"
 
-#: data/application-window.ui:60
+#: data/application-window.ui:61
 msgid "Next picture"
 msgstr "Imagen siguiente"
 
-#: data/application-window.ui:87
+#: data/application-window.ui:88
 msgid "Rotate left"
 msgstr "Rotar a la izquierda"
 
-#: data/application-window.ui:106
+#: data/application-window.ui:107
 msgid "Rotate right"
 msgstr "Rotar a la derecha"
 
-#: data/application-window.ui:136
-msgid "Zoom in"
-msgstr "Acercarse"
-
-#: data/application-window.ui:155
-msgid "Zoom out"
-msgstr "Alejarse"
-
-#: data/application-window.ui:174
-msgid "Zoom fit best"
-msgstr "Mejor acercamiento"
-
-#: data/application-window.ui:204
+#: data/application-window.ui:137
 msgid "Pin geolocation"
 msgstr "Ir a geolocalización"
 
-#: data/application-window.ui:221
+#: data/application-window.ui:154
 msgid "Save picture"
 msgstr "Guardar imagen"
 
@@ -73,10 +61,29 @@ msgstr "Editor rápido de fotos basado en Gtk+"
 msgid "Quick editor for photography tags"
 msgstr "Editor rápido para etiquetas de fotografía"
 
-#: data/gqpe.desktop.in:7
-msgid "gqpe"
-msgstr "gqpe"
-
-#: src/application-window.vala:355
+#: src/application.vala:94
 msgid "A Gtk+ based quick photo editor"
 msgstr "Un rápido editor de fotos basado en Gtk+"
+
+#: src/store.vala:57
+msgid "INPUTDIR OUTPUTDIR - Move images to a normalized location."
+msgstr "ENTRADA SALIDA - Mueve imágenes a una dirección normalizada."
+
+#: src/store.vala:76
+#, c-format
+msgid "Invalid city record: %s"
+msgstr "Registro de ciudad inválido: %s"
+
+#: src/store.vala:91
+#, c-format
+msgid "An error ocurred while parsing %s"
+msgstr "Ocurrió un error al analizar %s"
+
+#: src/store.vala:94
+msgid "Cities database not found"
+msgstr "Base de datos de ciudades no encontrada"
+
+#: src/store.vala:119
+#, c-format
+msgid "%s, near %s"
+msgstr "%s, cerca de %s"

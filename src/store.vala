@@ -106,9 +106,7 @@ namespace GQPE {
                 c = city;
                 d = nd;
             }
-            if (c == null)
-                return "";
-            return _(", near %s").printf(c.name);
+            return c.name;
         }
 
         private static string get_album(Photograph photo) {
@@ -116,8 +114,10 @@ namespace GQPE {
                 return photo.album;
             var dt = photo.datetime;
             var r = "%s %d".printf(dt.format("%A"), dt.get_day_of_month());
-            if (location && photo.has_geolocation)
-                r += get_location(photo);
+            if (location && photo.has_geolocation) {
+                var l = get_location(photo);
+                r = _("%s, near %s").printf(r, l);
+            }
             return r;
         }
 
