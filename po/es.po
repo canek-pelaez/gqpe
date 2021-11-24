@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-23 00:43-0600\n"
-"PO-Revision-Date: 2021-11-23 00:44-0600\n"
+"POT-Creation-Date: 2021-11-24 11:30-0600\n"
+"PO-Revision-Date: 2021-11-24 11:44-0600\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: es\n"
@@ -65,6 +65,18 @@ msgstr "Editor rápido para etiquetas de fotografía"
 msgid "A Gtk+ based quick photo editor"
 msgstr "Un rápido editor de fotos basado en Gtk+"
 
+#: src/store.vala:47
+msgid "Use location look up"
+msgstr "Usar búsqueda de ubicación"
+
+#: src/store.vala:49
+msgid "Update the metadata of the photograph"
+msgstr "Acutalizar los metadatos de la fotografía"
+
+#: src/store.vala:51 src/tags.vala:83
+msgid "Be quiet"
+msgstr "No producir salida"
+
 #: src/store.vala:57
 msgid "INPUTDIR OUTPUTDIR - Move images to a normalized location."
 msgstr "ENTRADA SALIDA - Mueve imágenes a una dirección normalizada."
@@ -83,7 +95,218 @@ msgstr "Ocurrió un error al analizar %s"
 msgid "Cities database not found"
 msgstr "Base de datos de ciudades no encontrada"
 
-#: src/store.vala:119
+#. Translators: Month name and day
+#: src/store.vala:118
+#, c-format
+msgid "%s %d"
+msgstr "%s %d"
+
+#: src/store.vala:121
 #, c-format
 msgid "%s, near %s"
 msgstr "%s, cerca de %s"
+
+#: src/store.vala:147
+#, c-format
+msgid "There was an error processing %s: %s. "
+msgstr "Hubo un error al procesar %s: %s."
+
+#: src/store.vala:149
+msgid "Skipping.\n"
+msgstr "Omitiendo.\n"
+
+#: src/store.vala:223 src/tags.vala:283
+#, c-format
+msgid "Run ‘%s --help’ for a list of options.\n"
+msgstr "Ejecute ‘%s --help’ para una lista de opciones.\n"
+
+#: src/store.vala:230
+msgid "Exactly one output and one input directory needed.\n"
+msgstr "Se necesitan exactamente un directorio entrada y de salida.\n"
+
+#: src/store.vala:249
+#, c-format
+msgid "There was an error while storing: %s\n"
+msgstr "Ocurrió un error al almacenar: %s\n"
+
+#: src/tags.vala:63
+msgid "Set the title"
+msgstr "Define el título"
+
+#: src/tags.vala:65
+msgid "Set the comment"
+msgstr "Define el comentario"
+
+#: src/tags.vala:67
+msgid "Set the album"
+msgstr "Define el álbum"
+
+#: src/tags.vala:69
+msgid "Set the datetime"
+msgstr "Define la fecha y hora"
+
+#: src/tags.vala:71
+msgid "Set the timezone offset"
+msgstr "Define el desplazamiento de la zona de tiempo"
+
+#: src/tags.vala:73
+msgid "Set the orientation"
+msgstr "Define la orientación"
+
+#: src/tags.vala:75
+msgid "Set the latitude"
+msgstr "Define la latitud"
+
+#: src/tags.vala:77
+msgid "Set the longitude"
+msgstr "Define la longitud"
+
+#: src/tags.vala:79
+msgid "Shift the time in this amount of hours"
+msgstr "Desplaza el tiempo por esta cantidad de horas"
+
+#: src/tags.vala:81
+msgid "Prints the tags with format"
+msgstr "Imprime las etiquetas con formato"
+
+#: src/tags.vala:89
+msgid "[FILENAME...] - Edit and show the image tags."
+msgstr "[ARCHIVO...] - Edita y muestra las etiquetas de imagen."
+
+#: src/tags.vala:93
+msgid ""
+"With no flags the tags are printed. An empty string as parameter\n"
+"removes an individual tag.\n"
+"\n"
+"Format for printing:\n"
+"\n"
+"  %b: The basename\n"
+"  %t: The title\n"
+"  %a: The album\n"
+"  %D: The description\n"
+"  %T: The datetime\n"
+"  %z: The timezone offset\n"
+"  %o: The orientation\n"
+"  %Y: The latitude\n"
+"  %X: The longitude\n"
+msgstr ""
+"Si no hay opciones se imprimen las etiquetas. Una cadena vacía\n"
+"como parámetro elimina una etiqueta.\n"
+"\n"
+"Formato para imprimir:\n"
+"\n"
+"  %b: El nombre base\n"
+"  %t: El título\n"
+"  %a: El álbum\n"
+"  %D: La descripción\n"
+"  %T: La fecha y hora\n"
+"  %z: El desplazamiento de la zona de tiempo\n"
+"  %o: La orientación\n"
+"  %Y: La latitud\n"
+"  %X: La longitud\n"
+
+#: src/tags.vala:113
+#, c-format
+msgid "No such file: ‘%s’\n"
+msgstr "No hay tal archivo: ‘%s’\n"
+
+#: src/tags.vala:120
+#, c-format
+msgid "Error loading: ‘%s’\n"
+msgstr "Error cargando: ‘%s’\n"
+
+#: src/tags.vala:134
+msgid "Title"
+msgstr "Título"
+
+#: src/tags.vala:136
+msgid "Album"
+msgstr "Álbum"
+
+#: src/tags.vala:138
+msgid "Comment"
+msgstr "Comentario"
+
+#: src/tags.vala:145
+msgid "Datetime"
+msgstr "Fecha y hora"
+
+#: src/tags.vala:147
+msgid "Orientation"
+msgstr "Orientación"
+
+#: src/tags.vala:150
+msgid "Latitude"
+msgstr "Latitud"
+
+#: src/tags.vala:152
+msgid "Longitude"
+msgstr "Longitud"
+
+#: src/tags.vala:154
+msgid "GPS tag"
+msgstr "Etiqueta GPS"
+
+#: src/tags.vala:155
+msgid "GPS version"
+msgstr "Versión GPS"
+
+#: src/tags.vala:156
+msgid "GPS datum"
+msgstr "Dato GPS"
+
+#: src/tags.vala:243
+#, c-format
+msgid "Updating %s...\n"
+msgstr "Actualizando %s...\n"
+
+#: src/tags.vala:247
+#, c-format
+msgid "%s updated.\n"
+msgstr "% actualizado.\n"
+
+#: src/tags.vala:256
+#, c-format
+msgid "There was an error saving %s: %s\n"
+msgstr "Hubo un error guardando %s: %s\n"
+
+#: src/tags.vala:289
+msgid "Missing files.\n"
+msgstr "Archivos faltantes.\n"
+
+#: src/tags.vala:294
+msgid "You cannot shift time and edit at the same time\n"
+msgstr "No puede desplazar tiempo y editar al mismo tiempo\n"
+
+#: src/tags.vala:302
+#, c-format
+msgid "Invalid orientation: %s\n"
+msgstr "Orientación inválida: %s\n"
+
+#: src/tags.vala:314
+#, c-format
+msgid "Invalid datetime: %s\n"
+msgstr "Fecha y tiempo inválidos: %s\n"
+
+#: src/tags.vala:321
+#, c-format
+msgid "Invalid timezone offset: %s\n"
+msgstr "Desplazamiento de zona de tiempo inválida: %s\n"
+
+#: src/tags.vala:327
+#, c-format
+msgid "Invalid latitude: %s\n"
+msgstr "Latitud inválida: %s\n"
+
+#: src/tags.vala:332
+#, c-format
+msgid "Invalid longitude: %s\n"
+msgstr "Longitud inválida: %s\n"
+
+#: src/tags.vala:338
+msgid "Latitude will only be set on photos with GPS data\n"
+msgstr "La latitud sólo se definirá para fotografías con información GPS\n"
+
+#: src/tags.vala:343
+msgid "Longitude will only be set on photos with GPS data\n"
+msgstr "La longitud sólo se definirá para fotografías con información GPS\n"
