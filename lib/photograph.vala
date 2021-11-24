@@ -191,18 +191,14 @@ namespace GQPE {
         }
 
         /**
-         * Compares the photograph with the one received.
+         * Compares the photograph with the one received, by datetime.
          * @param photograph the photograph to compare to.
-         * @return an integer less than zero if the photograph is less than the
-         *         one received; zero if they are both the same; and an integer
-         *         greater than zero otherwise.
+         * @return an integer less than zero if the photograph is from before
+         *         the one received; zero if they both have the same datetime;
+         *         and an integer greater than zero otherwise.
          */
         public int compare_to(Photograph photograph) {
-            if (file.get_path() < photograph.file.get_path())
-                return -1;
-            if (file.get_path() > photograph.file.get_path())
-                return 1;
-            return 0;
+            return this.datetime.compare(photograph.datetime);
         }
 
         public void copy_metadata(Photograph photo) {

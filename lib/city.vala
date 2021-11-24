@@ -26,9 +26,6 @@ namespace GQPE {
      */
     public class City : GLib.Object {
 
-        /* Earth radius in meters. */
-        private const double RADIUS = 6373000.0;
-
         /**
          * The city identifier.
          */
@@ -77,32 +74,6 @@ namespace GQPE {
             this.population = population;
             this.latitude = latitude;
             this.longitude = longitude;
-        }
-
-        /* Converts a degree to a radian. */
-        private double deg_to_rad(double degree) {
-            return degree * GLib.Math.PI / 180.0;
-        }
-
-        /**
-         * Calculates the distance with a coordinate.
-         * @param latitude the latitude of the coordinate.
-         * @param longitude the longitude of the coordinate.
-         * @return the natural distance with the coordinate.
-         */
-        public double distance(double latitude, double longitude) {
-            double lat1 = deg_to_rad(this.latitude);
-            double lat2 = deg_to_rad(latitude);
-            double lon1 = deg_to_rad(this.longitude);
-            double lon2 = deg_to_rad(longitude);
-            double dlat = lat2 - lat1;
-            double dlon = lon2 - lon1;
-            double a = GLib.Math.sin(dlat/2.0) * GLib.Math.sin(dlat/2.0) +
-                GLib.Math.cos(lat1) * GLib.Math.cos(lat2) *
-                GLib.Math.sin(dlon/2.0) * GLib.Math.sin(dlon/2.0);
-            double c = 2.0 * GLib.Math.atan2(GLib.Math.sqrt(a),
-                                             GLib.Math.sqrt(1-a));
-            return RADIUS * c;
         }
     }
 }

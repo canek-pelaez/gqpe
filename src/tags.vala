@@ -54,66 +54,70 @@ namespace GQPE {
         private static int shift_time;
         /* The print format argument. */
         private static string print_format;
+        /* Whether to be quiet. */
         private static bool quiet;
 
         /* The options. */
-        private const GLib.OptionEntry[] options = {
+        private static GLib.OptionEntry[] options = {
             { "title", 't', 0, GLib.OptionArg.STRING, ref title,
-              "Set the title", "TITLE" },
+              _("Set the title"), "TITLE" },
             { "comment", 'c', 0, GLib.OptionArg.STRING, ref comment,
-              "Set the comment", "COMMENT" },
+              _("Set the comment"), "COMMENT" },
             { "album", 'a', 0, GLib.OptionArg.STRING, ref album,
-              "Set the album", "ALBUM" },
+              _("Set the album"), "ALBUM" },
             { "datetime", 'd', 0, GLib.OptionArg.STRING, ref s_datetime,
-              "Set the datetime", "DATETIME" },
+              _("Set the datetime"), "DATETIME" },
             { "offset", 'z', 0, GLib.OptionArg.STRING, ref s_offset,
-              "Set the timezone offset", "OFFSET" },
+              _("Set the timezone offset"), "OFFSET" },
             { "orientation", 'o', 0, GLib.OptionArg.STRING, ref s_orientation,
-              "Set the orientation", "ORIENTATION" },
+              _("Set the orientation"), "ORIENTATION" },
             { "latitude", 'y', 0, GLib.OptionArg.STRING, ref s_latitude,
-              "Set the latitude", "LATITUDE" },
+              _("Set the latitude"), "LATITUDE" },
             { "longitude", 'x', 0, GLib.OptionArg.STRING, ref s_longitude,
-              "Set the longitude", "LONGITUDE" },
-            { "shift-time", 's', 0, GLib.OptionArg.INT, ref shift_time,
-              "Shift the time in this amount of hours", "HOURS" },
+              _("Set the longitude"), "LONGITUDE" },
+            { "shift-time", 's', 0, GLib.OptionArg.INT, &shift_time,
+              _("Shift the time in this amount of hours"), "HOURS" },
             { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
-              "Prints the tags with format", "FORMAT" },
-            { "quiet", 'q', 0, GLib.OptionArg.NONE, ref quiet,
-              "Be quiet", null },
+              _("Prints the tags with format"), "FORMAT" },
+            { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
+              _("Be quiet"), null },
             { null }
         };
 
         /* The option context. */
         private const string CONTEXT =
-            "[FILENAME...] - Edit and show the image tags.";
+            _("[FILENAME...] - Edit and show the image tags.");
 
         /* The option context. */
-        private const string DESCRIPTION =
-            ("With no flags the tags are printed. An empty string " +
-             "as parameter\nremoves an individual tag.\n\n" +
-             "Format for printing:\n\n" +
-             "  %b: The basename\n" +
-             "  %t: The title\n" +
-             "  %a: The album\n" +
-             "  %D: The description\n" +
-             "  %T: The datetime\n" +
-             "  %z: The timezone offset\n" +
-             "  %o: The orientation\n" +
-             "  %Y: The latitude\n" +
-             "  %X: The longitude\n");
+        private const string DESCRIPTION = _(
+"""With no flags the tags are printed. An empty string as parameter
+removes an individual tag.
+
+Format for printing:
+
+  %b: The basename
+  %t: The title
+  %a: The album
+  %D: The description
+  %T: The datetime
+  %z: The timezone offset
+  %o: The orientation
+  %Y: The latitude
+  %X: The longitude
+""");
 
         /* Loads the photograph. */
         private static Photograph get_photograph(string path) {
             Photograph photo = null;
             if (!FileUtils.test(path, FileTest.EXISTS)) {
-                stderr.printf("No such file: ‘%s’\n", path);
+                stderr.printf(_("No such file: ‘%s’\n"), path);
                 return photo;
             }
             var file = GLib.File.new_for_commandline_arg(path);
             try {
                 photo = new Photograph(file);
             } catch (GLib.Error e) {
-                stderr.printf("Error loading: ‘%s’\n", path);
+                stderr.printf(_("Error loading: ‘%s’\n"), path);
                 return photo;
             }
             return photo;
@@ -127,28 +131,29 @@ namespace GQPE {
             var box = new PrettyBox(80, Color.RED);
             box.set_title(GLib.Filename.display_basename(path), Color.CYAN);
             if (photo.title != null && photo.title != "")
-                box.add_body_key_value("Title", photo.title);
+                box.add_body_key_value(_("Title"), photo.title);
             if (photo.album != null && photo.album != "")
-                box.add_body_key_value("Album", photo.album);
+                box.add_body_key_value(_("Album"), photo.album);
             if (photo.comment != null && photo.comment != "")
-                box.add_body_key_value("Comment", photo.comment);
+                box.add_body_key_value(_("Comment"), photo.comment);
             if (photo.datetime != null) {
                 var dt = photo.datetime.format("%Y/%m/%d %H:%M:%S ");
                 var s = (photo.timezone_offset < 0) ? "-" : "+";
-                var mul = (photo.timezone_offset < 0) ? -1 : 1;
-                dt += "[%s%04d]".printf(s, photo.timezone_offset * mul);
-                box.add_body_key_value("Datetime", dt);
+                var offset = (photo.timezone_offset < 0) ?
+                    -photo.timezone_offset : photo.timezone_offset;
+                dt += "[%s%04d]".printf(s, offset);
+                box.add_body_key_value(_("Datetime"), dt);
             }
-            box.add_body_key_value("Orientation",
+            box.add_body_key_value(_("Orientation"),
                                    photo.orientation.to_string());
             if (photo.has_geolocation) {
-                box.add_body_key_value("Latitude",
+                box.add_body_key_value(_("Latitude"),
                                        "%2.11f".printf(photo.latitude));
-                box.add_body_key_value("Longitude",
+                box.add_body_key_value(_("Longitude"),
                                        "%2.11f".printf(photo.longitude));
-                box.add_body_key_value("GPS tag", "%ld".printf(photo.gps_tag));
-                box.add_body_key_value("GPS version", photo.gps_version);
-                box.add_body_key_value("GPS datum", photo.gps_datum);
+                box.add_body_key_value(_("GPS tag"), "%ld".printf(photo.gps_tag));
+                box.add_body_key_value(_("GPS version"), photo.gps_version);
+                box.add_body_key_value(_("GPS datum"), photo.gps_datum);
             }
             return box.to_string();
         }
@@ -235,11 +240,11 @@ namespace GQPE {
                 photo.set_coordinates(latitude, longitude);
             }
             if (!quiet)
-                stderr.printf("Updating %s...\n",
+                stderr.printf(_("Updating %s...\n"),
                               GLib.Filename.display_basename(path));
             save(photo);
             if (!quiet)
-                stderr.printf("%s updated.\n",
+                stderr.printf(_("%s updated.\n"),
                               GLib.Filename.display_basename(path));
         }
 
@@ -248,7 +253,7 @@ namespace GQPE {
             try {
                 photo.save_metadata();
             } catch (GLib.Error error) {
-                stderr.printf("There was an error saving %s: %s\n",
+                stderr.printf(_("There was an error saving %s: %s\n"),
                               photo.file.get_path(), error.message);
             }
         }
@@ -262,7 +267,7 @@ namespace GQPE {
         }
 
         public static int main(string[] args) {
-            GLib.Intl.setlocale();
+            GLib.Intl.setlocale(LocaleCategory.ALL, "");
             quiet = false;
             orientation = -1;
             offset = int.MAX;
@@ -275,26 +280,27 @@ namespace GQPE {
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
-                stderr.printf("Run ‘%s --help’ for a list of options.\n",
+                stderr.printf(_("Run ‘%s --help’ for a list of options.\n"),
                               args[0]);
                 GLib.Process.exit(1);
             }
 
             if (args.length < 2) {
-                stderr.printf("Missing files.\n");
+                stderr.printf(_("Missing files.\n"));
                 return 1;
             }
 
             if (shift_time != 0 && edit_properties()) {
-                stderr.printf("You cannot shift time and " +
-                              "edit at the same time\n");
+                var m = _("You cannot shift time and edit at the same time\n");
+                stderr.printf(m);
                 return 1;
             }
 
             if (s_orientation != null) {
                 orientation = Orientation.parse_orientation(s_orientation);
                 if (orientation < 0) {
-                    stderr.printf("Invalid orientation: %s\n", s_orientation);
+                    stderr.printf(_("Invalid orientation: %s\n"),
+                                  s_orientation);
                     return 1;
                 }
             }
@@ -305,34 +311,38 @@ namespace GQPE {
                     datetime = new GLib.DateTime.from_iso8601(
                         s_datetime, new TimeZone.utc());
                 if (datetime == null) {
-                    stderr.printf("Invalid datetime: %s\n", s_datetime);
+                    stderr.printf(_("Invalid datetime: %s\n"), s_datetime);
                     return 1;
                 }
             }
 
             if (s_offset != null &&
                 !int.try_parse(s_offset, out offset)) {
-                stderr.printf("Invalid timezone offset: %s\n", s_offset);
+                stderr.printf(_("Invalid timezone offset: %s\n"), s_offset);
                 return 1;
             }
 
             if (s_latitude != null &&
                 !double.try_parse(s_latitude, out latitude)) {
-                stderr.printf("Invalid latitude: %s\n", s_latitude);
+                stderr.printf(_("Invalid latitude: %s\n"), s_latitude);
                 return 1;
             }
             if (s_longitude != null &&
                 !double.try_parse(s_longitude, out longitude)) {
-                stderr.printf("Invalid longitude: %s\n", s_longitude);
+                stderr.printf(_("Invalid longitude: %s\n"), s_longitude);
                 return 1;
             }
 
-            if (latitude != double.MAX && longitude == double.MAX)
-                stderr.printf("Latitude will only be set on " +
-                              "photos with GPS data\n");
-            if (latitude == double.MAX && longitude != double.MAX)
-                stderr.printf("Longitude will only be set on " +
-                              "photos with GPS data\n");
+            if (latitude != double.MAX && longitude == double.MAX) {
+                string m;
+                m = _("Latitude will only be set on photos with GPS data\n");
+                stderr.printf(m);
+            }
+            if (latitude == double.MAX && longitude != double.MAX) {
+                string m;
+                m = _("Longitude will only be set on photos with GPS data\n");
+                stderr.printf(m);
+            }
 
             if (shift_time != 0) {
                 do_shift_time(args);

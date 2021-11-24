@@ -1,4 +1,4 @@
-/* move.vala
+/* store.vala
  *
  * This file is part of gqpe.
  *
@@ -42,13 +42,13 @@ namespace GQPE {
         private static Gee.TreeMap<int, City> cities;
 
         /* The options. */
-        private const GLib.OptionEntry[] options = {
-            { "location", 'l', 0, GLib.OptionArg.NONE, ref location,
-              "Use location look up for descriptions and album names", null },
-            { "update", 'u', 0, GLib.OptionArg.NONE, ref update,
-              "Update the metadata of the photograph", null },
-            { "quiet", 'q', 0, GLib.OptionArg.NONE, ref quiet,
-              "Be quiet", null },
+        private static GLib.OptionEntry[] options = {
+            { "location", 'l', 0, GLib.OptionArg.NONE, &location,
+              _("Use location look up"), null },
+            { "update", 'u', 0, GLib.OptionArg.NONE, &update,
+              _("Update the metadata of the photograph"), null },
+            { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
+              _("Be quiet"), null },
             { null }
         };
 
@@ -100,7 +100,8 @@ namespace GQPE {
             City c = null;
             double d = double.MAX;
             foreach (var city in cities.values) {
-                double nd = city.distance(photo.latitude, photo.longitude);
+                double nd = Util.distance(city.latitude, city.longitude,
+                                          photo.latitude, photo.longitude);
                 if (nd > d)
                     continue;
                 c = city;
@@ -109,16 +110,24 @@ namespace GQPE {
             return c.name;
         }
 
-        private static string get_album(Photograph photo) {
+        private static void set_album(Photograph photo) {
             if (photo.album != null && photo.album != "")
-                return photo.album;
+                return;
             var dt = photo.datetime;
-            var r = "%s %d".printf(dt.format("%A"), dt.get_day_of_month());
+            /* Translators: Month name and day*/
+            var r = _("%s %d").printf(dt.format("%A"), dt.get_day_of_month());
             if (location && photo.has_geolocation) {
                 var l = get_location(photo);
                 r = _("%s, near %s").printf(r, l);
             }
-            return r;
+            photo.album = Util.capitalize(r);
+        }
+
+        private static void set_title(Photograph photo) {
+            if (photo.title != null && photo.title != "")
+                return;
+            var bn = GLib.Path.get_basename(photo.file.get_path());
+            photo.title = Util.capitalize(Util.normalize(Util.get_name(bn)));
         }
 
         private static void mkdir(string path) throws GLib.Error {
@@ -135,18 +144,20 @@ namespace GQPE {
                 photo = new Photograph(file);
             } catch (GLib.Error e) {
                 if (!quiet) {
-                    stderr.printf("There was an error processing %s: %s. ",
+                    stderr.printf(_("There was an error processing %s: %s. "),
                                   path, e.message);
-                    stderr.printf("Skipping.\n");
+                    stderr.printf(_("Skipping.\n"));
                 }
                 return;
             }
+            set_album(photo);
+            set_title(photo);
             var dt = photo.datetime;
             var year = "%04d".printf(dt.get_year());
             var month = "%02d".printf(dt.get_month());
-            var album = Util.normalize(get_album(photo));
-            var basename = GLib.Path.get_basename(photo.file.get_path());
-            var name = Util.normalize_basename(basename);
+            var album = Util.normalize(photo.album);
+            var title = Util.normalize_basename(
+                GLib.Path.get_basename(photo.file.get_path()));
             var dest = string.join(GLib.Path.DIR_SEPARATOR_S, output, year);
             mkdir(dest);
             dest = string.join(GLib.Path.DIR_SEPARATOR_S, dest, month);
@@ -154,7 +165,7 @@ namespace GQPE {
             dest = string.join(GLib.Path.DIR_SEPARATOR_S, dest, album);
             mkdir(dest);
             dest = string.join(GLib.Path.DIR_SEPARATOR_S, output, year, month,
-                               album, name);
+                               album, title);
             var dn = GLib.Path.get_dirname(dest);
             var bn = GLib.Path.get_basename(dest);
             var n = Util.get_name(bn);
@@ -200,7 +211,7 @@ namespace GQPE {
         }
 
         public static int main(string[] args) {
-            GLib.Intl.setlocale();
+            GLib.Intl.setlocale(LocaleCategory.ALL, "");
             location = update = quiet = false;
             try {
                 var opt = new GLib.OptionContext(CONTEXT);
@@ -209,14 +220,15 @@ namespace GQPE {
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
-                stderr.printf("Run ‘%s --help’ for a list of options.\n",
+                stderr.printf(_("Run ‘%s --help’ for a list of options.\n"),
                               args[0]);
                 GLib.Process.exit(1);
             }
 
             if (args.length != 3) {
-                stderr.printf("Exactly one output and one " +
-                              "input directory needed.\n");
+                string m;
+                m = _("Exactly one output and one input directory needed.\n");
+                stderr.printf(m);
                 GLib.Process.exit(1);
             }
 
@@ -234,7 +246,7 @@ namespace GQPE {
             try {
                 move_photos();
             } catch (GLib.Error e) {
-                stderr.printf("There was an error while storing: %s\n",
+                stderr.printf(_("There was an error while storing: %s\n"),
                               e.message);
                 GLib.Process.exit(1);
             }

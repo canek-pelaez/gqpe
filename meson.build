@@ -78,7 +78,6 @@ gqpetags_sources = [
 ]
 
 gqpetags_dependencies = [
-  gdk,
   gee,
   gexiv2,
   math
@@ -94,7 +93,6 @@ gqpestore_sources = [
 ]
 
 gqpestore_dependencies = [
-  gdk,
   gee,
   gexiv2,
   math
@@ -102,6 +100,21 @@ gqpestore_dependencies = [
 
 executable('gqpe-store', gqpestore_sources,
            dependencies: gqpestore_dependencies,
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
+
+gqpeinterpolategps_sources = [
+  'src/interpolate-gps.vala'
+]
+
+gqpeinterpolategps_dependencies = [
+  gee,
+  gexiv2,
+  math
+]
+
+executable('gqpe-interpolate-gps', gqpeinterpolategps_sources,
+           dependencies: gqpeinterpolategps_dependencies,
            include_directories: [ gqpelib_includes ],
            install: true, link_with: [ gqpelib ])
 

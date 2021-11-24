@@ -27,6 +27,9 @@ namespace GQPE {
      */
     public class Util {
 
+        /* Earth radius in meters. Approx. */
+        private const double RADIUS = 6373000.0;
+
         /* Whether the get_colorize() function has been called. */
         private static bool get_colorize_called = false;
         /* Whether to colorize. */
@@ -114,9 +117,9 @@ namespace GQPE {
                     return "";
 
                 t = t.down();
-                var regex = new GLib.Regex("[ /-]");
-                t = regex.replace(t, t.length, 0, "_");
-                regex = new GLib.Regex("[^A-Za-z0-9_-]");
+                var regex = new GLib.Regex("[_ ]");
+                t = regex.replace(t, t.length, 0, "-");
+                regex = new GLib.Regex("[^A-Za-z0-9-]");
                 t = regex.replace(t, t.length, 0, "");
                 return t;
             } catch (GLib.Error e) {
@@ -143,6 +146,63 @@ namespace GQPE {
             if (i == 0 || i == -1)
                 return "";
             return path[i+1:];
+        }
+
+        public static string capitalize(string message) {
+            int i = message.index_of_nth_char(1);
+            return message.up(1) + message.substring(i);
+        }
+
+        /* Converts a degree to a radian. */
+        private static double deg_to_rad(double degree) {
+            return degree * GLib.Math.PI / 180.0;
+        }
+
+        /**
+         * Calculates the distance with a coordinate.
+         * @param latitude the latitude of the coordinate.
+         * @param longitude the longitude of the coordinate.
+         * @return the natural distance with the coordinate.
+         */
+        public static double distance(double latitude1, double longitude1,
+                                      double latitude2, double longitude2) {
+            double lat1 = deg_to_rad(latitude1);
+            double lon1 = deg_to_rad(longitude1);
+            double lat2 = deg_to_rad(latitude2);
+            double lon2 = deg_to_rad(longitude2);
+            double dlat = lat2 - lat1;
+            double dlon = lon2 - lon1;
+            double a = GLib.Math.sin(dlat/2.0) * GLib.Math.sin(dlat/2.0) +
+                GLib.Math.cos(lat1) * GLib.Math.cos(lat2) *
+                GLib.Math.sin(dlon/2.0) * GLib.Math.sin(dlon/2.0);
+            double c = 2.0 * GLib.Math.atan2(GLib.Math.sqrt(a),
+                                             GLib.Math.sqrt(1-a));
+            return RADIUS * c;
+        }
+
+        /*
+          Bx = cos(lat2).cos(Δlong)
+          By = cos(lat2).sin(Δlong)
+          latm = atan2(sin(lat1) + sin(lat2), √((cos(lat1)+Bx)² + By²))
+          lonm = lon1 + atan2(By, cos(lat1)+Bx)*/
+
+        public static void middle(double latitude1, double longitude1,
+                                  double latitude2, double longitude2,
+                                  out double latitude, out double longitude) {
+            latitude = (latitude1+latitude2) / 2.0;
+            longitude = (longitude1+longitude2) / 2.0;
+            // var dlong = longitude2 - longitude1;
+            // var bx = GLib.Math.cos(latitude2) * GLib.Math.cos(dlong);
+            // var by = GLib.Math.cos(latitude2) * GLib.Math.sin(dlong);
+            // var cl1bx = GLib.Math.cos(latitude1) + bx;
+            // latitude = GLib.Math.atan2(
+            //     GLib.Math.sin(latitude1) + GLib.Math.sin(latitude2),
+            //     GLib.Math.sqrt(cl1bx*cl1bx + by*by));
+            // longitude = longitude1 + GLib.Math.atan2(by, cl1bx);
+            // latitude = (latitude1 * GLib.Math.cos(longitude1) +
+            //             latitude2 * GLib.Math.cos(longitude2)) / 2.0;
+            // longitude = (latitude1 * GLib.Math.sin(longitude1) +
+            //              latitude2 * GLib.Math.sin(longitude2)) / 2.0;
         }
     }
 }
