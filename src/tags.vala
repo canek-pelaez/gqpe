@@ -52,6 +52,8 @@ namespace GQPE {
         private static double longitude;
         /* The shift time argument. */
         private static int shift_time;
+        /* Whether to reset the datetime. */
+        private static bool reset_time;
         /* The print format argument. */
         private static string print_format;
         /* Whether to be quiet. */
@@ -66,7 +68,7 @@ namespace GQPE {
             { "album", 'a', 0, GLib.OptionArg.STRING, ref album,
               _("Set the album"), "ALBUM" },
             { "datetime", 'd', 0, GLib.OptionArg.STRING, ref s_datetime,
-              _("Set the datetime"), "DATETIME" },
+              _("Set the date and time"), "DATETIME" },
             { "offset", 'z', 0, GLib.OptionArg.STRING, ref s_offset,
               _("Set the timezone offset"), "OFFSET" },
             { "orientation", 'o', 0, GLib.OptionArg.STRING, ref s_orientation,
@@ -77,6 +79,8 @@ namespace GQPE {
               _("Set the longitude"), "LONGITUDE" },
             { "shift-time", 's', 0, GLib.OptionArg.INT, &shift_time,
               _("Shift the time in this amount of hours"), "HOURS" },
+            { "reset-time", 'r', 0, GLib.OptionArg.INT, &reset_time,
+              _("Resets the file timestamp to the photograph one"), "HOURS" },
             { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
               _("Prints the tags with format"), "FORMAT" },
             { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
@@ -99,7 +103,7 @@ Format for printing:
   %t: The title
   %a: The album
   %D: The description
-  %T: The datetime
+  %T: The date and time
   %z: The timezone offset
   %o: The orientation
   %Y: The latitude
@@ -142,7 +146,7 @@ Format for printing:
                 var offset = (photo.timezone_offset < 0) ?
                     -photo.timezone_offset : photo.timezone_offset;
                 dt += "[%s%04d]".printf(s, offset);
-                box.add_body_key_value(_("Datetime"), dt);
+                box.add_body_key_value(_("Date and time"), dt);
             }
             box.add_body_key_value(_("Orientation"),
                                    photo.orientation.to_string());
@@ -198,6 +202,16 @@ Format for printing:
             for (int i = 1; i < args.length; i++)
                 tags += get_tags_box(args[i]);
             stderr.printf("%s", tags);
+        }
+
+        /* Resets time. */
+        private static void do_reset_time(string[] args) {
+            for (int i = 1; i < args.length; i++) {
+                var photo = get_photograph(args[i]);
+                if (photo == null)
+                    continue;
+                Util.set_file_datetime(args[i], photo.datetime);
+            }
         }
 
         /* Shifts time. */
@@ -268,7 +282,7 @@ Format for printing:
 
         public static int main(string[] args) {
             GLib.Intl.setlocale(LocaleCategory.ALL, "");
-            quiet = false;
+            reset_time = quiet = false;
             orientation = -1;
             offset = int.MAX;
             latitude = longitude = double.MAX;
@@ -296,6 +310,18 @@ Format for printing:
                 return 1;
             }
 
+            if (reset_time && edit_properties()) {
+                var m = _("You cannot reset time and edit at the same time\n");
+                stderr.printf(m);
+                return 1;
+            }
+
+            if (shift_time != 0 && reset_time) {
+                var m = _("You cannot shift and reset time at the same time\n");
+                stderr.printf(m);
+                return 1;
+            }
+
             if (s_orientation != null) {
                 orientation = Orientation.parse_orientation(s_orientation);
                 if (orientation < 0) {
@@ -311,7 +337,7 @@ Format for printing:
                     datetime = new GLib.DateTime.from_iso8601(
                         s_datetime, new TimeZone.utc());
                 if (datetime == null) {
-                    stderr.printf(_("Invalid datetime: %s\n"), s_datetime);
+                    stderr.printf(_("Invalid date and time: %s\n"), s_datetime);
                     return 1;
                 }
             }
@@ -346,6 +372,11 @@ Format for printing:
 
             if (shift_time != 0) {
                 do_shift_time(args);
+                return 0;
+            }
+
+            if (reset_time) {
+                do_reset_time(args);
                 return 0;
             }
 

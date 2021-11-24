@@ -180,29 +180,12 @@ namespace GQPE {
             return RADIUS * c;
         }
 
-        /*
-          Bx = cos(lat2).cos(Δlong)
-          By = cos(lat2).sin(Δlong)
-          latm = atan2(sin(lat1) + sin(lat2), √((cos(lat1)+Bx)² + By²))
-          lonm = lon1 + atan2(By, cos(lat1)+Bx)*/
-
         public static void middle(double latitude1, double longitude1,
                                   double latitude2, double longitude2,
                                   out double latitude, out double longitude) {
+            /* I know, I know. But it works for small distances. */
             latitude = (latitude1+latitude2) / 2.0;
             longitude = (longitude1+longitude2) / 2.0;
-            // var dlong = longitude2 - longitude1;
-            // var bx = GLib.Math.cos(latitude2) * GLib.Math.cos(dlong);
-            // var by = GLib.Math.cos(latitude2) * GLib.Math.sin(dlong);
-            // var cl1bx = GLib.Math.cos(latitude1) + bx;
-            // latitude = GLib.Math.atan2(
-            //     GLib.Math.sin(latitude1) + GLib.Math.sin(latitude2),
-            //     GLib.Math.sqrt(cl1bx*cl1bx + by*by));
-            // longitude = longitude1 + GLib.Math.atan2(by, cl1bx);
-            // latitude = (latitude1 * GLib.Math.cos(longitude1) +
-            //             latitude2 * GLib.Math.cos(longitude2)) / 2.0;
-            // longitude = (latitude1 * GLib.Math.sin(longitude1) +
-            //              latitude2 * GLib.Math.sin(longitude2)) / 2.0;
         }
     }
 }
