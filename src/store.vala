@@ -41,20 +41,23 @@ namespace GQPE {
 
         private static Gee.TreeMap<int, City> cities;
 
-        /* The options. */
-        private static GLib.OptionEntry[] options = {
-            { "location", 'l', 0, GLib.OptionArg.NONE, &location,
-              _("Use location look up"), null },
-            { "update", 'u', 0, GLib.OptionArg.NONE, &update,
-              _("Update the metadata of the photograph"), null },
-            { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
-              _("Be quiet"), null },
-            { null }
-        };
-
         /* The option context. */
         private const string CONTEXT =
             _("INPUTDIR OUTPUTDIR - Move images to a normalized location.");
+
+        /* Returns the options. */
+        private static GLib.OptionEntry[] get_options()  {
+            GLib.OptionEntry[] options = {
+                { "location", 'l', 0, GLib.OptionArg.NONE, &location,
+                  _("Use location look up"), null },
+                { "update", 'u', 0, GLib.OptionArg.NONE, &update,
+                  _("Update the metadata of the photograph"), null },
+                { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
+                  _("Be quiet"), null },
+                { null }
+            };
+            return options;
+        }
 
         private static void load_cities() {
             cities = new Gee.TreeMap<int, City>();
@@ -216,7 +219,7 @@ namespace GQPE {
             try {
                 var opt = new GLib.OptionContext(CONTEXT);
                 opt.set_help_enabled(true);
-                opt.add_main_entries(options, null);
+                opt.add_main_entries(get_options(), null);
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);

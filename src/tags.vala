@@ -59,35 +59,6 @@ namespace GQPE {
         /* Whether to be quiet. */
         private static bool quiet;
 
-        /* The options. */
-        private static GLib.OptionEntry[] options = {
-            { "title", 't', 0, GLib.OptionArg.STRING, ref title,
-              _("Set the title"), "TITLE" },
-            { "comment", 'c', 0, GLib.OptionArg.STRING, ref comment,
-              _("Set the comment"), "COMMENT" },
-            { "album", 'a', 0, GLib.OptionArg.STRING, ref album,
-              _("Set the album"), "ALBUM" },
-            { "datetime", 'd', 0, GLib.OptionArg.STRING, ref s_datetime,
-              _("Set the date and time"), "DATETIME" },
-            { "offset", 'z', 0, GLib.OptionArg.STRING, ref s_offset,
-              _("Set the timezone offset"), "OFFSET" },
-            { "orientation", 'o', 0, GLib.OptionArg.STRING, ref s_orientation,
-              _("Set the orientation"), "ORIENTATION" },
-            { "latitude", 'y', 0, GLib.OptionArg.STRING, ref s_latitude,
-              _("Set the latitude"), "LATITUDE" },
-            { "longitude", 'x', 0, GLib.OptionArg.STRING, ref s_longitude,
-              _("Set the longitude"), "LONGITUDE" },
-            { "shift-time", 's', 0, GLib.OptionArg.INT, &shift_time,
-              _("Shift the time in this amount of hours"), "HOURS" },
-            { "reset-time", 'r', 0, GLib.OptionArg.INT, &reset_time,
-              _("Resets the file timestamp to the photograph one"), "HOURS" },
-            { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
-              _("Prints the tags with format"), "FORMAT" },
-            { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
-              _("Be quiet"), null },
-            { null }
-        };
-
         /* The option context. */
         private const string CONTEXT =
             _("[FILENAME...] - Edit and show the image tags.");
@@ -109,6 +80,39 @@ Format for printing:
   %Y: The latitude
   %X: The longitude
 """);
+
+        /* Returns the options. */
+        private static GLib.OptionEntry[] get_options() {
+            GLib.OptionEntry[] options = {
+                { "title", 't', 0, GLib.OptionArg.STRING, ref title,
+                  _("Set the title"), "TITLE" },
+                { "comment", 'c', 0, GLib.OptionArg.STRING, ref comment,
+                  _("Set the comment"), "COMMENT" },
+                { "album", 'a', 0, GLib.OptionArg.STRING, ref album,
+                  _("Set the album"), "ALBUM" },
+                { "datetime", 'd', 0, GLib.OptionArg.STRING, ref s_datetime,
+                  _("Set the date and time"), "DATETIME" },
+                { "offset", 'z', 0, GLib.OptionArg.STRING, ref s_offset,
+                  _("Set the timezone offset"), "OFFSET" },
+                { "orientation", 'o', 0, GLib.OptionArg.STRING,
+                  ref s_orientation, _("Set the orientation"), "ORIENTATION" },
+                { "latitude", 'y', 0, GLib.OptionArg.STRING, ref s_latitude,
+                  _("Set the latitude"), "LATITUDE" },
+                { "longitude", 'x', 0, GLib.OptionArg.STRING, ref s_longitude,
+                  _("Set the longitude"), "LONGITUDE" },
+                { "shift-time", 's', 0, GLib.OptionArg.INT, &shift_time,
+                  _("Shift the time in this amount of hours"), "HOURS" },
+                { "reset-time", 'r', 0, GLib.OptionArg.INT, &reset_time,
+                  _("Resets the file timestamp to the photograph one"),
+                  "HOURS" },
+                { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
+                  _("Prints the tags with format"), "FORMAT" },
+                { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
+                  _("Be quiet"), null },
+                { null }
+            };
+            return options;
+        }
 
         /* Loads the photograph. */
         private static Photograph get_photograph(string path) {
@@ -289,7 +293,7 @@ Format for printing:
             try {
                 var opt = new GLib.OptionContext(CONTEXT);
                 opt.set_help_enabled(true);
-                opt.add_main_entries(options, null);
+                opt.add_main_entries(get_options(), null);
                 opt.set_description(DESCRIPTION);
                 opt.parse(ref args);
             } catch (GLib.Error e) {

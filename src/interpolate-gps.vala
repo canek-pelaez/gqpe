@@ -29,16 +29,19 @@ namespace GQPE {
 
         private static Photograph[] photographs;
 
-        /* The options. */
-        private static GLib.OptionEntry[] options = {
-            { "verbose", 'v', 0, GLib.OptionArg.NONE, &verbose,
-              _("Be verbose"), null },
-            { null }
-        };
-
         /* The option context. */
         private const string CONTEXT =
             _("INPUTDIR - Interpolate GPS coordinates.");
+
+        /* Returns the options. */
+        private static GLib.OptionEntry[] get_options() {
+            GLib.OptionEntry[] options = {
+                { "verbose", 'v', 0, GLib.OptionArg.NONE, &verbose,
+                  _("Be verbose"), null },
+                { null }
+            };
+            return options;
+        }
 
         private static void load_photos() throws GLib.Error {
             stdout.printf(_("Loading photos...\n"));
@@ -147,7 +150,7 @@ namespace GQPE {
             try {
                 var opt = new GLib.OptionContext(CONTEXT);
                 opt.set_help_enabled(true);
-                opt.add_main_entries(options, null);
+                opt.add_main_entries(get_options(), null);
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
