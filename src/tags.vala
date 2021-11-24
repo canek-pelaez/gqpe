@@ -61,10 +61,11 @@ namespace GQPE {
 
         /* The option context. */
         private const string CONTEXT =
-            _("[FILENAME...] - Edit and show the image tags.");
+            _("[FILENAME…] - Edit and show the image tags.");
 
-        /* The option context. */
-        private const string DESCRIPTION = _(
+        /* Returns option context. */
+        private static string get_description() {
+            return _(
 """With no flags the tags are printed. An empty string as parameter
 removes an individual tag.
 
@@ -80,6 +81,7 @@ Format for printing:
   %Y: The latitude
   %X: The longitude
 """);
+        }
 
         /* Returns the options. */
         private static GLib.OptionEntry[] get_options() {
@@ -102,7 +104,7 @@ Format for printing:
                   _("Set the longitude"), "LONGITUDE" },
                 { "shift-time", 's', 0, GLib.OptionArg.INT, &shift_time,
                   _("Shift the time in this amount of hours"), "HOURS" },
-                { "reset-time", 'r', 0, GLib.OptionArg.INT, &reset_time,
+                { "reset-time", 'r', 0, GLib.OptionArg.NONE, &reset_time,
                   _("Resets the file timestamp to the photograph one"),
                   "HOURS" },
                 { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
@@ -294,7 +296,7 @@ Format for printing:
                 var opt = new GLib.OptionContext(CONTEXT);
                 opt.set_help_enabled(true);
                 opt.add_main_entries(get_options(), null);
-                opt.set_description(DESCRIPTION);
+                opt.set_description(get_description());
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
