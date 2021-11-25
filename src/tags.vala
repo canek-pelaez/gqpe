@@ -216,6 +216,10 @@ Format for printing:
                 var photo = get_photograph(args[i]);
                 if (photo == null)
                     continue;
+                var dt = Util.get_file_datetime(args[i]);
+                if (dt.compare(photo.datetime) == 0)
+                    continue;
+                stderr.printf(_("Resetting time for %s...\n"), args[i]);
                 Util.set_file_datetime(args[i], photo.datetime);
             }
         }
@@ -226,6 +230,7 @@ Format for printing:
                 var photo = get_photograph(args[i]);
                 if (photo == null)
                     continue;
+                stderr.printf(_("Shifting time for %s...\n"), args[i]);
                 photo.timezone_offset += shift_time;
                 save(photo);
             }
