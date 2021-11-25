@@ -198,7 +198,7 @@ Format for printing:
                     .replace("%X", x)
                     .replace("\\n", "\n")
                     .replace("\\t", "\t");
-                stderr.printf("%s", s);
+                stdout.printf("%s", s);
             }
         }
 
@@ -207,7 +207,7 @@ Format for printing:
             var tags = "";
             for (int i = 1; i < args.length; i++)
                 tags += get_tags_box(args[i]);
-            stderr.printf("%s", tags);
+            stdout.printf("%s", tags);
         }
 
         /* Resets time. */
