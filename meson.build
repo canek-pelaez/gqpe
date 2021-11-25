@@ -88,6 +88,21 @@ executable('gqpe-tags', gqpetags_sources,
            include_directories: [ gqpelib_includes ],
            install: true, link_with: [ gqpelib ])
 
+gqpecopy_sources = [
+  'src/copy.vala'
+]
+
+gqpecopy_dependencies = [
+  gee,
+  gexiv2,
+  math
+]
+
+executable('gqpe-copy', gqpecopy_sources,
+           dependencies: gqpecopy_dependencies,
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
+
 gqpestore_sources = [
   'src/store.vala'
 ]
