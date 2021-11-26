@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=GQPE
 GenericName=Gtk+ Quick Photo Editor
-Comment=Quick editor for photography tags
+Comment=Quick editor for photograph tags
 Exec=gqpe %F
 Icon=gqpe
 Type=Application
