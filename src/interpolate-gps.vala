@@ -24,18 +24,25 @@ namespace GQPE {
      */
     public class InterpolateGPS {
 
-        private static string input;
+        /* Wheter to force a range. */
+        private static bool range;
+        /* Wheter to be verbose. */
         private static bool verbose;
 
+        /* The input directory. */
+        private static string input;
+        /* The photographs. */
         private static Photograph[] photographs;
 
         /* The option context. */
         private const string CONTEXT =
-            _("INPUTDIR - Interpolate GPS coordinates.");
+            _("INPUT - Interpolate GPS coordinates.");
 
         /* Returns the options. */
         private static GLib.OptionEntry[] get_options() {
             GLib.OptionEntry[] options = {
+                { "range", 'r', 0, GLib.OptionArg.NONE, &range,
+                  _("Force a range"), null },
                 { "verbose", 'v', 0, GLib.OptionArg.NONE, &verbose,
                   _("Be verbose"), null },
                 { null }
@@ -43,15 +50,15 @@ namespace GQPE {
             return options;
         }
 
+        /*Loads the photos from the input directory. */
         private static void load_photos() throws GLib.Error {
             stdout.printf(_("Loading photos...\n"));
             int c = 0;
-            var root = File.new_for_path(input);
+            var root = GLib.File.new_for_path(input);
             Gee.ArrayQueue<File> queue = new Gee.ArrayQueue<File>();
             queue.offer(root);
             var photos = new Gee.TreeSet<Photograph>();
             while (!queue.is_empty) {
-                stderr.printf(_("Loaded %d photos...  \r\b"), c++);
                 var dir = queue.poll();
                 var e = dir.enumerate_children(FileAttribute.STANDARD_NAME, 0);
                 FileInfo file_info;
@@ -67,6 +74,7 @@ namespace GQPE {
                     try {
                         var photo = new Photograph(file);
                         photos.add(photo);
+                        stderr.printf(_("Loaded %d photos...  \r\b"), c++);
                     } catch (GLib.Error e) {
                         var m = _("There was an error processing %s: %s. ");
                         stderr.printf(m, path, e.message);
@@ -81,6 +89,7 @@ namespace GQPE {
             stdout.printf(_("Loaded %d photos...      \n"), c++);
         }
 
+        /* Recursively interpolates the coordinates for a range. */
         private static void interpolate_coordinates(double[] lats,
                                                     double[] lons,
                                                     int a, int b) {
@@ -95,17 +104,20 @@ namespace GQPE {
             interpolate_coordinates(lats, lons, m, b);
         }
 
-        private static void interpolate_range(int i, int j) throws GLib.Error {
+        /* Interpolates the coordinates for a range. */
+        private static int interpolate_range(int i, int j) throws GLib.Error {
             var p = photographs[i];
             var q = photographs[j];
-            if (Util.distance(p.latitude, p.longitude,
-                              q.latitude, q.longitude) > 1000 ||
-                p.datetime.difference(q.datetime) > GLib.TimeSpan.DAY)
-                return;
+            double distance = Util.distance(p.latitude, p.longitude,
+                                            q.latitude, q.longitude);
+            var difference = p.datetime.difference(q.datetime);
+            if (!range && (distance > 1000 || difference > GLib.TimeSpan.DAY))
+                return 0;
             int n = j - i - 1;
             int m = 2;
             while (m < n)
                 m *= 2;
+            m += 2;
             double[] lats = new double[m];
             double[] lons = new double[m];
             lats[0] = p.latitude;
@@ -113,21 +125,29 @@ namespace GQPE {
             lats[m-1] = q.latitude;
             lons[m-1] = q.longitude;
             interpolate_coordinates(lats, lons, 0, m-1);
-            for (int x = i; x <= j; x++) {
-                int y = (int)((x-i) * (((double)m) / (j - i + 1))) + 1;
-                photographs[y].set_coordinates(lats[y], lons[y]);
+            int c = 0;
+            for (int x = i+1; x < j; x++) {
+                int y = (int)(((double)(x-i)) / n) + 1;
+                stderr.printf(_("Updating %s...\n"),
+                              photographs[x].path);
+                c++;
+                photographs[x].set_coordinates(lats[y], lons[y]);
+                photographs[x].save_metadata();
             }
+            return c;
         }
 
-        private static void interpolate_photos() throws GLib.Error {
+        /* Interpolates a directory of photos. */
+        private static int interpolate_photos() throws GLib.Error {
             load_photos();
             int j = -1;
             bool left = false, middle = false;
+            int c = 0;
             for (int i = 0; i < photographs.length; i++) {
                 var p = photographs[i];
                 if (p.has_geolocation) {
                     if (left && middle) {
-                        interpolate_range(j, i);
+                        c += interpolate_range(j, i);
                         j = i;
                         middle = false;
                     } else if (!left) {
@@ -142,6 +162,7 @@ namespace GQPE {
                     }
                 }
             }
+            return c;
         }
 
         public static int main(string[] args) {
@@ -159,24 +180,51 @@ namespace GQPE {
                 GLib.Process.exit(1);
             }
 
-            if (args.length != 2) {
-                stderr.printf(_("Exactly one input directory needed.\n"));
-                GLib.Process.exit(1);
-            }
-
-            input = args[1];
-
-            if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR)) {
-                stderr.printf(_("%s is not a directory\n"), input);
-                GLib.Process.exit(1);
-            }
-
-            try {
-                interpolate_photos();
-            } catch (GLib.Error e) {
-                stderr.printf(_("There was an error while interpolating: %s\n"),
-                              e.message);
-                GLib.Process.exit(1);
+            if (args.length == 2) {
+                input = args[1];
+                if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR)) {
+                    stderr.printf(_("%s is not a directory\n"), input);
+                    GLib.Process.exit(1);
+                }
+                try {
+                    int c = interpolate_photos();
+                    stderr.printf(_("%d photographs updated.\n"), c);
+                } catch (GLib.Error e) {
+                    var m = _("There was an error while interpolating: %s\n");
+                    stderr.printf(m, e.message);
+                    GLib.Process.exit(1);
+                }
+            } else {
+                photographs = new Photograph[args.length-1];
+                int c = 0;
+                for (int i = 1; i < args.length; i++) {
+                    var file = GLib.File.new_for_path(args[i]);
+                    try {
+                        photographs[i-1] = new Photograph(file);
+                        stderr.printf(_("Loaded %d photos...  \r\b"), c++);
+                    } catch (GLib.Error e) {
+                        var m = _("There was an error processing %s: %s. ");
+                        stderr.printf(m, args[i], e.message);
+                        stderr.printf(_("Skipping.\n"));
+                    }
+                }
+                stderr.printf(_("Loaded %d photos...  \n"), c);
+                int n = photographs.length;
+                if (!photographs[0].has_geolocation ||
+                    !photographs[n-1].has_geolocation) {
+                    var m
+                        = _("First and last photograph must have GPS data.\n");
+                    stderr.printf(m);
+                    GLib.Process.exit(1);
+                }
+                try {
+                    c = interpolate_range(0, n-1);
+                } catch (GLib.Error e) {
+                    var m = _("There was an error while interpolating: %s\n");
+                    stderr.printf(m, e.message);
+                    GLib.Process.exit(1);
+                }
+                stderr.printf(_("Updated %d photos.\n"), c);
             }
 
             return 0;
