@@ -180,6 +180,12 @@ namespace GQPE {
         /* Control shortcuts. */
         private void control_shortcuts(uint event_key) {
             switch (event_key) {
+            case Gdk.Key.bracketleft:
+                on_rotate_left_clicked();
+                break;
+            case Gdk.Key.bracketright:
+                on_rotate_right_clicked();
+                break;
             case Gdk.Key.S:
                 on_data_activated();
                 break;
@@ -196,12 +202,6 @@ namespace GQPE {
             case Gdk.Key.KP_Page_Down:
             case Gdk.Key.Page_Down:
                 on_next_clicked();
-                break;
-            case Gdk.Key.bracketleft:
-                on_rotate_left_clicked();
-                break;
-            case Gdk.Key.bracketright:
-                on_rotate_right_clicked();
                 break;
             }
         }
@@ -452,6 +452,7 @@ namespace GQPE {
                                               CLOCKWISE);
                 break;
             }
+            pixbufs[photograph.path] = pixbuf;
             image.set_from_pixbuf(pixbuf);
             enable_ui(Item.SAVE);
         }
