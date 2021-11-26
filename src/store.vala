@@ -24,6 +24,7 @@ namespace GQPE {
      */
     public class Store {
 
+        /* City fields. */
         private enum CityField {
             ID,
             NAME,
@@ -33,17 +34,22 @@ namespace GQPE {
             LONGITUDE;
         }
 
+        /* The input directory. */
         private static string input;
+        /* The output directory. */
         private static string output;
+        /* Whether to look up the location. */
         private static bool location;
+        /* Whether to update the photographs. */
         private static bool update;
+        /* Whether to be quiet. */
         private static bool quiet;
-
+        /* The cities dictionary. */
         private static Gee.TreeMap<int, City> cities;
 
         /* The option context. */
         private const string CONTEXT =
-            _("INPUTDIR OUTPUTDIR - Move images to a normalized location.");
+            _("INPUTDIR OUTPUTDIR - Store images to a normalized location.");
 
         /* Returns the options. */
         private static GLib.OptionEntry[] get_options()  {
@@ -59,6 +65,7 @@ namespace GQPE {
             return options;
         }
 
+        /* Loads the cities from the database. */
         private static void load_cities() {
             cities = new Gee.TreeMap<int, City>();
             string[] data_dirs =  GLib.Environment.get_system_data_dirs();
@@ -97,6 +104,7 @@ namespace GQPE {
             stderr.printf(_("Cities database not found"));
         }
 
+        /* Gets the nearest location to a photograph. */
         private static string get_location(Photograph photo) {
             if (cities == null || cities.is_empty)
                 return "";
@@ -113,6 +121,7 @@ namespace GQPE {
             return c.name;
         }
 
+        /* Sets the album for a photo. */
         private static void set_album(Photograph photo) {
             if (photo.album != null && photo.album != "")
                 return;
@@ -126,13 +135,15 @@ namespace GQPE {
             photo.album = Util.capitalize(r);
         }
 
+        /* Sets the title for a photo. */
         private static void set_title(Photograph photo) {
             if (photo.title != null && photo.title != "")
                 return;
-            var bn = GLib.Path.get_basename(photo.file.get_path());
+            var bn = GLib.Path.get_basename(photo.path);
             photo.title = Util.capitalize(Util.normalize(Util.get_name(bn)));
         }
 
+        /* Makes the directory if necessary. */
         private static void mkdir(string path) throws GLib.Error {
             if (!FileUtils.test(path, FileTest.EXISTS)) {
                 var d = File.new_for_path(path);
@@ -140,7 +151,8 @@ namespace GQPE {
             }
         }
 
-        private static void move_photo(string path) throws GLib.Error {
+        /* Stores a photo. */
+        private static void store_photo(string path) throws GLib.Error {
             var file = GLib.File.new_for_commandline_arg(path);
             Photograph photo;
             try {
@@ -160,7 +172,7 @@ namespace GQPE {
             var month = "%02d".printf(dt.get_month());
             var album = Util.normalize(photo.album);
             var title = Util.normalize_basename(
-                GLib.Path.get_basename(photo.file.get_path()));
+                GLib.Path.get_basename(photo.path));
             var dest = string.join(GLib.Path.DIR_SEPARATOR_S, output, year);
             mkdir(dest);
             dest = string.join(GLib.Path.DIR_SEPARATOR_S, dest, month);
@@ -189,7 +201,8 @@ namespace GQPE {
             stderr.printf("%s → %s\n", path, dest);
         }
 
-        private static void move_photos() throws GLib.Error {
+        /* Stores the photographs. */
+        private static void store_photos() throws GLib.Error {
             var root = File.new_for_path(input);
             if (!FileUtils.test(output, FileTest.EXISTS)) {
                 var o = File.new_for_path(output);
@@ -208,7 +221,7 @@ namespace GQPE {
                     if (GLib.FileUtils.test(path, GLib.FileTest.IS_DIR))
                         queue.offer(File.new_for_path(path));
                     else
-                        move_photo(path);
+                        store_photo(path);
                 }
             }
         }
@@ -242,12 +255,12 @@ namespace GQPE {
             output = args[2];
 
             if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR)) {
-                stderr.printf("%s is not a directory\n", input);
+                stderr.printf(_("%s is not a directory\n"), input);
                 GLib.Process.exit(1);
             }
 
             try {
-                move_photos();
+                store_photos();
             } catch (GLib.Error e) {
                 stderr.printf(_("There was an error while storing: %s\n"),
                               e.message);
