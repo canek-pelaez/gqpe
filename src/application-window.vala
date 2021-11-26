@@ -281,7 +281,7 @@ namespace GQPE {
             try {
                 photograph.save_metadata();
             } catch (GLib.Error e) {
-                var f = photograph.file.get_path();
+                var f = photograph.path;
                 GLib.warning("There was an error saving the " +
                              "metadata of '%s': %s", f, e.message);
             }
@@ -366,7 +366,7 @@ namespace GQPE {
             photographs.sort();
             pmap = new Gee.TreeMap<string, Photograph>();
             foreach (var photograph in photographs) {
-                pmap[photograph.file.get_path()] = photograph;
+                pmap[photograph.path] = photograph;
             }
             GLib.Idle.add(lazy_load);
         }
@@ -385,7 +385,7 @@ namespace GQPE {
                     GLib.warning("Could not load '%s': %s", path, e.message);
                 }
             }
-            pmap.unset(photo.file.get_path());
+            pmap.unset(photo.path);
             double t = photographs.size - pmap.size;
             progress_bar.fraction = t / photographs.size;
             return true;
@@ -439,7 +439,7 @@ namespace GQPE {
 
         /* Rotates the photograph. */
         private void rotate(Rotate direction) {
-            var pixbuf = pixbufs[photograph.file.get_path()];
+            var pixbuf = pixbufs[photograph.path];
             switch (direction) {
             case Rotate.LEFT:
                 photograph.rotate_left();
@@ -470,7 +470,7 @@ namespace GQPE {
         /* Updates the picture. */
         private void update_picture() {
             photograph = iterator.get();
-            var path = photograph.file.get_path();
+            var path = photograph.path;
             if (!pixbufs.has_key(path)) {
                 try {
                     load_pixbuf(photograph);
@@ -588,7 +588,7 @@ namespace GQPE {
         /* Loads the pixbuf. */
         private void load_pixbuf(Photograph photograph)
             throws GLib.Error {
-            var path = photograph.file.get_path();
+            var path = photograph.path;
             var pb = new Gdk.Pixbuf.from_file(path);
             switch (photograph.orientation) {
             case Orientation.LANDSCAPE:
