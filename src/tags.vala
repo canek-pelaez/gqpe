@@ -58,6 +58,8 @@ namespace GQPE {
         private static string print_format;
         /* Whether to be quiet. */
         private static bool quiet;
+        /* The photographs. */
+        private static Gee.TreeSet<Photograph> photos;
 
         /* The option context. */
         private const string CONTEXT =
@@ -71,6 +73,8 @@ removes an individual tag.
 
 Format for printing:
 
+  %p: The path
+  %P: The dirname
   %b: The basename
   %t: The title
   %a: The album
@@ -134,10 +138,8 @@ Format for printing:
         }
 
         /* Returns the tags box. */
-        private static string get_tags_box(string path) {
-            var photo = get_photograph(path);
-            if (photo == null)
-                return "";
+        private static string get_tags_box(Photograph photo) {
+            var path = photo.path;
             var box = new PrettyBox(80, Color.RED);
             box.set_title(GLib.Filename.display_basename(path), Color.CYAN);
             if (photo.title != null && photo.title != "")
@@ -169,11 +171,10 @@ Format for printing:
         }
 
         /* Prints the tags with a format. */
-        private static void print_with_format(string[] args) {
-            for (int i = 1; i < args.length; i++) {
-                var photo = get_photograph(args[i]);
-                if (photo == null)
-                    continue;
+        private static void print_with_format() {
+            foreach (var photo in photos) {
+                var p = photo.path;
+                var P = GLib.Path.get_dirname(p);
                 var b = photo.file.get_basename();
                 var t = (photo.title != null) ? photo.title : "";
                 var a = (photo.album != null) ? photo.album : "";
@@ -187,6 +188,8 @@ Format for printing:
                 var x = !photo.has_geolocation ? "" :
                     "%2.11f".printf(photo.longitude);
                 var s = print_format
+                    .replace("%p", p)
+                    .replace("%P", P)
                     .replace("%b", b)
                     .replace("%t", t)
                     .replace("%a", a)
@@ -203,44 +206,35 @@ Format for printing:
         }
 
         /* Prints the tags. */
-        private static void print_tags(string[] args) {
+        private static void print_tags() {
             var tags = "";
-            for (int i = 1; i < args.length; i++)
-                tags += get_tags_box(args[i]);
+            foreach (var photo in photos)
+                tags += get_tags_box(photo);
             stdout.printf("%s", tags);
         }
 
         /* Resets time. */
-        private static void do_reset_time(string[] args) {
-            for (int i = 1; i < args.length; i++) {
-                var photo = get_photograph(args[i]);
-                if (photo == null)
-                    continue;
-                var dt = Util.get_file_datetime(args[i]);
+        private static void do_reset_time() {
+            foreach (var photo in photos) {
+                var dt = Util.get_file_datetime(photo.path);
                 if (dt.compare(photo.datetime) == 0)
                     continue;
-                stderr.printf(_("Resetting time for %s...\n"), args[i]);
-                Util.set_file_datetime(args[i], photo.datetime);
+                stderr.printf(_("Resetting time for %s...\n"), photo.path);
+                Util.set_file_datetime(photo.path, photo.datetime);
             }
         }
 
         /* Shifts time. */
-        private static void do_shift_time(string[] args) {
-            for (int i = 1; i < args.length; i++) {
-                var photo = get_photograph(args[i]);
-                if (photo == null)
-                    continue;
-                stderr.printf(_("Shifting time for %s...\n"), args[i]);
-                photo.timezone_offset += shift_time;
+        private static void do_shift_time() {
+            foreach (var photo in photos) {
+                stderr.printf(_("Shifting time for %s...\n"), photo.path);
+                photo.datetime = photo.datetime.add_hours(shift_time);
                 save(photo);
             }
         }
 
         /* Handles the tag. */
-        private static void handle_tag(string path) {
-            var photo = get_photograph(path);
-            if (photo == null)
-                return;
+        private static void handle_tag(Photograph photo) {
             if (album != null)
                 photo.album = album;
             if (title != null)
@@ -266,11 +260,17 @@ Format for printing:
             }
             if (!quiet)
                 stderr.printf(_("Updating %s...\n"),
-                              GLib.Filename.display_basename(path));
+                              GLib.Filename.display_basename(photo.path));
             save(photo);
             if (!quiet)
                 stderr.printf(_("%s updated.\n"),
-                              GLib.Filename.display_basename(path));
+                              GLib.Filename.display_basename(photo.path));
+        }
+
+        /* Handles the tags. */
+        private static void handle_tags() {
+            foreach (var photo in photos)
+                handle_tag(photo);
         }
 
         /* Saves the photograph. */
@@ -279,7 +279,7 @@ Format for printing:
                 photo.save_metadata();
             } catch (GLib.Error error) {
                 stderr.printf(_("There was an error saving %s: %s\n"),
-                              photo.file.get_path(), error.message);
+                              photo.path, error.message);
             }
         }
 
@@ -381,28 +381,34 @@ Format for printing:
                 stderr.printf(m);
             }
 
+            photos = new Gee.TreeSet<Photograph>();
+            for (int i = 1; i < args.length; i++) {
+                var photo = get_photograph(args[i]);
+                if (photo != null)
+                    photos.add(photo);
+            }
+
             if (shift_time != 0) {
-                do_shift_time(args);
+                do_shift_time();
                 return 0;
             }
 
             if (reset_time) {
-                do_reset_time(args);
+                do_reset_time();
                 return 0;
             }
 
             if (print_format != null) {
-                print_with_format(args);
+                print_with_format();
                 return 0;
             }
 
             if (!edit_properties()) {
-                print_tags(args);
+                print_tags();
                 return 0;
             }
 
-            for (int i = 1; i < args.length; i++)
-                handle_tag(args[i]);
+            handle_tags();
 
             return 0;
         }
