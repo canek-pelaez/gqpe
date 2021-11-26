@@ -24,7 +24,9 @@ namespace GQPE {
      */
     public class Copy {
 
+        /* The input photograph. */
         private static string input;
+        /* The output photograph. */
         private static string output;
 
         /* The option context. */
