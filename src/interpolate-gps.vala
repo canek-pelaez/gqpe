@@ -178,13 +178,15 @@ namespace GQPE {
                 Util.error(_("Run ‘%s --help’ for a list of options"), args[0]);
             }
 
-            if (args.length == 2) {
+            if (args.length < 2) {
+                Util.error(_("Missing files or directory"));
+            } else if (args.length == 2) {
                 input = args[1];
                 if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR))
                     Util.error(_("%s is not a directory"), input);
                 try {
                     int c = interpolate_photos();
-                    stderr.printf(_("%d photographs updated"), c);
+                    stderr.printf(_("%d photographs updated\n"), c);
                 } catch (GLib.Error e) {
                     Util.error(_("There was an error while interpolating: %s"));
                 }
@@ -214,7 +216,7 @@ namespace GQPE {
                     Util.error(
                         _("There was an error while interpolating: %s"));
                 }
-                stderr.printf(_("Updated %d photos.\n"), c);
+                stderr.printf(_("%d photographs updated\n"), c);
             }
 
             return 0;
