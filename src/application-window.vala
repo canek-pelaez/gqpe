@@ -97,6 +97,9 @@ namespace GQPE {
         /* The longitude spin button. */
         [GtkChild]
         private unowned Gtk.SpinButton longitude;
+        /* The link button. */
+        [GtkChild]
+        private unowned Gtk.LinkButton link;
         /* The clutter embed for the map. */
         [GtkChild]
         private unowned GtkClutter.Embed map_embed;
@@ -502,6 +505,9 @@ namespace GQPE {
             check_entries_length();
             comment.buffer.text = photograph.comment;
             _title.grab_focus();
+            var u  = "https://maps.google.com/maps?q=%2.11f,%2.11f&z=15";
+            u = u.printf(photograph.latitude, photograph.longitude);
+            link.uri = u;
             updating = false;
         }
 
