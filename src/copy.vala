@@ -51,6 +51,7 @@ namespace GQPE {
             return options;
         }
 
+        /* Copies the tags. */
         private static void copy_tags() throws GLib.Error {
             var i = new Photograph(GLib.File.new_for_commandline_arg(input));
             var o = new Photograph(GLib.File.new_for_commandline_arg(output));

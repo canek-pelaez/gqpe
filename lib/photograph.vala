@@ -201,6 +201,10 @@ namespace GQPE {
             return this.datetime.compare(photograph.datetime);
         }
 
+        /**
+         * Copies the GPS data from the received photograph.
+         * @param photo the photograph.
+         */
         public void copy_gps_data(Photograph photo) {
             latitude = photo.latitude;
             longitude = photo.longitude;
@@ -210,6 +214,12 @@ namespace GQPE {
             has_geolocation = photo.has_geolocation;
         }
 
+        /**
+         * Copies the metadata from the received photograph.
+         * @param photo the photograph.
+         * @param no_gps whether to skip the GPS data.
+         * @param no_datetime whether to skip the datetime data.
+         */
         public void copy_metadata(Photograph photo,
                                   bool no_gps = false,
                                   bool no_datetime = false) {
@@ -317,8 +327,8 @@ namespace GQPE {
         private void get_metadata() throws GLib.Error {
             title = (metadata.has_tag(Tag.TITLE.tag())) ?
                 metadata.try_get_tag_string(Tag.TITLE.tag()).strip() : "";
-            album = (metadata.has_tag(Tag.SUBJECT.tag())) ?
-                metadata.try_get_tag_string(Tag.SUBJECT.tag()).strip() : "";
+            album = (metadata.has_tag(Tag.ALBUM.tag())) ?
+                metadata.try_get_tag_string(Tag.ALBUM.tag()).strip() : "";
             comment = (metadata.has_tag(Tag.DESCRIPTION.tag())) ?
                 metadata.try_get_tag_string(Tag.DESCRIPTION.tag()).strip()
                 : "";
@@ -373,8 +383,8 @@ namespace GQPE {
         private void set_metadata() throws GLib.Error {
             metadata.clear_tag(Tag.TITLE.tag());
             metadata.try_set_tag_string(Tag.TITLE.tag(), title);
-            metadata.clear_tag(Tag.SUBJECT.tag());
-            metadata.try_set_tag_string(Tag.SUBJECT.tag(), album);
+            metadata.clear_tag(Tag.ALBUM.tag());
+            metadata.try_set_tag_string(Tag.ALBUM.tag(), album);
             metadata.clear_tag(Tag.DESCRIPTION.tag());
             metadata.try_set_tag_string(Tag.DESCRIPTION.tag(), comment);
             metadata.clear_tag(Tag.DATETIME.tag());

@@ -128,12 +128,23 @@ namespace GQPE {
             return "";
         }
 
+        /**
+         * Returns a normalized basename; ASCII, no spaces, no uppercase
+         * letters, no symbols.
+         * @param basename the basename.
+         * @return a normalized basename.
+         */
         public static string normalize_basename(string basename) {
             var n = Util.normalize(Util.get_name(basename));
             var e = Util.normalize(Util.get_extension(basename));
             return "%s.%s".printf(n, e);
         }
 
+        /**
+         * Returns a path without extension.
+         * @param path the path.
+         * @return a path without extension.
+         */
         public static string get_name(string path) {
             int i = path.last_index_of(".");
             if (i == 0 || i == -1)
@@ -141,6 +152,11 @@ namespace GQPE {
             return path[:i];
         }
 
+        /**
+         * Returns a path extension.
+         * @param path the path.
+         * @return a path extension.
+         */
         public static string get_extension(string path) {
             int i = path.last_index_of(".");
             if (i == 0 || i == -1)
@@ -148,6 +164,11 @@ namespace GQPE {
             return path[i+1:];
         }
 
+        /**
+         * Returns the message with its first letter capitalized.
+         * @param message the message.
+         * @return the message with its first letter capitalized.
+         */
         public static string capitalize(string message) {
             int i = message.index_of_nth_char(1);
             return message.up(1) + message.substring(i);
@@ -188,7 +209,10 @@ namespace GQPE {
             longitude = (longitude1+longitude2) / 2.0;
         }
 
-        /* Prints an error message and exits.*/
+        /**
+         * Prints an error message and exits.
+         * @param format the format.
+         */
         [PrintfFormat]
         public static void error(string format, ...) {
             var full_format = format + "\n";

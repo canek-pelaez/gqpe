@@ -199,8 +199,8 @@ namespace GQPE {
                 r += s;
                 s = s.next_char();
             }
-            r += "...";
-            for (int i = 0; i < word.char_count() - width - 3; i++)
+            r += "…";
+            for (int i = 0; i < word.char_count() - width - 1; i++)
                 s = s.next_char();
             for (int i = width / 2 + 2; i < width; i++) {
                 r += s;

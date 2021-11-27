@@ -45,6 +45,10 @@ namespace GQPE {
          */
         REVERSE_PORTRAIT = 8;
 
+        /**
+         * Returns a string representation of the orientation.
+         * @return a string representation of the orientation.
+         */
         public string to_string() {
             switch (this) {
             case LANDSCAPE: return "landscape";

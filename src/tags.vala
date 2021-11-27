@@ -218,7 +218,7 @@ Format for printing:
                 var dt = Util.get_file_datetime(photo.path);
                 if (dt.compare(photo.datetime) == 0)
                     continue;
-                stderr.printf(_("Resetting time for %s...\n"), photo.path);
+                stderr.printf(_("Resetting time for %s…\n"), photo.path);
                 Util.set_file_datetime(photo.path, photo.datetime);
             }
         }
@@ -226,7 +226,7 @@ Format for printing:
         /* Shifts time. */
         private static void do_shift_time() {
             foreach (var photo in photos) {
-                stderr.printf(_("Shifting time for %s...\n"), photo.path);
+                stderr.printf(_("Shifting time for %s…\n"), photo.path);
                 photo.datetime = photo.datetime.add_hours(shift_time);
                 save(photo);
             }
@@ -258,7 +258,7 @@ Format for printing:
                 photo.set_coordinates(latitude, longitude);
             }
             if (!quiet)
-                stderr.printf(_("Updating %s...\n"),
+                stderr.printf(_("Updating %s…\n"),
                               GLib.Filename.display_basename(photo.path));
             save(photo);
             if (!quiet)

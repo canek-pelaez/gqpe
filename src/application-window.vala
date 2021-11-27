@@ -374,10 +374,11 @@ namespace GQPE {
             GLib.Idle.add(lazy_load);
         }
 
+        /* Loads the photographs lazily. */
         private bool lazy_load() {
             if (pmap.is_empty) {
                 progress_bar.visible = false;
-                return false;
+                return GLib.Source.REMOVE;
             }
             var path = pmap.ascending_keys.first();
             var photo = pmap[path];
@@ -391,7 +392,7 @@ namespace GQPE {
             pmap.unset(photo.path);
             double t = photographs.size - pmap.size;
             progress_bar.fraction = t / photographs.size;
-            return true;
+            return GLib.Source.CONTINUE;
         }
 
         /* Initializes the iterators. */
