@@ -1,4 +1,5 @@
-/* city.vala - This file is part of gqpe.
+/*
+ * This file is part of gqpe.
  *
  * Copyright © 2017-2021 Canek Peláez Valdés
  *

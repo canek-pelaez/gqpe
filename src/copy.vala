@@ -1,5 +1,4 @@
-/* copy.vala
- *
+/*
  * This file is part of gqpe.
  *
  * Copyright © 2013-2021 Canek Peláez Valdés
