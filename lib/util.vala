@@ -187,5 +187,14 @@ namespace GQPE {
             latitude = (latitude1+latitude2) / 2.0;
             longitude = (longitude1+longitude2) / 2.0;
         }
+
+        /* Prints an error message and exits.*/
+        [PrintfFormat]
+        public static void error(string format, ...) {
+            var full_format = format + "\n";
+            var list = va_list();
+            stdout.vprintf(full_format, list);
+            GLib.Process.exit(1);
+        }
     }
 }

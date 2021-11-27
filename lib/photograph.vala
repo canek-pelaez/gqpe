@@ -201,19 +201,34 @@ namespace GQPE {
             return this.datetime.compare(photograph.datetime);
         }
 
-        public void copy_metadata(Photograph photo) {
-            title = photo.title;
-            album = photo.album;
-            comment = photo.comment;
-            datetime = photo.datetime;
-            timezone_offset = photo.timezone_offset;
-            orientation = photo.orientation;
+        public void copy_gps_data(Photograph photo) {
             latitude = photo.latitude;
             longitude = photo.longitude;
             gps_tag = photo.gps_tag;
             gps_version = photo.gps_version;
             gps_datum = photo.gps_datum;
             has_geolocation = photo.has_geolocation;
+        }
+
+        public void copy_metadata(Photograph photo,
+                                  bool no_gps = false,
+                                  bool no_datetime = false) {
+            title = photo.title;
+            album = photo.album;
+            comment = photo.comment;
+            orientation = photo.orientation;
+            if (!no_datetime) {
+                datetime = photo.datetime;
+                timezone_offset = photo.timezone_offset;
+            }
+            if (!no_gps) {
+                latitude = photo.latitude;
+                longitude = photo.longitude;
+                gps_tag = photo.gps_tag;
+                gps_version = photo.gps_version;
+                gps_datum = photo.gps_datum;
+                has_geolocation = photo.has_geolocation;
+            }
         }
 
         /* Calculates the timezone. */

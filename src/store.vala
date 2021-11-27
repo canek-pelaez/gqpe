@@ -236,17 +236,12 @@ namespace GQPE {
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
-                stderr.printf(_("Run ‘%s --help’ for a list of options.\n"),
-                              args[0]);
-                GLib.Process.exit(1);
+                Util.error(_("Run ‘%s --help’ for a list of options"), args[0]);
             }
 
-            if (args.length != 3) {
-                string m;
-                m = _("Exactly one output and one input directory needed.\n");
-                stderr.printf(m);
-                GLib.Process.exit(1);
-            }
+            if (args.length != 3)
+                Util.error(
+                    _("Exactly one output and one input directory needed"));
 
             if (location)
                 load_cities();
@@ -254,17 +249,14 @@ namespace GQPE {
             input = args[1];
             output = args[2];
 
-            if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR)) {
-                stderr.printf(_("%s is not a directory\n"), input);
-                GLib.Process.exit(1);
-            }
+            if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR))
+                Util.error(_("%s is not a directory\n"), input);
 
             try {
                 store_photos();
             } catch (GLib.Error e) {
-                stderr.printf(_("There was an error while storing: %s\n"),
-                              e.message);
-                GLib.Process.exit(1);
+                Util.error(_("There was an error while storing: %s\n"),
+                           e.message);
             }
 
             return 0;

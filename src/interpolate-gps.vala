@@ -175,24 +175,18 @@ namespace GQPE {
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
-                stderr.printf(_("Run ‘%s --help’ for a list of options.\n"),
-                              args[0]);
-                GLib.Process.exit(1);
+                Util.error(_("Run ‘%s --help’ for a list of options"), args[0]);
             }
 
             if (args.length == 2) {
                 input = args[1];
-                if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR)) {
-                    stderr.printf(_("%s is not a directory\n"), input);
-                    GLib.Process.exit(1);
-                }
+                if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR))
+                    Util.error(_("%s is not a directory"), input);
                 try {
                     int c = interpolate_photos();
-                    stderr.printf(_("%d photographs updated.\n"), c);
+                    stderr.printf(_("%d photographs updated"), c);
                 } catch (GLib.Error e) {
-                    var m = _("There was an error while interpolating: %s\n");
-                    stderr.printf(m, e.message);
-                    GLib.Process.exit(1);
+                    Util.error(_("There was an error while interpolating: %s"));
                 }
             } else {
                 photographs = new Photograph[args.length-1];
@@ -211,18 +205,14 @@ namespace GQPE {
                 stderr.printf(_("Loaded %d photos...  \n"), c);
                 int n = photographs.length;
                 if (!photographs[0].has_geolocation ||
-                    !photographs[n-1].has_geolocation) {
-                    var m
-                        = _("First and last photograph must have GPS data.\n");
-                    stderr.printf(m);
-                    GLib.Process.exit(1);
-                }
+                    !photographs[n-1].has_geolocation)
+                    Util.error(
+                        _("First and last photograph must have GPS data"));
                 try {
                     c = interpolate_range(0, n-1);
                 } catch (GLib.Error e) {
-                    var m = _("There was an error while interpolating: %s\n");
-                    stderr.printf(m, e.message);
-                    GLib.Process.exit(1);
+                    Util.error(
+                        _("There was an error while interpolating: %s"));
                 }
                 stderr.printf(_("Updated %d photos.\n"), c);
             }

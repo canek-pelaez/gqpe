@@ -305,81 +305,54 @@ Format for printing:
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
-                stderr.printf(_("Run ‘%s --help’ for a list of options.\n"),
-                              args[0]);
-                GLib.Process.exit(1);
+                Util.error(_("Run ‘%s --help’ for a list of options"), args[0]);
             }
 
-            if (args.length < 2) {
-                stderr.printf(_("Missing files.\n"));
-                return 1;
-            }
+            if (args.length < 2)
+                Util.error(_("Missing files"));
 
-            if (shift_time != 0 && edit_properties()) {
-                var m = _("You cannot shift time and edit at the same time\n");
-                stderr.printf(m);
-                return 1;
-            }
+            if (shift_time != 0 && edit_properties())
+                Util.error(_("You cannot shift time and edit tags"));
 
-            if (reset_time && edit_properties()) {
-                var m = _("You cannot reset time and edit at the same time\n");
-                stderr.printf(m);
-                return 1;
-            }
+            if (reset_time && edit_properties())
+                Util.error(_("You cannot reset time and edit tags"));
 
-            if (shift_time != 0 && reset_time) {
-                var m = _("You cannot shift and reset time at the same time\n");
-                stderr.printf(m);
-                return 1;
-            }
+            if (shift_time != 0 && reset_time)
+                Util.error(_("You cannot shift and reset time"));
 
             if (s_orientation != null) {
                 orientation = Orientation.parse_orientation(s_orientation);
-                if (orientation < 0) {
-                    stderr.printf(_("Invalid orientation: %s\n"),
-                                  s_orientation);
-                    return 1;
-                }
+                if (orientation < 0)
+                    Util.error(_("Invalid orientation: %s"), s_orientation);
             }
 
             if (s_datetime != null) {
                 datetime = new GLib.DateTime.from_iso8601(s_datetime, null);
-                if (datetime == null)
-                    datetime = new GLib.DateTime.from_iso8601(
-                        s_datetime, new TimeZone.utc());
                 if (datetime == null) {
-                    stderr.printf(_("Invalid date and time: %s\n"), s_datetime);
-                    return 1;
+                    var tz = new TimeZone.utc();
+                    datetime = new GLib.DateTime.from_iso8601(s_datetime, tz);
                 }
+                if (datetime == null)
+                    Util.error(_("Invalid date and time: %s"), s_datetime);
             }
 
-            if (s_offset != null &&
-                !int.try_parse(s_offset, out offset)) {
-                stderr.printf(_("Invalid timezone offset: %s\n"), s_offset);
-                return 1;
-            }
+            if (s_offset != null && !int.try_parse(s_offset, out offset))
+                Util.error(_("Invalid timezone offset: %s"), s_offset);
 
             if (s_latitude != null &&
-                !double.try_parse(s_latitude, out latitude)) {
-                stderr.printf(_("Invalid latitude: %s\n"), s_latitude);
-                return 1;
-            }
-            if (s_longitude != null &&
-                !double.try_parse(s_longitude, out longitude)) {
-                stderr.printf(_("Invalid longitude: %s\n"), s_longitude);
-                return 1;
-            }
+                !double.try_parse(s_latitude, out latitude))
+                Util.error(_("Invalid latitude: %s"), s_latitude);
 
-            if (latitude != double.MAX && longitude == double.MAX) {
-                string m;
-                m = _("Latitude will only be set on photos with GPS data\n");
-                stderr.printf(m);
-            }
-            if (latitude == double.MAX && longitude != double.MAX) {
-                string m;
-                m = _("Longitude will only be set on photos with GPS data\n");
-                stderr.printf(m);
-            }
+            if (s_longitude != null &&
+                !double.try_parse(s_longitude, out longitude))
+                Util.error(_("Invalid longitude: %s"), s_longitude);
+
+            if (latitude != double.MAX && longitude == double.MAX)
+                Util.error(
+                    _("Latitude will only be set on photos with GPS data"));
+            if (latitude == double.MAX && longitude != double.MAX)
+                Util.error(
+                    _("Longitude will only be set on photos with GPS data"));
 
             photos = new Gee.TreeSet<Photograph>();
             for (int i = 1; i < args.length; i++) {

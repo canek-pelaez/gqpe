@@ -24,6 +24,12 @@ namespace GQPE {
      */
     public class Copy {
 
+        /* Whether to only copy GPS data. */
+        private static bool gps_only;
+        /* Whether to exclude GPS data. */
+        private static bool exclude_gps;
+        /* Whether to exclude date and time data. */
+        private static bool exclude_datetime;
         /* The input photograph. */
         private static string input;
         /* The output photograph. */
@@ -32,36 +38,58 @@ namespace GQPE {
         /* The option context. */
         private const string CONTEXT = _("INPUT OUTPUT - Copy the image tags.");
 
+        /* Returns the options. */
+        private static GLib.OptionEntry[] get_options() {
+            GLib.OptionEntry[] options = {
+                { "exclude-gps", 'G', 0, GLib.OptionArg.NONE, &exclude_gps,
+                  _("Do not copy GPS data."), null },
+                { "exclude-datetime", 'T', 0, GLib.OptionArg.NONE, &exclude_gps,
+                  _("Do not copy date and time data."), null },
+                { "gps-only", 'g', 0, GLib.OptionArg.NONE, &gps_only,
+                  _("Only copy GPS data."), null },
+                { null }
+            };
+            return options;
+        }
+
+        private static void copy_tags() throws GLib.Error {
+            var i = new Photograph(GLib.File.new_for_commandline_arg(input));
+            var o = new Photograph(GLib.File.new_for_commandline_arg(output));
+            if (gps_only)
+                o.copy_gps_data(i);
+            else
+                o.copy_metadata(i, exclude_gps, exclude_datetime);
+            o.save_metadata();
+        }
+
         public static int main(string[] args) {
+            gps_only = exclude_gps = exclude_datetime = false;
             GLib.Intl.setlocale(LocaleCategory.ALL, "");
             try {
                 var opt = new GLib.OptionContext(CONTEXT);
                 opt.set_help_enabled(true);
+                opt.add_main_entries(get_options(), null);
                 opt.parse(ref args);
             } catch (GLib.Error e) {
                 stderr.printf("%s\n", e.message);
-                stderr.printf(_("Run ‘%s --help’ for a list of options.\n"),
-                              args[0]);
-                GLib.Process.exit(1);
+                Util.error(_("Run ‘%s --help’ for a list of options"), args[0]);
             }
 
-            if (args.length != 3) {
-                string m;
-                m = _("Exactly one input and one output file needed.\n");
-                stderr.printf(m);
-                GLib.Process.exit(1);
+            if (args.length != 3)
+                Util.error(_("Exactly one input and one output file needed"));
+
+            if (gps_only) {
+                if (exclude_gps)
+                    Util.error(_("You cannot mix -g and -G"));
+                if (exclude_datetime)
+                    Util.error(_("You cannot mix -g and -T"));
             }
 
             input = args[1];
             output = args[2];
 
             try {
-                var pin =
-                    new Photograph(GLib.File.new_for_commandline_arg(input));
-                var pout =
-                    new Photograph(GLib.File.new_for_commandline_arg(output));
-                pout.copy_metadata(pin);
-                pout.save_metadata();
+                copy_tags();
             } catch (GLib.Error e) {
                 stderr.printf(_("An error ocurred while copying %s:"),
                               e.message);
