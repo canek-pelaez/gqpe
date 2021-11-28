@@ -139,37 +139,24 @@ line, "\t" for tab, etc.
             return photo;
         }
 
-        /* Returns the tags box. */
-        private static string get_tags_box(Photograph photo) {
-            var path = photo.path;
-            var box = new PrettyBox(80, Color.RED);
-            box.set_title(GLib.Filename.display_basename(path), Color.CYAN);
-            if (photo.title != null && photo.title != "")
-                box.add_body_key_value(_("Title"), photo.title);
-            if (photo.album != null && photo.album != "")
-                box.add_body_key_value(_("Album"), photo.album);
-            if (photo.comment != null && photo.comment != "")
-                box.add_body_key_value(_("Comment"), photo.comment);
-            if (photo.datetime != null) {
-                var dt = photo.datetime.format("%Y/%m/%d %H:%M:%S ");
-                var s = (photo.timezone_offset < 0) ? "-" : "+";
-                var offset = (photo.timezone_offset < 0) ?
-                    -photo.timezone_offset : photo.timezone_offset;
-                dt += "[%s%04d]".printf(s, offset);
-                box.add_body_key_value(_("Date and time"), dt);
+        /* Shifts time. */
+        private static void do_shift_time() {
+            foreach (var photo in photos) {
+                stderr.printf(_("Shifting time for %s…\n"), photo.path);
+                photo.datetime = photo.datetime.add_hours(shift_time);
+                save(photo);
             }
-            box.add_body_key_value(_("Orientation"),
-                                   photo.orientation.to_string());
-            if (photo.has_geolocation) {
-                box.add_body_key_value(_("Latitude"),
-                                       "%2.11f".printf(photo.latitude));
-                box.add_body_key_value(_("Longitude"),
-                                       "%2.11f".printf(photo.longitude));
-                box.add_body_key_value(_("GPS tag"), "%ld".printf(photo.gps_tag));
-                box.add_body_key_value(_("GPS version"), photo.gps_version);
-                box.add_body_key_value(_("GPS datum"), photo.gps_datum);
+        }
+
+        /* Resets time. */
+        private static void do_reset_time() {
+            foreach (var photo in photos) {
+                var dt = Util.get_file_datetime(photo.path);
+                if (dt.compare(photo.datetime) == 0)
+                    continue;
+                stderr.printf(_("Resetting time for %s…\n"), photo.path);
+                Util.set_file_datetime(photo.path, photo.datetime);
             }
-            return box.to_string();
         }
 
         /* Prints the tags with a format. */
@@ -207,32 +194,45 @@ line, "\t" for tab, etc.
             }
         }
 
+        /* Returns the tags box. */
+        private static string get_tags_box(Photograph photo) {
+            var path = photo.path;
+            var box = new PrettyBox(80, Color.RED);
+            box.set_title(GLib.Filename.display_basename(path), Color.CYAN);
+            if (photo.title != null && photo.title != "")
+                box.add_body_key_value(_("Title"), photo.title);
+            if (photo.album != null && photo.album != "")
+                box.add_body_key_value(_("Album"), photo.album);
+            if (photo.comment != null && photo.comment != "")
+                box.add_body_key_value(_("Comment"), photo.comment);
+            if (photo.datetime != null) {
+                var dt = photo.datetime.format("%Y/%m/%d %H:%M:%S ");
+                var s = (photo.timezone_offset < 0) ? "-" : "+";
+                var offset = (photo.timezone_offset < 0) ?
+                    -photo.timezone_offset : photo.timezone_offset;
+                dt += "[%s%04d]".printf(s, offset);
+                box.add_body_key_value(_("Date and time"), dt);
+            }
+            box.add_body_key_value(_("Orientation"),
+                                   photo.orientation.to_string());
+            if (photo.has_geolocation) {
+                box.add_body_key_value(_("Latitude"),
+                                       "%2.11f".printf(photo.latitude));
+                box.add_body_key_value(_("Longitude"),
+                                       "%2.11f".printf(photo.longitude));
+                box.add_body_key_value(_("GPS tag"), "%ld".printf(photo.gps_tag));
+                box.add_body_key_value(_("GPS version"), photo.gps_version);
+                box.add_body_key_value(_("GPS datum"), photo.gps_datum);
+            }
+            return box.to_string();
+        }
+
         /* Prints the tags. */
         private static void print_tags() {
             var tags = "";
             foreach (var photo in photos)
                 tags += get_tags_box(photo);
             stdout.printf("%s", tags);
-        }
-
-        /* Resets time. */
-        private static void do_reset_time() {
-            foreach (var photo in photos) {
-                var dt = Util.get_file_datetime(photo.path);
-                if (dt.compare(photo.datetime) == 0)
-                    continue;
-                stderr.printf(_("Resetting time for %s…\n"), photo.path);
-                Util.set_file_datetime(photo.path, photo.datetime);
-            }
-        }
-
-        /* Shifts time. */
-        private static void do_shift_time() {
-            foreach (var photo in photos) {
-                stderr.printf(_("Shifting time for %s…\n"), photo.path);
-                photo.datetime = photo.datetime.add_hours(shift_time);
-                save(photo);
-            }
         }
 
         /* Handles the tag. */
@@ -357,15 +357,19 @@ line, "\t" for tab, etc.
                     _("Longitude will only be set on photos with GPS data"));
 
             photos = new Gee.TreeSet<Photograph>();
-            stdout.printf(_("Loading photos…\n"));
+            stderr.printf(_("Loading photos…\n"));
+            int c = 0;
             for (int i = 1; i < args.length; i++) {
                 var photo = get_photograph(args[i]);
                 if (photo != null) {
                     photos.add(photo);
-                    stderr.printf(_("Loaded %d photos…  \r\b"), i);
+                    stderr.printf(_("Loaded %d photos…  \r\b"), c++);
                 }
             }
-            stderr.printf(_("Loaded %d photos…  \n"), args.length-1);
+            if (c == 0)
+                stderr.printf(_("No photos Loaded.   \n"));
+            else
+                stderr.printf(_("Loaded %d photos…  \n"), c);
 
             if (shift_time != 0) {
                 do_shift_time();
