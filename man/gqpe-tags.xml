@@ -65,9 +65,6 @@
 
     <title>Options</title>
 
-    <para>The following options are accepted. Except explicitly noted, all the
-    options apply to all the filenames specified in the command line.</para>
-
     <variablelist>
 
       <varlistentry>
@@ -146,7 +143,8 @@
         <term><option>-s</option></term>
         <term><option>--shift-time=HOURS</option></term>
         <listitem>
-          <para>Shift the time in this amount of hours.</para>
+          <para>Shift the time in this amount of hours. You cannot mix this
+          option with any other except <option>--quiet</option>.</para>
         </listitem>
       </varlistentry>
 
@@ -154,7 +152,8 @@
         <term><option>-r</option></term>
         <term><option>--reset-time</option></term>
         <listitem>
-          <para>Reset the file timestamp to the photograph one.</para>
+          <para>Reset the file timestamp to the photograph one. You cannot mix
+          this option with any other except <option>--quiet</option>.</para>
         </listitem>
       </varlistentry>
 
@@ -162,7 +161,17 @@
         <term><option>-p</option></term>
         <term><option>--print=FORMAT</option></term>
         <listitem>
-          <para>Print the tags with format.</para>
+          <para>Print the tags with format. You cannot mix this option with any
+          other except <option>--quiet</option>.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-m</option></term>
+        <term><option>--missing-gps</option></term>
+        <listitem>
+          <para>Only print the path of images without GPS data. You cannot mix this
+          option with any other except <option>--quiet</option>.</para>
         </listitem>
       </varlistentry>
 
@@ -175,6 +184,11 @@
       </varlistentry>
 
     </variablelist>
+
+    <para>With no flags the tags are printed. An empty string as parameter
+    removes an individual tag. You cannot mix <option>-s</option>,
+    <option>-r</option>, <option>-pr</option>, or <option>-m</option> with other
+    options.</para>
 
   </refsect1>
 

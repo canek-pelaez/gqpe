@@ -55,6 +55,8 @@ namespace GQPE {
         private static bool reset_time;
         /* The print format argument. */
         private static string print_format;
+        /* Whether to only print missing GPS data. */
+        private static bool missing_gps;
         /* Whether to be quiet. */
         private static bool quiet;
         /* The photographs. */
@@ -68,7 +70,8 @@ namespace GQPE {
         private static string get_description() {
             return _(
 """With no flags the tags are printed. An empty string as parameter
-removes an individual tag.
+removes an individual tag. You cannot mix -s, -r, or -m with
+other options.
 
 Format for printing:
 
@@ -115,6 +118,8 @@ line, "\t" for tab, etc.
                   "HOURS" },
                 { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
                   _("Print the tags with format"), "FORMAT" },
+                { "missing-gps", 'm', 0, GLib.OptionArg.NONE, &missing_gps,
+                  _("Only print the path of images without GPS data"), null },
                 { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
                   _("Be quiet"), null },
                 { null }
@@ -137,6 +142,14 @@ line, "\t" for tab, etc.
                 return photo;
             }
             return photo;
+        }
+
+        /* Print the path of images without GPS data. */
+        private static void print_missing_gps() {
+            foreach (var photo in photos) {
+                if (!photo.has_geolocation)
+                    stdout.printf("%s\n", photo.path);
+            }
         }
 
         /* Shifts time. */
@@ -287,15 +300,14 @@ line, "\t" for tab, etc.
 
         /* Whether there will be properties edited. */
         private static bool edit_properties() {
-            return album != null || title != null ||
-                comment != null || orientation != -1 ||
-                latitude != double.MAX || longitude != double.MAX ||
-                datetime != null || offset != int.MAX;
+            return title != null || album != null || comment != null ||
+                datetime != null || offset != int.MAX || orientation != -1 ||
+                latitude != double.MAX || longitude != double.MAX;
         }
 
         public static int main(string[] args) {
             GLib.Intl.setlocale(LocaleCategory.ALL, "");
-            reset_time = quiet = false;
+            reset_time = missing_gps = quiet = false;
             orientation = -1;
             offset = int.MAX;
             latitude = longitude = double.MAX;
@@ -311,16 +323,20 @@ line, "\t" for tab, etc.
             }
 
             if (args.length < 2)
-                Util.error(_("Missing files"));
+                Util.error(_("Missing image files"));
 
-            if (shift_time != 0 && edit_properties())
-                Util.error(_("You cannot shift time and edit tags"));
+            int mix = 0;
+            mix += edit_properties() ? 1 : 0;
+            mix += shift_time != 0 ? 1 : 0;
+            mix += print_format != null ? 1 : 0;
+            mix += reset_time ? 1 : 0;
+            mix += missing_gps ? 1 : 0;
 
-            if (reset_time && edit_properties())
-                Util.error(_("You cannot reset time and edit tags"));
-
-            if (shift_time != 0 && reset_time)
-                Util.error(_("You cannot shift and reset time"));
+            if (mix > 1) {
+                var m =
+                    _("You cannot mix -s, -r, -p, or -m with other options");
+                Util.error(m);
+            }
 
             if (s_orientation != null) {
                 orientation = Orientation.parse_orientation(s_orientation);
@@ -341,12 +357,12 @@ line, "\t" for tab, etc.
             if (s_offset != null && !int.try_parse(s_offset, out offset))
                 Util.error(_("Invalid timezone offset: %s"), s_offset);
 
-            if (s_latitude != null &&
-                !double.try_parse(s_latitude, out latitude))
+            if (s_latitude != null && !double.try_parse(s_latitude,
+                                                        out latitude))
                 Util.error(_("Invalid latitude: %s"), s_latitude);
 
-            if (s_longitude != null &&
-                !double.try_parse(s_longitude, out longitude))
+            if (s_longitude != null && !double.try_parse(s_longitude,
+                                                         out longitude))
                 Util.error(_("Invalid longitude: %s"), s_longitude);
 
             if (latitude != double.MAX && longitude == double.MAX)
@@ -367,31 +383,22 @@ line, "\t" for tab, etc.
                 }
             }
             if (c == 0)
-                stderr.printf(_("No photos Loaded.   \n"));
+                Util.error(_("No photos Loaded.     \n"));
             else
-                stderr.printf(_("Loaded %d photos…  \n"), c);
+                stderr.printf(_("Loaded %d photos…    \n"), c);
 
-            if (shift_time != 0) {
+            if (missing_gps)
+                print_missing_gps();
+            else if (shift_time != 0)
                 do_shift_time();
-                return 0;
-            }
-
-            if (reset_time) {
+            else if (reset_time)
                 do_reset_time();
-                return 0;
-            }
-
-            if (print_format != null) {
+            else if (print_format != null)
                 print_with_format();
-                return 0;
-            }
-
-            if (!edit_properties()) {
+            else if (!edit_properties())
                 print_tags();
-                return 0;
-            }
-
-            handle_tags();
+            else
+                handle_tags();
 
             return 0;
         }
