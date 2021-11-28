@@ -357,11 +357,15 @@ line, "\t" for tab, etc.
                     _("Longitude will only be set on photos with GPS data"));
 
             photos = new Gee.TreeSet<Photograph>();
+            stdout.printf(_("Loading photos…\n"));
             for (int i = 1; i < args.length; i++) {
                 var photo = get_photograph(args[i]);
-                if (photo != null)
+                if (photo != null) {
                     photos.add(photo);
+                    stderr.printf(_("Loaded %d photos…  \r\b"), i);
+                }
             }
+            stderr.printf(_("Loaded %d photos…  \n"), args.length-1);
 
             if (shift_time != 0) {
                 do_shift_time();

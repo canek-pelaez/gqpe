@@ -48,7 +48,7 @@
     <cmdsynopsis>
       <command>gqpe-tags</command>
       <arg choice="opt" rep="repeat">OPTION</arg>
-      <arg choice="opt" rep="repeat">FILENAME</arg>
+      <arg choice="req" rep="repeat">FILENAME</arg>
     </cmdsynopsis>
   </refsynopsisdiv>
 
