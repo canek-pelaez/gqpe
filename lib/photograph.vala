@@ -198,7 +198,10 @@ namespace GQPE {
          *         and an integer greater than zero otherwise.
          */
         public int compare_to(Photograph photograph) {
-            return this.datetime.compare(photograph.datetime);
+            int r = datetime.compare(photograph.datetime);
+            if (r != 0)
+                return r;
+            return path.collate(photograph.path);
         }
 
         /**
