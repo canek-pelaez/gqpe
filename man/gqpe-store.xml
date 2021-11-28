@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='UTF-8'?> <!--*-nxml-*-->
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!--
+  gqpe-store.xml - This file is part of gqpe.
+
+  Copyright © 2013-2021 Canek Peláez Valdés
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation; either version 2.1 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; If not, see <http://www.gnu.org/licenses/>.
+-->
+<refentry id="mlm-store">
+
+  <refentryinfo>
+    <title>gqpe-store</title>
+    <productname>gqpe</productname>
+    <authorgroup>
+      <author>
+        <contrib>Developer</contrib>
+        <firstname>Canek</firstname>
+        <surname>Peláez Valdés</surname>
+        <email>canek@ciencias.unam.mx</email>
+      </author>
+    </authorgroup>
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>gqpe-store</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>gqpe-store</refname>
+    <refpurpose>Store images to a normalized location</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>gqpe-store</command>
+      <arg choice="opt" rep="repeat">OPTION</arg>
+      <arg choice="req">INPUTDIR</arg>
+      <arg choice="req">OUTPUTDIR</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+
+    <title>Description</title>
+
+    <para><command>gqpe-store</command> is a command line tool to store images
+    to a normalized location according to its tags.</para>
+
+    <para>Each image in the input directory is stored in the following
+    location:</para>
+
+    <programlisting>OUTPUTDIR
+└─YEAR
+  └─MONTH
+    └─ALBUM
+      └─BASENAME</programlisting>
+
+    <para>where <varname>OUTPUTDIR</varname> is the specified output directory;
+    <varname>YEAR</varname> is the four-digits year;
+    <varname>MONTH</varname> is the two-digits month;
+    <varname>ALBUM</varname> is the normalized album, and
+    <varname>BASENAME</varname> is the normalized base name of the
+    image.</para>
+
+    <para>The year and month are extracted from the date and time tag of the
+    image (<varname>Exif.Photo.DateTimeOriginal</varname>); the album is the
+    subject tag of the image (<varname>Xmp.dc.subject</varname>); and BASENAME
+    is the image file name.</para>
+
+    <para>If the image file has no date and time tag,
+    <command>gqpe-store</command> will use the file modification time to extract
+    the year and month information.</para>
+
+    <para>If the image file has no subject tag, <command>gqpe-store</command>
+    will use the album name <varname>DAYNAME DAYNUMBER</varname>, localized,
+    grouping photos by day albums.</para>
+
+    <para>The normalization transforms the album and file name to ASCII if
+    necessary; converts it to lowercase; replaces spaces with hypens
+    (<literal>-</literal>); and removes all other symbols.</para>
+
+    <para>The images in the input directory are not modified.</para>
+
+  </refsect1>
+
+  <refsect1>
+
+    <title>Options</title>
+
+    <para>The following options are accepted.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><option>-h</option></term>
+        <term><option>--help</option></term>
+        <listitem>
+          <para>Show help options.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-l</option></term>
+        <term><option>--location</option></term>
+        <listitem>
+          <para>Use location look up. If the the image file has GPS data and
+          does not have an album specified (tag
+          <varname>Xmp.dc.subject</varname>), <command>gqps-store</command> will
+          use an internal database of citites in the world to automatically set
+          an album for the image, by looking for the closest city to the GPS
+          coordinates in the image file. The album will be called
+          <varname>DAYNAME DAYNUMBER near CITY</varname>, localized.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-u</option></term>
+        <term><option>--update</option></term>
+        <listitem>
+          <para>Updates the image files. If the image file has no date and time
+          tag or subject tag, as explained above, <command>gqps-store</command>
+          uses the file modification time as date and time and the day of the
+          image as album name. However, the tags of the original file are not
+          modified in the stored file; by using the <option>-u</option>, the
+          stored file will update its tags.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-q</option></term>
+        <term><option>--quiet</option></term>
+        <listitem>
+          <para>Be quiet. If recoverable errors are encountered, do not print
+          them.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+
+    <title>Examples</title>
+
+    <para>Lets say we have an image file called
+    <filename>IMG-20171016-124327.JPG</filename>, in the directory
+    <filename>/home/canek/input</filename>, with the following tags:</para>
+
+    <programlisting>$ gqpe-tags -p '%b: "%t", "%T"\n' /home/canek/input/IMG-20171016-124327.JPG
+IMG-20171016-124327.JPG: "My father's birthday", 2017-10-16T12:43:27-06</programlisting>
+
+    <para>If we run <command>gqpe-store</command> as follows:</para>
+
+    <programlisting>gqpe-store  /home/canek/input /home/canek/output</programlisting>
+
+    <para>If <filename>/home/canek/output</filename> was empty before, the
+    command <command>tree</command> would print:</para>
+
+    <programlisting>$ tree /home/canek/output
+/home/canek/output/
+└── 2017
+    └── 10
+        └── my-fathers-birthday
+            └── img-20171016-124327.jpg
+
+3 directories, 1 file</programlisting>
+
+    <para>If we instead have an image file called
+    <filename>IMG-20171018-113255.JPG</filename>, with no subject and no date
+    and time tags, the result would be:</para>
+
+    <programlisting>$ tree /home/canek/output
+/home/canek/output/
+└── 2017
+    └── 10
+        └── monday-16
+            └── img-20171016-124327.jpg
+
+3 directories, 1 file</programlisting>
+
+    <para>However, if the image has GPS data and we use the <option>-l</option>
+    option, then the result would be:</para>
+
+    <programlisting>$ tree /home/canek/output
+/home/canek/output/
+└── 2017
+    └── 10
+        └── monday-16-near-mexico
+            └── img-20171016-124327.jpg
+
+3 directories, 1 file</programlisting>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry>
+        <refentrytitle>gqpe-tags</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-copy</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>.
+    </para>
+  </refsect1>
+
+</refentry>

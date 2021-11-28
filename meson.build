@@ -33,6 +33,8 @@ gexiv2 = dependency('gexiv2')
 gdk = dependency('gdk-3.0')
 gtk = dependency('gtk+-3.0')
 
+xsltproc = find_program('xsltproc', required: false)
+
 conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set_quoted('LOCALEDIR', get_option('localedir'))
@@ -185,5 +187,6 @@ if valadoc.found()
                       install: false)
 endif
 
+subdir('man')
 subdir('data')
 subdir('po')

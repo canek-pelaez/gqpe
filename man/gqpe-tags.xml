@@ -1,0 +1,271 @@
+<?xml version='1.0' encoding='UTF-8'?> <!--*-nxml-*-->
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!--
+  gqpe-tags.xml - This file is part of gqpe.
+
+  Copyright © 2013-2021 Canek Peláez Valdés
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation; either version 2.1 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; If not, see <http://www.gnu.org/licenses/>.
+-->
+<refentry id="mlm-tags">
+
+  <refentryinfo>
+    <title>gqpe-tags</title>
+    <productname>gqpe</productname>
+    <authorgroup>
+      <author>
+        <contrib>Developer</contrib>
+        <firstname>Canek</firstname>
+        <surname>Peláez Valdés</surname>
+        <email>canek@ciencias.unam.mx</email>
+      </author>
+    </authorgroup>
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>gqpe-tags</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>gqpe-tags</refname>
+    <refpurpose>Edit and show the image tags</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>gqpe-tags</command>
+      <arg choice="opt" rep="repeat">OPTION</arg>
+      <arg choice="opt" rep="repeat">FILENAME</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+
+    <title>Description</title>
+
+    <para><command>gqpe-tags</command> is a command line tool to edit and show
+    the image tags of one or more files.</para>
+
+  </refsect1>
+
+  <refsect1>
+
+    <title>Options</title>
+
+    <para>The following options are accepted. Except explicitly noted, all the
+    options apply to all the filenames specified in the command line.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><option>-h</option></term>
+        <term><option>--help</option></term>
+        <listitem>
+          <para>Show help options.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-t</option></term>
+        <term><option>--title=TITLE</option></term>
+        <listitem>
+          <para>Set the title.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-a</option></term>
+        <term><option>--album=ALBUM</option></term>
+        <listitem>
+          <para>Set the album.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-c</option></term>
+        <term><option>--comment=COMMENT</option></term>
+        <listitem>
+          <para>Set the comment.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-d</option></term>
+        <term><option>--datetime=DATETIME</option></term>
+        <listitem>
+          <para>Set the date and time.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-z</option></term>
+        <term><option>--offset=OFFSET</option></term>
+        <listitem>
+          <para>Set the timezone offset.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-o</option></term>
+        <term><option>--orientation=ORIENTATION</option></term>
+        <listitem>
+          <para>Set the orientation.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-y</option></term>
+        <term><option>--latitude=LATITUDE</option></term>
+        <listitem>
+          <para>Set the latitude.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-x</option></term>
+        <term><option>--longitude=LONGITUDE</option></term>
+        <listitem>
+          <para>Set the longitude.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-s</option></term>
+        <term><option>--shift-time=HOURS</option></term>
+        <listitem>
+          <para>Shift the time in this amount of hours.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-r</option></term>
+        <term><option>--reset-time</option></term>
+        <listitem>
+          <para>Reset the file timestamp to the photograph one.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-p</option></term>
+        <term><option>--print=FORMAT</option></term>
+        <listitem>
+          <para>Print the tags with format.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-q</option></term>
+        <term><option>--quiet</option></term>
+        <listitem>
+          <para>Be quiet.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+
+    <title>Format flags</title>
+
+    <para>The following flags can be used to format the output:</para>
+
+    <table>
+      <title>Format flags</title>
+
+      <tgroup cols='2'>
+        <thead>
+          <row>
+            <entry>Flag</entry>
+            <entry>Meaning</entry>
+          </row>
+        </thead>
+        <tbody>
+          <row>
+            <entry><literal>%p</literal></entry>
+            <entry>The file path.</entry>
+          </row>
+          <row>
+            <entry><literal>%P</literal></entry>
+            <entry>The file directory name.</entry>
+          </row>
+          <row>
+            <entry><literal>%b</literal></entry>
+            <entry>The file basename.</entry>
+          </row>
+          <row>
+            <entry><literal>%t</literal></entry>
+            <entry>The title.</entry>
+          </row>
+          <row>
+            <entry><literal>%a</literal></entry>
+            <entry>The album.</entry>
+          </row>
+          <row>
+            <entry><literal>%D</literal></entry>
+            <entry>The description.</entry>
+          </row>
+          <row>
+            <entry><literal>%d</literal></entry>
+            <entry>The date and time.</entry>
+          </row>
+          <row>
+            <entry><literal>%z</literal></entry>
+            <entry>The timezone offset.</entry>
+          </row>
+          <row>
+            <entry><literal>%o</literal></entry>
+            <entry>The orientation.</entry>
+          </row>
+          <row>
+            <entry><literal>%y</literal></entry>
+            <entry>The latitude.</entry>
+          </row>
+          <row>
+            <entry><literal>%x</literal></entry>
+            <entry>The longitude.</entry>
+          </row>
+        </tbody>
+      </tgroup>
+    </table>
+
+    <para>
+      Also, any standard C escape character can be used: <literal>\n</literal>
+      for new line, <literal>\t</literal> for tab, etc.
+    </para>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry>
+        <refentrytitle>gqpe-copy</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-store</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>.
+    </para>
+  </refsect1>
+
+</refentry>

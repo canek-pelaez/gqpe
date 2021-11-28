@@ -72,9 +72,9 @@ removes an individual tag.
 
 Format for printing:
 
-  %p: The path
-  %P: The dirname
-  %b: The basename
+  %p: The file path
+  %P: The file directory name
+  %b: The file basename
   %t: The title
   %a: The album
   %D: The description
@@ -83,6 +83,9 @@ Format for printing:
   %o: The orientation
   %Y: The latitude
   %X: The longitude
+
+Also, any standard C escape character can be used: "\n" for new
+line, "\t" for tab, etc.
 """);
         }
 
@@ -91,10 +94,10 @@ Format for printing:
             GLib.OptionEntry[] options = {
                 { "title", 't', 0, GLib.OptionArg.STRING, ref title,
                   _("Set the title"), "TITLE" },
-                { "comment", 'c', 0, GLib.OptionArg.STRING, ref comment,
-                  _("Set the comment"), "COMMENT" },
                 { "album", 'a', 0, GLib.OptionArg.STRING, ref album,
                   _("Set the album"), "ALBUM" },
+                { "comment", 'c', 0, GLib.OptionArg.STRING, ref comment,
+                  _("Set the comment"), "COMMENT" },
                 { "datetime", 'd', 0, GLib.OptionArg.STRING, ref s_datetime,
                   _("Set the date and time"), "DATETIME" },
                 { "offset", 'z', 0, GLib.OptionArg.STRING, ref s_offset,
@@ -108,10 +111,10 @@ Format for printing:
                 { "shift-time", 's', 0, GLib.OptionArg.INT, &shift_time,
                   _("Shift the time in this amount of hours"), "HOURS" },
                 { "reset-time", 'r', 0, GLib.OptionArg.NONE, &reset_time,
-                  _("Resets the file timestamp to the photograph one"),
+                  _("Reset the file timestamp to the photograph one"),
                   "HOURS" },
                 { "print", 'p', 0, GLib.OptionArg.STRING, ref print_format,
-                  _("Prints the tags with format"), "FORMAT" },
+                  _("Print the tags with format"), "FORMAT" },
                 { "quiet", 'q', 0, GLib.OptionArg.NONE, &quiet,
                   _("Be quiet"), null },
                 { null }

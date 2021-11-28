@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8'?> <!--*-nxml-*-->
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!--
+  gqpe-interpolate-gps.xml - This file is part of gqpe.
+
+  Copyright © 2013-2021 Canek Peláez Valdés
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation; either version 2.1 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; If not, see <http://www.gnu.org/licenses/>.
+-->
+<refentry id="mlm-interpolate-gps">
+
+  <refentryinfo>
+    <title>gqpe-interpolate-gps</title>
+    <productname>gqpe</productname>
+    <authorgroup>
+      <author>
+        <contrib>Developer</contrib>
+        <firstname>Canek</firstname>
+        <surname>Peláez Valdés</surname>
+        <email>canek@ciencias.unam.mx</email>
+      </author>
+    </authorgroup>
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>gqpe-interpolate-gps</refname>
+    <refpurpose>Interpolate GPS coordinates</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>gqpe-interpolate-gps</command>
+      <arg choice="opt" rep="repeat">OPTION</arg>
+      <arg choice="opt">DIRNAME</arg>
+      <arg choice="opt" rep="repeat">FILENAME</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+
+    <title>Description</title>
+
+    <para><command>gqpe-interpolate-gps</command> is a command line tool to
+    interpolate GPS coordinates in a timed range of image files.</para>
+
+    <para><command>gqpe-interpolate-gps</command> has two modes: The first one
+    receives a directory, and it automatically interpolates the GPS coordinates
+    of all photographs without GPS data, sorted by timestamp, such as they are
+    between two photographs, <varname>P</varname> and <varname>Q</varname>,
+    where both <varname>P</varname> and <varname>Q</varname> have GPS data and
+    the distance between <varname>P</varname> and <varname>Q</varname> is less
+    than 1,000 meters, and the time between <varname>P</varname> and
+    <varname>Q</varname> is less than one day.</para>
+
+    <para>The second mode uses the <option>-r</option> option, and receives a
+    set of photographs. The first and last one (time wise) must have GPS data,
+    and then the photographs in between have their GPS coordinates
+    interpolated.</para>
+
+    <para>The interpolation is a naive one, treating the latitude and longitude
+    as planar coordinates instead of polar coordinates; this works reasonably
+    well for small distances, but it does not for large ones.</para>
+
+  </refsect1>
+
+  <refsect1>
+
+    <title>Options</title>
+
+    <para>The following options are accepted.</para>
+
+    <variablelist>
+
+      <varlistentry>
+        <term><option>-h</option></term>
+        <term><option>--help</option></term>
+        <listitem>
+          <para>Show help options.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-r</option></term>
+        <term><option>--range</option></term>
+        <listitem>
+          <para>Use a range of photographs.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-v</option></term>
+        <term><option>--verbose</option></term>
+        <listitem>
+          <para>Be verbose.</para>
+        </listitem>
+      </varlistentry>
+
+    </variablelist>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry>
+        <refentrytitle>gqpe-tags</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-copy</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-store</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>.
+    </para>
+  </refsect1>
+
+</refentry>
