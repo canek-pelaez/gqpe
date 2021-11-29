@@ -51,7 +51,7 @@ namespace GQPE {
 
         /*Loads the photos from the input directory. */
         private static void load_photos() throws GLib.Error {
-            stdout.printf(_("Loading photos…\n"));
+            stdout.printf(_("Loading photographs…\n"));
             int c = 0;
             var root = GLib.File.new_for_path(input);
             Gee.ArrayQueue<File> queue = new Gee.ArrayQueue<File>();
@@ -73,7 +73,8 @@ namespace GQPE {
                     try {
                         var photo = new Photograph(file);
                         photos.add(photo);
-                        stderr.printf(_("Loaded %d photos…  \r\b"), c++);
+                        stderr.printf(_("Loaded %d photographs…  "),
+                                      c++, "\r\b");
                     } catch (GLib.Error e) {
                         var m = _("There was an error processing %s: %s. ");
                         stderr.printf(m, path, e.message);
@@ -85,7 +86,7 @@ namespace GQPE {
             photographs = new Photograph[photos.size];
             foreach (var photo in photos)
                 photographs[i++] = photo;
-            stdout.printf(_("Loaded %d photos…      \n"), c++);
+            stdout.printf(_("Loaded %d photographs…      \n"), c++);
         }
 
         /* Recursively interpolates the coordinates for a range. */
@@ -196,14 +197,15 @@ namespace GQPE {
                     var file = GLib.File.new_for_path(args[i]);
                     try {
                         photographs[i-1] = new Photograph(file);
-                        stderr.printf(_("Loaded %d photos…  \r\b"), c++);
+                        stderr.printf(_("Loaded %d photographs…  %s"),
+                                      c++, "\r\b");
                     } catch (GLib.Error e) {
                         var m = _("There was an error processing %s: %s. ");
                         stderr.printf(m, args[i], e.message);
                         stderr.printf(_("Skipping.\n"));
                     }
                 }
-                stderr.printf(_("Loaded %d photos…  \n"), c);
+                stderr.printf(_("Loaded %d photosgraphs…  \n"), c);
                 int n = photographs.length;
                 if (!photographs[0].has_geolocation ||
                     !photographs[n-1].has_geolocation)

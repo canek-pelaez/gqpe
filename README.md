@@ -24,7 +24,8 @@ While it can be used with the mouse, that's not the way is intended
 to be used: All the available manipulations are possible using only
 the keyboard:
 
-* `[` and `]` will rotate the picture to the left and right, respectively.
+* `Ctrl`+`[` and `Ctrl`+`]` will rotate the picture to the left and right,
+  respectively.
 
 * Enter in any text entry (if not empty) or `Ctrl-Enter` will update the
   relevant tags in the picture and move to the next one. You need to do this (or
@@ -43,6 +44,20 @@ With the `Xmp.dc.subject` and `Iptc.Application2.Caption` correctly set, you can
 import them in [Shotwell](https://wiki.gnome.org/Apps/Shotwell), which also uses
 the `Iptc.Application2.Caption` as title, and `Xmp.dc.subject` as tag (inside
 Shotwell).
+
+Besides the main GUI application, GQPE comes with a few command line utilities:
+
+* `gqpe-tags` shows and edit the image tags via the command line, including
+  options to shift the image time; set the image file date and time to the one
+  in the image tags; print the tags with a format; or only print the image files
+  without GPS data.
+* `gqpe-copy` copies the tags from one image file to another, including options
+  to ignore GPS data or date and time, or to only copy GPS data.
+* `gqpe-store` stores the image files to a normalized location.
+* `gqpe-interpolate-gps` interpolates the GPS coordinates in a set of image
+  files.
+
+All the command line utilities have man pages.
 
 Requirements
 ------------

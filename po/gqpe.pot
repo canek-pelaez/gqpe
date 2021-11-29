@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-27 17:47-0600\n"
+"POT-Creation-Date: 2021-11-28 22:07-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,7 +85,7 @@ msgstr ""
 msgid "Update the metadata of the photograph"
 msgstr ""
 
-#: src/store.vala:61 src/tags.vala:116
+#: src/store.vala:61 src/tags.vala:124
 msgid "Be quiet"
 msgstr ""
 
@@ -123,7 +123,7 @@ msgstr ""
 msgid "Skipping.\n"
 msgstr ""
 
-#: src/store.vala:238 src/tags.vala:307
+#: src/store.vala:238 src/tags.vala:322
 #, c-format
 msgid "Run ‘%s --help’ for a list of options"
 msgstr ""
@@ -142,20 +142,21 @@ msgstr ""
 msgid "There was an error while storing: %s\n"
 msgstr ""
 
-#: src/tags.vala:65
+#: src/tags.vala:67
 msgid "[FILENAME…] - Edit and show the image tags."
 msgstr ""
 
-#: src/tags.vala:70
+#: src/tags.vala:72
 msgid ""
 "With no flags the tags are printed. An empty string as parameter\n"
-"removes an individual tag.\n"
+"removes an individual tag. You cannot mix -s, -r, or -m with\n"
+"other options.\n"
 "\n"
 "Format for printing:\n"
 "\n"
-"  %p: The path\n"
-"  %P: The dirname\n"
-"  %b: The basename\n"
+"  %p: The file path\n"
+"  %P: The file directory name\n"
+"  %b: The file basename\n"
 "  %t: The title\n"
 "  %a: The album\n"
 "  %D: The description\n"
@@ -164,172 +165,189 @@ msgid ""
 "  %o: The orientation\n"
 "  %Y: The latitude\n"
 "  %X: The longitude\n"
-msgstr ""
-
-#: src/tags.vala:93
-msgid "Set the title"
-msgstr ""
-
-#: src/tags.vala:95
-msgid "Set the comment"
-msgstr ""
-
-#: src/tags.vala:97
-msgid "Set the album"
+"\n"
+"Also, any standard C escape character can be used: \"\\n\" for new\n"
+"line, \"\\t\" for tab, etc.\n"
 msgstr ""
 
 #: src/tags.vala:99
-msgid "Set the date and time"
+msgid "Set the title"
 msgstr ""
 
 #: src/tags.vala:101
-msgid "Set the timezone offset"
+msgid "Set the album"
 msgstr ""
 
 #: src/tags.vala:103
-msgid "Set the orientation"
+msgid "Set the comment"
 msgstr ""
 
 #: src/tags.vala:105
-msgid "Set the latitude"
+msgid "Set the date and time"
 msgstr ""
 
 #: src/tags.vala:107
-msgid "Set the longitude"
+msgid "Set the timezone offset"
 msgstr ""
 
 #: src/tags.vala:109
-msgid "Shift the time in this amount of hours"
+msgid "Set the orientation"
 msgstr ""
 
 #: src/tags.vala:111
-msgid "Resets the file timestamp to the photograph one"
+msgid "Set the latitude"
 msgstr ""
 
-#: src/tags.vala:114
-msgid "Prints the tags with format"
+#: src/tags.vala:113
+msgid "Set the longitude"
 msgstr ""
 
-#: src/tags.vala:126
+#: src/tags.vala:115
+msgid "Shift the time in this amount of hours"
+msgstr ""
+
+#: src/tags.vala:117
+msgid "Reset the file timestamp to the photograph one"
+msgstr ""
+
+#: src/tags.vala:120
+msgid "Print the tags with format"
+msgstr ""
+
+#: src/tags.vala:122
+msgid "Only print the path of images without GPS data"
+msgstr ""
+
+#: src/tags.vala:134
 #, c-format
 msgid "No such file: ‘%s’\n"
 msgstr ""
 
-#: src/tags.vala:133
+#: src/tags.vala:141
 #, c-format
 msgid "Error loading: ‘%s’\n"
 msgstr ""
 
-#: src/tags.vala:145
-msgid "Title"
-msgstr ""
-
-#: src/tags.vala:147
-msgid "Album"
-msgstr ""
-
-#: src/tags.vala:149
-msgid "Comment"
-msgstr ""
-
-#: src/tags.vala:156
-msgid "Date and time"
-msgstr ""
-
 #: src/tags.vala:158
-msgid "Orientation"
-msgstr ""
-
-#: src/tags.vala:161
-msgid "Latitude"
-msgstr ""
-
-#: src/tags.vala:163
-msgid "Longitude"
-msgstr ""
-
-#: src/tags.vala:165
-msgid "GPS tag"
-msgstr ""
-
-#: src/tags.vala:166
-msgid "GPS version"
-msgstr ""
-
-#: src/tags.vala:167
-msgid "GPS datum"
-msgstr ""
-
-#: src/tags.vala:221
-#, c-format
-msgid "Resetting time for %s…\n"
-msgstr ""
-
-#: src/tags.vala:229
 #, c-format
 msgid "Shifting time for %s…\n"
 msgstr ""
 
-#: src/tags.vala:261
+#: src/tags.vala:170
+#, c-format
+msgid "Resetting time for %s…\n"
+msgstr ""
+
+#: src/tags.vala:216
+msgid "Title"
+msgstr ""
+
+#: src/tags.vala:218
+msgid "Album"
+msgstr ""
+
+#: src/tags.vala:220
+msgid "Comment"
+msgstr ""
+
+#: src/tags.vala:227
+msgid "Date and time"
+msgstr ""
+
+#: src/tags.vala:229
+msgid "Orientation"
+msgstr ""
+
+#: src/tags.vala:232
+msgid "Latitude"
+msgstr ""
+
+#: src/tags.vala:234
+msgid "Longitude"
+msgstr ""
+
+#: src/tags.vala:236
+msgid "GPS tag"
+msgstr ""
+
+#: src/tags.vala:237
+msgid "GPS version"
+msgstr ""
+
+#: src/tags.vala:238
+msgid "GPS datum"
+msgstr ""
+
+#: src/tags.vala:277
 #, c-format
 msgid "Updating %s…\n"
 msgstr ""
 
-#: src/tags.vala:265
+#: src/tags.vala:281
 #, c-format
 msgid "%s updated.\n"
 msgstr ""
 
-#: src/tags.vala:280
+#: src/tags.vala:296
 #, c-format
 msgid "There was an error saving %s: %s\n"
 msgstr ""
 
-#: src/tags.vala:311
-msgid "Missing files"
+#: src/tags.vala:326
+msgid "Missing image files"
 msgstr ""
 
-#: src/tags.vala:314
-msgid "You cannot shift time and edit tags"
+#: src/tags.vala:337
+msgid "You cannot mix -s, -r, -p, or -m with other options"
 msgstr ""
 
-#: src/tags.vala:317
-msgid "You cannot reset time and edit tags"
-msgstr ""
-
-#: src/tags.vala:320
-msgid "You cannot shift and reset time"
-msgstr ""
-
-#: src/tags.vala:325
+#: src/tags.vala:344
 #, c-format
 msgid "Invalid orientation: %s"
 msgstr ""
 
-#: src/tags.vala:335
+#: src/tags.vala:354
 #, c-format
 msgid "Invalid date and time: %s"
 msgstr ""
 
-#: src/tags.vala:339
+#: src/tags.vala:358
 #, c-format
 msgid "Invalid timezone offset: %s"
 msgstr ""
 
-#: src/tags.vala:343
+#: src/tags.vala:362
 #, c-format
 msgid "Invalid latitude: %s"
 msgstr ""
 
-#: src/tags.vala:347
+#: src/tags.vala:366
 #, c-format
 msgid "Invalid longitude: %s"
 msgstr ""
 
-#: src/tags.vala:351
-msgid "Latitude will only be set on photos with GPS data"
+#: src/tags.vala:370
+msgid "Latitude will only be set on images with GPS data"
 msgstr ""
 
-#: src/tags.vala:354
-msgid "Longitude will only be set on photos with GPS data"
+#: src/tags.vala:373
+msgid "Longitude will only be set on images with GPS data"
+msgstr ""
+
+#: src/tags.vala:376
+msgid "Loading photographs…\n"
+msgstr ""
+
+#: src/tags.vala:382
+#, c-format
+msgid "Loaded %d photographs…  %s"
+msgstr ""
+
+#: src/tags.vala:386
+msgid "No photographs loaded.     \n"
+msgstr ""
+
+#: src/tags.vala:388
+#, c-format
+msgid "Loaded %d photographs…    \n"
 msgstr ""

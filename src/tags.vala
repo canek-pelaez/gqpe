@@ -367,25 +367,25 @@ line, "\t" for tab, etc.
 
             if (latitude != double.MAX && longitude == double.MAX)
                 Util.error(
-                    _("Latitude will only be set on photos with GPS data"));
+                    _("Latitude will only be set on images with GPS data"));
             if (latitude == double.MAX && longitude != double.MAX)
                 Util.error(
-                    _("Longitude will only be set on photos with GPS data"));
+                    _("Longitude will only be set on images with GPS data"));
 
             photos = new Gee.TreeSet<Photograph>();
-            stderr.printf(_("Loading photos…\n"));
+            stderr.printf(_("Loading photographs…\n"));
             int c = 0;
             for (int i = 1; i < args.length; i++) {
                 var photo = get_photograph(args[i]);
                 if (photo != null) {
                     photos.add(photo);
-                    stderr.printf(_("Loaded %d photos…  \r\b"), c++);
+                    stderr.printf(_("Loaded %d photographs…  %s"), c++, "\r\b");
                 }
             }
             if (c == 0)
-                Util.error(_("No photos Loaded.     \n"));
+                Util.error(_("No photographs loaded.     \n"));
             else
-                stderr.printf(_("Loaded %d photos…    \n"), c);
+                stderr.printf(_("Loaded %d photographs…    \n"), c);
 
             if (missing_gps)
                 print_missing_gps();
