@@ -27,7 +27,7 @@ the keyboard:
 * `Ctrl`+`[` and `Ctrl`+`]` will rotate the picture to the left and right,
   respectively.
 
-* Enter in any text entry (if not empty) or `Ctrl-Enter` will update the
+* `Enter` in any text entry (if not empty) or `Ctrl`+`Enter` will update the
   relevant tags in the picture and move to the next one. You need to do this (or
   click on the save button) to update the tags in the picture, otherwise all the
   changes are ignored.
