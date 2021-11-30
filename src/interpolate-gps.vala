@@ -28,8 +28,6 @@ namespace GQPE {
         /* Wheter to be verbose. */
         private static bool verbose;
 
-        /* The input directory. */
-        private static string input;
         /* The photographs. */
         private static Photograph[] photographs;
 
@@ -49,44 +47,18 @@ namespace GQPE {
             return options;
         }
 
-        /*Loads the photos from the input directory. */
-        private static void load_photos() throws GLib.Error {
-            stdout.printf(_("Loading photographs…\n"));
-            int c = 0;
-            var root = GLib.File.new_for_path(input);
-            Gee.ArrayQueue<File> queue = new Gee.ArrayQueue<File>();
-            queue.offer(root);
-            var photos = new Gee.TreeSet<Photograph>();
-            while (!queue.is_empty) {
-                var dir = queue.poll();
-                var e = dir.enumerate_children(FileAttribute.STANDARD_NAME, 0);
-                FileInfo file_info;
-                while ((file_info = e.next_file ()) != null) {
-                    var path = string.join(GLib.Path.DIR_SEPARATOR_S,
-                                           dir.get_path(),
-                                           file_info.get_name());
-                    var file = File.new_for_path(path);
-                    if (GLib.FileUtils.test(path, GLib.FileTest.IS_DIR)) {
-                        queue.offer(file);
-                        continue;
-                    }
-                    try {
-                        var photo = new Photograph(file);
-                        photos.add(photo);
-                        stderr.printf(_("Loaded %d photographs…  "),
-                                      c++, "\r\b");
-                    } catch (GLib.Error e) {
-                        var m = _("There was an error processing %s: %s. ");
-                        stderr.printf(m, path, e.message);
-                        stderr.printf(_("Skipping.\n"));
-                    }
-                }
+        private static void progress(ProgressState state, int number) {
+            switch (state) {
+            case INIT:
+                stdout.printf(_("Loading photographs…\n"));
+                break;
+            case ADVANCE:
+                stderr.printf(_("Loaded %d photographs…"), number, "\r\b");
+                break;
+            case END:
+                stdout.printf(_("Loaded %d photographs.\n"), number);
+                break;
             }
-            int i = 0;
-            photographs = new Photograph[photos.size];
-            foreach (var photo in photos)
-                photographs[i++] = photo;
-            stdout.printf(_("Loaded %d photographs…      \n"), c++);
         }
 
         /* Recursively interpolates the coordinates for a range. */
@@ -139,7 +111,6 @@ namespace GQPE {
 
         /* Interpolates a directory of photos. */
         private static int interpolate_photos() throws GLib.Error {
-            load_photos();
             int j = -1;
             bool left = false, middle = false;
             int c = 0;
@@ -165,6 +136,22 @@ namespace GQPE {
             return c;
         }
 
+        private static void do_interpolating(string[] args) {
+            try {
+                var photos = (args.length == 2) ?
+                    Util.load_photos_dir(args[1], (s, n) => progress(s, n)) :
+                    Util.load_photos_array(args, 1, (s, n) => progress(s, n));
+                photographs = new Photograph[photos.size];
+                int i = 0;
+                foreach (var photo in photos)
+                    photographs[i++] = photo;
+                int c = interpolate_photos();
+                stderr.printf(_("%d photographs exported\n"), c);
+            } catch (GLib.Error e) {
+                Util.error(_("Error while exporting: %s"), e.message);
+            }
+        }
+
         public static int main(string[] args) {
             GLib.Intl.setlocale(LocaleCategory.ALL, "");
             verbose = false;
@@ -178,47 +165,12 @@ namespace GQPE {
                 Util.error(_("Run ‘%s --help’ for a list of options"), args[0]);
             }
 
-            if (args.length < 2) {
+            if (args.length < 2)
                 Util.error(_("Missing files or directory"));
-            } else if (args.length == 2) {
-                input = args[1];
-                if (!GLib.FileUtils.test(input, GLib.FileTest.IS_DIR))
-                    Util.error(_("%s is not a directory"), input);
-                try {
-                    int c = interpolate_photos();
-                    stderr.printf(_("%d photographs updated\n"), c);
-                } catch (GLib.Error e) {
-                    Util.error(_("There was an error while interpolating: %s"));
-                }
-            } else {
-                photographs = new Photograph[args.length-1];
-                int c = 0;
-                for (int i = 1; i < args.length; i++) {
-                    var file = GLib.File.new_for_path(args[i]);
-                    try {
-                        photographs[i-1] = new Photograph(file);
-                        stderr.printf(_("Loaded %d photographs…  %s"),
-                                      c++, "\r\b");
-                    } catch (GLib.Error e) {
-                        var m = _("There was an error processing %s: %s. ");
-                        stderr.printf(m, args[i], e.message);
-                        stderr.printf(_("Skipping.\n"));
-                    }
-                }
-                stderr.printf(_("Loaded %d photosgraphs…  \n"), c);
-                int n = photographs.length;
-                if (!photographs[0].has_geolocation ||
-                    !photographs[n-1].has_geolocation)
-                    Util.error(
-                        _("First and last photograph must have GPS data"));
-                try {
-                    c = interpolate_range(0, n-1);
-                } catch (GLib.Error e) {
-                    Util.error(
-                        _("There was an error while interpolating: %s"));
-                }
-                stderr.printf(_("%d photographs updated\n"), c);
-            }
+            else if (args.length == 2)
+                if (!GLib.FileUtils.test(args[1], GLib.FileTest.IS_DIR))
+                    Util.error(_("%s is not a directory"), args[1]);
+            do_interpolating(args);
 
             return 0;
         }

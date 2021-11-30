@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-28 22:07-0600\n"
-"PO-Revision-Date: 2021-11-28 19:55-0600\n"
+"POT-Creation-Date: 2021-11-30 13:31-0600\n"
+"PO-Revision-Date: 2021-11-30 13:54-0600\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: es\n"
@@ -69,9 +69,302 @@ msgstr "Editor rápido de fotos basado en Gtk+"
 msgid "Quick editor for photograph tags"
 msgstr "Editor rápido para etiquetas de fotografía"
 
+#: lib/photograph.vala:506
+#, c-format
+msgid "Cannot get file status: %s"
+msgstr "No se puede obtener el estado del archivo: %s"
+
+#: lib/util.vala:86
+#, c-format
+msgid "Error reading from ‘%s’.\n"
+msgstr "Error leyendo de: ‘%s’.\n"
+
+#: lib/util.vala:104
+#, c-format
+msgid "Error writing to ‘%s’.\n"
+msgstr "Error escribendo a: ‘%s’.\n"
+
+#: lib/util.vala:135
+#, c-format
+msgid "Error normalizing: %s"
+msgstr "Error normalizando: %s\n"
+
+#: lib/util.vala:265 lib/util.vala:293
+#, c-format
+msgid "Error processing %s: %s. Skipping."
+msgstr "Error procesando %s: %s. Saltándolo."
+
 #: src/application.vala:94
 msgid "A Gtk+ based quick photo editor"
 msgstr "Un rápido editor de fotos basado en Gtk+"
+
+#. The option context.
+#: src/copy.vala:38
+msgid "INPUT OUTPUT - Copy the image tags."
+msgstr "ENTRADA SALIDA - Copiar las etiquetas de imagen."
+
+#: src/copy.vala:44
+msgid "Do not copy GPS data."
+msgstr "No copiar los datos GPS."
+
+#: src/copy.vala:46
+msgid "Do not copy date and time data."
+msgstr "No copiar los datos de la fecha y hora."
+
+#: src/copy.vala:48
+msgid "Only copy GPS data."
+msgstr "Sólo copiar datos GPS."
+
+#: src/copy.vala:75 src/interpolate-gps.vala:165 src/shotwell.vala:786
+#: src/store.vala:238 src/tags.vala:322
+#, c-format
+msgid "Run ‘%s --help’ for a list of options"
+msgstr "Ejecute ‘%s --help’ para una lista de opciones"
+
+#: src/copy.vala:79
+msgid "Exactly one input and one output file needed"
+msgstr "Se necesita exactamente un archivo entrada y uno de salida"
+
+#: src/copy.vala:83
+msgid "You cannot mix -g and -G"
+msgstr "No puede mezclar -g y -G"
+
+#: src/copy.vala:85
+msgid "You cannot mix -g and -T"
+msgstr "No puede mezclar -g y -T"
+
+#: src/copy.vala:94
+#, c-format
+msgid "An error ocurred while copying %s:"
+msgstr "Ocurrió un error al copiar %s:"
+
+#: src/interpolate-gps.vala:36
+msgid "INPUT - Interpolate GPS coordinates."
+msgstr "ENTRADA - Interpolar coordenadas GPS."
+
+#: src/interpolate-gps.vala:42
+msgid "Force a range"
+msgstr "Forzar un rango"
+
+#: src/interpolate-gps.vala:44 src/shotwell.vala:183
+msgid "Be verbose"
+msgstr "Sé verboso"
+
+#: src/interpolate-gps.vala:53 src/shotwell.vala:192 src/tags.vala:376
+msgid "Loading photographs…\n"
+msgstr "Cargando fotografías…\n"
+
+#: src/interpolate-gps.vala:56
+#, c-format
+msgid "Loaded %d photographs…"
+msgstr "Se cargaron %d fotografías…"
+
+#: src/interpolate-gps.vala:59 src/shotwell.vala:202
+#, c-format
+msgid "Loaded %d photographs.\n"
+msgstr "Se cargaron %d fotografías.\n"
+
+#: src/interpolate-gps.vala:103 src/tags.vala:277
+#, c-format
+msgid "Updating %s…\n"
+msgstr "Actualizando %s…\n"
+
+#: src/interpolate-gps.vala:149
+#, c-format
+msgid "%d photographs exported\n"
+msgstr "% fotografías exportadas.\n"
+
+#: src/interpolate-gps.vala:151 src/shotwell.vala:673
+#, c-format
+msgid "Error while exporting: %s"
+msgstr "Error al exportar: %s"
+
+#: src/interpolate-gps.vala:169 src/shotwell.vala:800
+msgid "Missing files or directory"
+msgstr "Faltan archivos o un directorio"
+
+#: src/interpolate-gps.vala:172 src/shotwell.vala:804
+#, c-format
+msgid "%s is not a directory"
+msgstr "%s no es un directorio"
+
+#: src/shotwell.vala:173
+msgid "[DIRNAME] [FILENAME…] - Export to Shotwell."
+msgstr "[DIRECTORIO] [ARCHIVO…] - Exportar a Shotwell."
+
+#: src/shotwell.vala:179
+msgid "Use a file list instead of a directory"
+msgstr "Usar una lista de archivos en lugar de un directorio"
+
+#: src/shotwell.vala:181
+msgid "Use a Galería JSON to set the primary photos"
+msgstr "Usar un JSON de Galería para definir las fotos primarias"
+
+#: src/shotwell.vala:196
+#, c-format
+msgid "Loaded %d photographs…%s"
+msgstr "Se cargaron %d fotografías…%s"
+
+#: src/shotwell.vala:212 src/shotwell.vala:224 src/shotwell.vala:248
+#: src/shotwell.vala:265 src/shotwell.vala:291 src/shotwell.vala:311
+#: src/shotwell.vala:328 src/shotwell.vala:347 src/shotwell.vala:361
+#: src/shotwell.vala:397 src/shotwell.vala:497 src/shotwell.vala:513
+#: src/shotwell.vala:534 src/shotwell.vala:557 src/shotwell.vala:693
+#, c-format
+msgid "SQL error: %d, %s\n"
+msgstr "Error SQL: %d, %s\n"
+
+#: src/shotwell.vala:275 src/shotwell.vala:336 src/shotwell.vala:436
+#, c-format
+msgid "Error inserting: %d, %s\n"
+msgstr "Error insertando: %d, %s\n"
+
+#: src/shotwell.vala:378
+#, c-format
+msgid "Cannot read file: %s"
+msgstr "No puedo leer archivo: %s"
+
+#: src/shotwell.vala:389
+#, c-format
+msgid "Error getting photo id for: %s\n"
+msgstr "Error obteniendo el identificador de la foto: %s\n"
+
+#: src/shotwell.vala:470
+#, c-format
+msgid "Generating GNOME thumb: %s\n"
+msgstr "Generando miniatura de GNOME: %s\n"
+
+#: src/shotwell.vala:475
+#, c-format
+msgid "Generating Shotwell 128px thumb: %s\n"
+msgstr "Generando miniatura 128px de Shotwell: %s\n"
+
+#: src/shotwell.vala:481
+#, c-format
+msgid "Generating Shotwell 360px thumb: %s\n"
+msgstr "Generando miniatura 360px de Shotwell: %s\n"
+
+#: src/shotwell.vala:571
+#, c-format
+msgid "Exporting: %s\n"
+msgstr "Exportando: %s\n"
+
+#: src/shotwell.vala:573
+#, c-format
+msgid "Already in database: %s, skipping.\n"
+msgstr "Ya está en la base de datos: %s, saltándolo.\n"
+
+#: src/shotwell.vala:578
+#, c-format
+msgid "Missing title: %s, skipping.\n"
+msgstr "Título faltante: %s, saltándolo."
+
+#: src/shotwell.vala:582
+#, c-format
+msgid "Missing album: %s, skipping.\n"
+msgstr "Álbum faltante: %s, saltándolo."
+
+#: src/shotwell.vala:587
+#, c-format
+msgid "Error getting event for: %s, skipping.\n"
+msgstr "Error obteniendo evento para: %s, saltándolo.\n"
+
+#: src/shotwell.vala:593
+#, c-format
+msgid "Error getting tag for: %s, skipping.\n"
+msgstr "Error obteniendo etiqueta para: %s, saltándolo."
+
+#: src/shotwell.vala:599
+#, c-format
+msgid "Error inserting photograph: %s, skipping.\n"
+msgstr "Error insertando fotografía: %s, saltándolo."
+
+#: src/shotwell.vala:604
+#, c-format
+msgid "Error making thumbnail for: %s, skipping.\n"
+msgstr "Error haciedo miniatura para: %s, saltándolo."
+
+#: src/shotwell.vala:609
+#, c-format
+msgid "Error updating event for: %s, skipping.\n"
+msgstr "Error actualizando evento para: %s, saltándolo.\n"
+
+#: src/shotwell.vala:614
+#, c-format
+msgid "Error updating tag for: %s, skipping.\n"
+msgstr "Error actualizando etiqueta para: %s, saltándolo.\n"
+
+#: src/shotwell.vala:630
+#, c-format
+msgid "%d photographs exported…%s"
+msgstr "%d fotografías exportadas…%s"
+
+#: src/shotwell.vala:644
+#, c-format
+msgid "Cannot open database: %s\n"
+msgstr "No se puede abrir la base de datos: %s\n"
+
+#: src/shotwell.vala:655 src/shotwell.vala:749
+#, c-format
+msgid "Cannot begin transaction: %s\n"
+msgstr "No se puede iniciar transacción: %s\n"
+
+#: src/shotwell.vala:664
+#, c-format
+msgid "Exporting %d photographs…\n"
+msgstr "Exportando %d fotografías…\n"
+
+#: src/shotwell.vala:666
+#, c-format
+msgid "%d photographs exported.\n"
+msgstr "%d fotografías exportadas.\n"
+
+#: src/shotwell.vala:669 src/shotwell.vala:762
+#, c-format
+msgid "Cannot rollback transaction: %s\n"
+msgstr "No se pudo deshacer la transación: %s\n"
+
+#: src/shotwell.vala:676 src/shotwell.vala:770
+#, c-format
+msgid "Cannot commit transaction: %s\n"
+msgstr "No se pudo realizar la transacción: %s\n"
+
+#: src/shotwell.vala:706
+#, c-format
+msgid "Updating cover for %s…\n"
+msgstr "Actualizando portada para %s…\n"
+
+#: src/shotwell.vala:737
+#, c-format
+msgid "%d covers set.%s"
+msgstr "%d portadas ajustadas.%s"
+
+#: src/shotwell.vala:754
+msgid "Setting covers…\n"
+msgstr "Reajustando portadas…\n"
+
+#: src/shotwell.vala:759
+#, c-format
+msgid "%d covers set.\n"
+msgstr "%d portadas ajustadas.\n"
+
+#: src/shotwell.vala:766
+#, c-format
+msgid "Error while setting primary photos: %s"
+msgstr "Error al reajustar fotos primarias: %s"
+
+#: src/shotwell.vala:790
+msgid "You cannot mix -c and -f"
+msgstr "No puede mezclar -c y -f"
+
+#: src/shotwell.vala:794
+msgid "The -c option only needs one file"
+msgstr "La opción -c sólo necesita un archivo"
+
+#: src/shotwell.vala:808
+#, c-format
+msgid "%s is not a file"
+msgstr "%s no es un archivo"
 
 #: src/store.vala:51
 msgid "INPUTDIR OUTPUTDIR - Store images to a normalized location."
@@ -123,11 +416,6 @@ msgstr "Hubo un error al procesar %s: %s."
 msgid "Skipping.\n"
 msgstr "Omitiendo.\n"
 
-#: src/store.vala:238 src/tags.vala:322
-#, c-format
-msgid "Run ‘%s --help’ for a list of options"
-msgstr "Ejecute ‘%s --help’ para una lista de opciones"
-
 #: src/store.vala:243
 msgid "Exactly one output and one input directory needed"
 msgstr "Se necesitan exactamente un directorio entrada y de salida"
@@ -143,8 +431,8 @@ msgid "There was an error while storing: %s\n"
 msgstr "Ocurrió un error al almacenar: %s\n"
 
 #: src/tags.vala:67
-msgid "[FILENAME…] - Edit and show the image tags."
-msgstr "[ARCHIVO…] - Edita y muestra las etiquetas de imagen."
+msgid "{FILENAME…} - Edit and show the image tags."
+msgstr "{ARCHIVO…} - Edita y muestra las etiquetas de imagen."
 
 #: src/tags.vala:72
 msgid ""
@@ -297,11 +585,6 @@ msgstr "Versión GPS"
 msgid "GPS datum"
 msgstr "Dato GPS"
 
-#: src/tags.vala:277
-#, c-format
-msgid "Updating %s…\n"
-msgstr "Actualizando %s…\n"
-
 #: src/tags.vala:281
 #, c-format
 msgid "%s updated.\n"
@@ -352,10 +635,6 @@ msgstr "La latitud sólo se definirá para imáneges con información GPS"
 #: src/tags.vala:373
 msgid "Longitude will only be set on images with GPS data"
 msgstr "La longitud sólo se definirá para imágenes con información GPS"
-
-#: src/tags.vala:376
-msgid "Loading photographs…\n"
-msgstr "Cargando fotografías…\n"
 
 #: src/tags.vala:382
 #, c-format

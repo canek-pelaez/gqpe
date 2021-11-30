@@ -67,6 +67,7 @@ You need the following to compile GQPE:
 * `champlain-0.12`
 * `clutter-gtk-1.0`
 * `gexiv2`
+* `gdk-pixbuf-2.0`
 * `gtk+-3.18`
 * `gee-0.8`
 

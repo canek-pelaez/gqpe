@@ -9,9 +9,12 @@ lib/photograph.vala
 lib/pretty-box.vala
 lib/tag.vala
 lib/util.vala
+src/application.vala
 src/application-main.vala
 src/application-window.vala
-src/application.vala
+src/copy.vala
+src/interpolate-gps.vala
 src/namespace.vala
+src/shotwell.vala
 src/store.vala
 src/tags.vala

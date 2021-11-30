@@ -103,6 +103,26 @@ namespace GQPE {
         public string path { owned get { return file.get_path(); } }
 
         /**
+         * The image width.
+         */
+        public int width { get; private set; }
+
+        /**
+         * The image height.
+         */
+        public int height { get; private set; }
+
+        /**
+         * The image file size.
+         */
+        public int size { get; private set; }
+
+        /**
+         * The image file date and time.
+         */
+        public GLib.DateTime file_datetime { get; private set; }
+
+        /**
          * Wether the photograph has geolocation.
          */
         public bool has_geolocation { get; private set; }
@@ -120,6 +140,7 @@ namespace GQPE {
             metadata = new GExiv2.Metadata();
             metadata.open_path(file.get_path());
             get_metadata();
+            get_filedata();
             this.notify.connect ((s, p) => modified = true);
         }
 
@@ -472,6 +493,20 @@ namespace GQPE {
             for (int i = 0; i < s.length; i++)
                 d[i] = decimal_to_double(s[i]);
             return d;
+        }
+
+        /* Gets the file data. */
+        private void get_filedata() throws GLib.Error {
+            var pb = new Gdk.Pixbuf.from_file(path);
+            width = pb.width;
+            height = pb.height;
+            Posix.Stat buf;
+            if (Posix.stat(path, out buf) != 0)
+                throw new GLib.Error(GLib.Quark.from_string("gqpe"), 0,
+                                     _("Cannot get file status: %s"), path);
+            size = (int)buf.st_size;
+            long t = (long)buf.st_mtime;
+            file_datetime = new GLib.DateTime.from_unix_local(t);
         }
     }
 }

@@ -20,6 +20,7 @@ add_global_arguments('-DGETTEXT_PACKAGE="gqpe"', language: 'c')
 vapidir = join_paths(meson.current_source_dir(), 'vapi')
 add_project_arguments(['--vapidir=' + vapidir,
                        '--vapidir=.',
+                       '--pkg=posix',
                        '--pkg=config',
                        '--target-glib=2.38'],
                       language: 'vala')
@@ -31,7 +32,10 @@ clutter_gtk = dependency('clutter-gtk-1.0')
 gee = dependency('gee-0.8')
 gexiv2 = dependency('gexiv2')
 gdk = dependency('gdk-3.0')
+gdkpixbuf = dependency('gdk-pixbuf-2.0')
 gtk = dependency('gtk+-3.0')
+sqlite3 = dependency('sqlite3')
+json = dependency('json-glib-1.0')
 
 xsltproc = find_program('xsltproc', required: false)
 
@@ -67,6 +71,7 @@ gqpelib_sources = [
 gqpelib_dependencies = [
   gee,
   gexiv2,
+  gdkpixbuf,
   math
 ]
 
@@ -82,6 +87,7 @@ gqpetags_sources = [
 gqpetags_dependencies = [
   gee,
   gexiv2,
+  gdkpixbuf,
   math
 ]
 
@@ -97,6 +103,7 @@ gqpecopy_sources = [
 gqpecopy_dependencies = [
   gee,
   gexiv2,
+  gdkpixbuf,
   math
 ]
 
@@ -112,6 +119,7 @@ gqpestore_sources = [
 gqpestore_dependencies = [
   gee,
   gexiv2,
+  gdkpixbuf,
   math
 ]
 
@@ -127,11 +135,31 @@ gqpeinterpolategps_sources = [
 gqpeinterpolategps_dependencies = [
   gee,
   gexiv2,
+  gdkpixbuf,
   math
 ]
 
 executable('gqpe-interpolate-gps', gqpeinterpolategps_sources,
            dependencies: gqpeinterpolategps_dependencies,
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
+
+gqpeshotwell_sources = [
+  'src/shotwell.vala'
+]
+
+gqpeshotwell_dependencies = [
+  gee,
+  gexiv2,
+  gdk,
+  gdkpixbuf,
+  json,
+  math,
+  sqlite3
+]
+
+executable('gqpe-shotwell', gqpeshotwell_sources,
+           dependencies: gqpeshotwell_dependencies,
            include_directories: [ gqpelib_includes ],
            install: true, link_with: [ gqpelib ])
 

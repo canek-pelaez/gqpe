@@ -384,7 +384,7 @@ namespace GQPE {
             var photo = pmap[path];
             if (!pixbufs.has_key(path)) {
                 try {
-                    load_pixbuf(photo);
+                    pixbufs[path] = Util.load_pixbuf(photo);
                 } catch (GLib.Error e) {
                     GLib.warning("Could not load '%s': %s", path, e.message);
                 }
@@ -478,7 +478,7 @@ namespace GQPE {
             var path = photograph.path;
             if (!pixbufs.has_key(path)) {
                 try {
-                    load_pixbuf(photograph);
+                    pixbufs[path] = Util.load_pixbuf(photograph);
                 } catch (GLib.Error e) {
                     GLib.warning("Could not load '%s': %s", path, e.message);
                     disable_ui(Item.PICTURE);
@@ -591,34 +591,6 @@ namespace GQPE {
                 entry.secondary_icon_tooltip_text = null;
                 entry.secondary_icon_activatable = false;
             }
-        }
-
-        /* Loads the pixbuf. */
-        private void load_pixbuf(Photograph photograph)
-            throws GLib.Error {
-            var path = photograph.path;
-            var pb = new Gdk.Pixbuf.from_file(path);
-            switch (photograph.orientation) {
-            case Orientation.LANDSCAPE:
-                break;
-            case Orientation.REVERSE_LANDSCAPE:
-                pb = pb.rotate_simple(Gdk.PixbufRotation.UPSIDEDOWN);
-                break;
-            case Orientation.PORTRAIT:
-                pb = pb.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
-                break;
-            case Orientation.REVERSE_PORTRAIT:
-                pb = pb.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
-                break;
-            }
-            double scale = 1.0;
-            if (pb.width > pb.height)
-                scale = ((double)MAX_LENGTH) / pb.width;
-            else
-                scale = ((double)MAX_LENGTH) / pb.height;
-            pixbufs[path] = pb.scale_simple((int)(pb.width * scale),
-                                            (int)(pb.height * scale),
-                                            Gdk.InterpType.HYPER);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace GQPE {
 
         /* The option context. */
         private const string CONTEXT =
-            _("[FILENAME…] - Edit and show the image tags.");
+            _("{FILENAME…} - Edit and show the image tags.");
 
         /* Returns option context. */
         private static string get_description() {

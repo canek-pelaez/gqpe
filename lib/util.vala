@@ -22,6 +22,12 @@
 
 namespace GQPE {
 
+    public enum ProgressState {
+        INIT,
+        ADVANCE,
+        END;
+    }
+
     /**
      * Class for utility functions.
      */
@@ -36,6 +42,9 @@ namespace GQPE {
         private static bool colorize = true;
         /* The don't colorize environment variable. */
         private const string GQPE_DONT_COLORIZE = "GQPE_DONT_COLORIZE";
+
+        public delegate void ProgressMessage(ProgressState state,
+                                             int number);
 
         /**
          * Returns a colorized message.
@@ -74,7 +83,7 @@ namespace GQPE {
                                            GLib.FileQueryInfoFlags.NONE);
                 return info.get_modification_date_time();
             } catch (GLib.Error e) {
-                GLib.warning("There was an error reading from ‘%s’.\n", filename);
+                GLib.warning(_("Error reading from ‘%s’.\n"), filename);
             }
             return new GLib.DateTime.now_local();
         }
@@ -92,7 +101,7 @@ namespace GQPE {
                 info.set_modification_date_time(time);
                 file.set_attributes_from_info(info, GLib.FileQueryInfoFlags.NONE);
             } catch (GLib.Error e) {
-                GLib.warning("There was an error writing to ‘%s’.\n", filename);
+                GLib.warning(_("Error writing to ‘%s’.\n"), filename);
             }
         }
 
@@ -123,7 +132,7 @@ namespace GQPE {
                 t = regex.replace(t, t.length, 0, "");
                 return t;
             } catch (GLib.Error e) {
-                GLib.warning("%s", e.message);
+                GLib.warning(_("Error normalizing: %s"), e.message);
             }
             return "";
         }
@@ -219,6 +228,121 @@ namespace GQPE {
             var list = va_list();
             stdout.vprintf(full_format, list);
             GLib.Process.exit(1);
+        }
+
+        /**
+         * Loads photographs from an input directory.
+         * @param input the input directory.
+         * @return a sorted set of photographs.
+         */
+        public static Gee.SortedSet<Photograph>
+        load_photos_dir(string input, ProgressMessage messenger)
+            throws GLib.Error {
+            messenger(ProgressState.INIT, 0);
+            int c = 0;
+            var root = GLib.File.new_for_path(input);
+            Gee.ArrayQueue<File> queue = new Gee.ArrayQueue<File>();
+            queue.offer(root);
+            var photos = new Gee.TreeSet<Photograph>();
+            while (!queue.is_empty) {
+                var dir = queue.poll();
+                var e = dir.enumerate_children(FileAttribute.STANDARD_NAME, 0);
+                FileInfo file_info;
+                while ((file_info = e.next_file ()) != null) {
+                    var path = string.join(GLib.Path.DIR_SEPARATOR_S,
+                                           dir.get_path(),
+                                           file_info.get_name());
+                    var file = File.new_for_path(path);
+                    if (GLib.FileUtils.test(path, GLib.FileTest.IS_DIR)) {
+                        queue.offer(file);
+                        continue;
+                    }
+                    try {
+                        var photo = new Photograph(file);
+                        photos.add(photo);
+                        messenger(ProgressState.ADVANCE, c++);
+                    } catch (GLib.Error e) {
+                        GLib.warning(_("Error processing %s: %s. Skipping."),
+                                     path, e.message);
+                    }
+                }
+            }
+            messenger(ProgressState.END, c);
+            return photos;
+        }
+
+        /**
+         * Loads photographs from an array of filenames.
+         * @param args the array of filenames.
+         * @param offset the array offset.
+         * @return a sorted set of photographs.
+         */
+        public static Gee.SortedSet<Photograph>
+        load_photos_array(string[] args, int offset,
+                          ProgressMessage messenger) {
+            messenger(ProgressState.INIT, 0);
+            int c = 0;
+            var photos = new Gee.TreeSet<Photograph>();
+            for (int i = offset; i < args.length; i++) {
+                var file = GLib.File.new_for_path(args[i]);
+                try {
+                    var photo = new Photograph(file);
+                    photos.add(photo);
+                    messenger(ProgressState.ADVANCE, c++);
+                } catch (GLib.Error e) {
+                    GLib.warning(_("Error processing %s: %s. Skipping."),
+                                 args[i], e.message);
+                }
+            }
+            messenger(ProgressState.END, c);
+            return photos;
+        }
+
+        public static int64 now() {
+            return new DateTime.now_utc().to_unix();
+        }
+
+
+        /**
+         * Loads the photograph pixbuf.
+         * @param photograph the photograph.
+         * @return the photograph pixbuf.
+         */
+        public static Gdk.Pixbuf load_pixbuf(Photograph photograph)
+            throws GLib.Error {
+            var path = photograph.path;
+            var pb = new Gdk.Pixbuf.from_file(path);
+            switch (photograph.orientation) {
+            case Orientation.LANDSCAPE:
+                break;
+            case Orientation.REVERSE_LANDSCAPE:
+                pb = pb.rotate_simple(Gdk.PixbufRotation.UPSIDEDOWN);
+                break;
+            case Orientation.PORTRAIT:
+                pb = pb.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
+                break;
+            case Orientation.REVERSE_PORTRAIT:
+                pb = pb.rotate_simple(Gdk.PixbufRotation.COUNTERCLOCKWISE);
+                break;
+            }
+            return pb;
+        }
+
+        /**
+         * Scales a pixbuf by its longest length.
+         * @param pixbuf the pixbuf.
+         * @param length the longest length to scale.
+         * @return the pixbuf scalated.
+         */
+        public static Gdk.Pixbuf scale_pixbuf(Gdk.Pixbuf pixbuf, int length) {
+            double scale = 1.0;
+            if (pixbuf.width > pixbuf.height)
+                scale = ((double)length) / pixbuf.width;
+            else
+                scale = ((double)length) / pixbuf.height;
+            return pixbuf.scale_simple((int)(pixbuf.width * scale),
+                                       (int)(pixbuf.height * scale),
+                                       Gdk.InterpType.HYPER);
         }
     }
 }
