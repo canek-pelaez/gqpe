@@ -5,7 +5,7 @@
 
     <key name="url" type="s">
       <default>''</default>
-      <summary>Galería URL</summary>
+      <summary>URL</summary>
       <description>Galería site URL.</description>
     </key>
 
