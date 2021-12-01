@@ -20,3 +20,12 @@ icondir = join_paths(datadir, 'icons', 'hicolor')
 install_data('gqpe.svg',
   install_dir: join_paths(icondir, 'scalable', 'apps'),
 )
+
+gsettings_conf = configuration_data()
+gsettings_conf.set ('GETTEXT_PACKAGE', meson.project_name())
+
+configure_file (input: 'mx.unam.GQPE.schema.xml',
+                output: 'mx.unam.GQPE.schema.xml',
+                configuration: gsettings_conf,
+                install: true,
+                install_dir: join_paths(datadir, 'glib-2.0', 'schemas'))

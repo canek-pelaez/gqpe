@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: gqpe 0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-11-30 13:31-0600\n"
-"PO-Revision-Date: 2021-11-30 13:54-0600\n"
+"PO-Revision-Date: 2021-11-30 23:35-0600\n"
 "Last-Translator: Canek Peláez Valdés <canek@ciencias.unam.mx>\n"
 "Language-Team: es\n"
 "Language: es\n"
@@ -87,7 +87,7 @@ msgstr "Error escribendo a: ‘%s’.\n"
 #: lib/util.vala:135
 #, c-format
 msgid "Error normalizing: %s"
-msgstr "Error normalizando: %s\n"
+msgstr "Error normalizando: %s"
 
 #: lib/util.vala:265 lib/util.vala:293
 #, c-format
@@ -257,12 +257,12 @@ msgstr "Ya está en la base de datos: %s, saltándolo.\n"
 #: src/shotwell.vala:578
 #, c-format
 msgid "Missing title: %s, skipping.\n"
-msgstr "Título faltante: %s, saltándolo."
+msgstr "Título faltante: %s, saltándolo.\n"
 
 #: src/shotwell.vala:582
 #, c-format
 msgid "Missing album: %s, skipping.\n"
-msgstr "Álbum faltante: %s, saltándolo."
+msgstr "Álbum faltante: %s, saltándolo.\n"
 
 #: src/shotwell.vala:587
 #, c-format
@@ -272,17 +272,17 @@ msgstr "Error obteniendo evento para: %s, saltándolo.\n"
 #: src/shotwell.vala:593
 #, c-format
 msgid "Error getting tag for: %s, skipping.\n"
-msgstr "Error obteniendo etiqueta para: %s, saltándolo."
+msgstr "Error obteniendo etiqueta para: %s, saltándolo.\n"
 
 #: src/shotwell.vala:599
 #, c-format
 msgid "Error inserting photograph: %s, skipping.\n"
-msgstr "Error insertando fotografía: %s, saltándolo."
+msgstr "Error insertando fotografía: %s, saltándolo.\n"
 
 #: src/shotwell.vala:604
 #, c-format
 msgid "Error making thumbnail for: %s, skipping.\n"
-msgstr "Error haciedo miniatura para: %s, saltándolo."
+msgstr "Error haciedo miniatura para: %s, saltándolo.\n"
 
 #: src/shotwell.vala:609
 #, c-format

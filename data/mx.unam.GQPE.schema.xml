@@ -1,0 +1,14 @@
+<schemalist gettext-domain="gqpe">
+
+  <schema id="mx.unam.GQPE" path="/mx/unam/GQPE/" gettext-domain="gqpe">
+
+    <key name="token" type="s">
+      <summary>Token</summary>
+      <description>
+        Galería site authentication token
+      </description>
+    </key>
+
+  </schema>
+
+</schemalist>
