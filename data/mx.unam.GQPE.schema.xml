@@ -2,10 +2,10 @@
 
   <schema id="mx.unam.GQPE" path="/mx/unam/GQPE/" gettext-domain="gqpe">
 
-    <key name="token" type="s">
-      <summary>Token</summary>
+    <key name="url" type="s">
+      <summary>Galería URL</summary>
       <description>
-        Galería site authentication token
+        Galería site URL
       </description>
     </key>
 
