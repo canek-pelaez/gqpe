@@ -1,12 +1,12 @@
-<schemalist gettext-domain="gqpe">
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
 
-  <schema id="mx.unam.GQPE" path="/mx/unam/GQPE/" gettext-domain="gqpe">
+  <schema id="mx.unam.GQPE" path="/mx/unam/GQPE/">
 
     <key name="url" type="s">
+      <default>''</default>
       <summary>Galería URL</summary>
-      <description>
-        Galería site URL
-      </description>
+      <description>Galería site URL.</description>
     </key>
 
   </schema>
