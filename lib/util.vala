@@ -226,7 +226,7 @@ namespace GQPE {
         public static void error(string format, ...) {
             var full_format = format + "\n";
             var list = va_list();
-            stdout.vprintf(full_format, list);
+            stderr.vprintf(full_format, list);
             GLib.Process.exit(1);
         }
 
@@ -279,7 +279,7 @@ namespace GQPE {
          */
         public static Gee.SortedSet<Photograph>
         load_photos_array(string[] args, int offset,
-                          ProgressMessage messenger) {
+                          ProgressMessage? messenger = null) {
             messenger(ProgressState.INIT, 0);
             int c = 0;
             var photos = new Gee.TreeSet<Photograph>();
@@ -288,7 +288,8 @@ namespace GQPE {
                 try {
                     var photo = new Photograph(file);
                     photos.add(photo);
-                    messenger(ProgressState.ADVANCE, c++);
+                    if (messenger != null)
+                        messenger(ProgressState.ADVANCE, c++);
                 } catch (GLib.Error e) {
                     GLib.warning(_("Error processing %s: %s. Skipping."),
                                  args[i], e.message);
@@ -343,6 +344,34 @@ namespace GQPE {
             return pixbuf.scale_simple((int)(pixbuf.width * scale),
                                        (int)(pixbuf.height * scale),
                                        Gdk.InterpType.HYPER);
+        }
+
+        /**
+         * Loads the data from a file.
+         * @param file the file to load.
+         * @return the data from a file, or ''null'' if it cannot be loaded.
+         */
+        public static uint8[]? load_file_data(GLib.File file) {
+            try {
+                var bytes = file.load_bytes();
+                return bytes.get_data();
+            } catch (GLib.Error error) {
+                stderr.printf("%s\n", error.message);
+                return null;
+            }
+        }
+
+        /**
+         * Prints an error message, shows how to ask for help, and exits.
+         * @param format the format.
+         */
+        [PrintfFormat]
+        public static void use(string format, ...) {
+            var full_format = format + "\n";
+            var list = va_list();
+            stderr.vprintf(full_format, list);
+            error(_("Run ‘%s --help’ for a list of options"),
+                  GLib.Environment.get_prgname());
         }
     }
 }
