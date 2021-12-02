@@ -36,6 +36,8 @@ gdkpixbuf = dependency('gdk-pixbuf-2.0')
 gtk = dependency('gtk+-3.0')
 sqlite3 = dependency('sqlite3')
 json = dependency('json-glib-1.0')
+soup = dependency('libsoup-2.4')
+secret = dependency('libsecret-1')
 
 xsltproc = find_program('xsltproc', required: false)
 
@@ -160,6 +162,25 @@ gqpeshotwell_dependencies = [
 
 executable('gqpe-shotwell', gqpeshotwell_sources,
            dependencies: gqpeshotwell_dependencies,
+           include_directories: [ gqpelib_includes ],
+           install: true, link_with: [ gqpelib ])
+
+gqpegaleria_sources = [
+  'src/galeria.vala'
+]
+
+gqpegaleria_dependencies = [
+  gee,
+  gexiv2,
+  gdk,
+  gdkpixbuf,
+  json,
+  math,
+  soup
+]
+
+executable('gqpe-galeria', gqpegaleria_sources,
+           dependencies: gqpegaleria_dependencies,
            include_directories: [ gqpelib_includes ],
            install: true, link_with: [ gqpelib ])
 
