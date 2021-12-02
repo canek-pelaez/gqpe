@@ -105,22 +105,28 @@ namespace GQPE {
         /**
          * The image width.
          */
-        public int width { get; private set; }
+        public int width { get { return _get_width(); } }
+        private int _width;
 
         /**
          * The image height.
          */
-        public int height { get; private set; }
+        public int height { get { return _get_height(); } }
+        private int _height;
 
         /**
          * The image file size.
          */
-        public int size { get; private set; }
+        public int size { get { return _get_size(); } }
+        private int _size;
 
         /**
          * The image file date and time.
          */
-        public GLib.DateTime file_datetime { get; private set; }
+        public GLib.DateTime file_datetime {
+            get { return _get_file_datetime(); }
+        }
+        private GLib.DateTime _file_datetime;
 
         /**
          * Wether the photograph has geolocation.
@@ -140,7 +146,8 @@ namespace GQPE {
             metadata = new GExiv2.Metadata();
             metadata.open_path(file.get_path());
             get_metadata();
-            get_filedata();
+            _width = _height = _size = -1;
+            _file_datetime = null;
             this.notify.connect ((s, p) => modified = true);
         }
 
@@ -495,18 +502,51 @@ namespace GQPE {
             return d;
         }
 
+        private int _get_width() {
+            if (_width == -1)
+                get_image_size();
+            return _width;
+        }
+
+        private int _get_height() {
+            if (_height == -1)
+                get_image_size();
+            return _height;
+        }
+
+        private int _get_size() {
+            if (_size == -1)
+                get_file_data();
+            return _size;
+        }
+
+        private unowned GLib.DateTime _get_file_datetime() {
+            if (_file_datetime == null)
+                get_file_data();
+            return _file_datetime;
+        }
+
+        /* Gets the image size. */
+        private void get_image_size() {
+            try {
+                var pb = new Gdk.Pixbuf.from_file(path);
+                _width = pb.width;
+                _height = pb.height;
+            } catch (GLib.Error e) {
+                GLib.warning(_("Error getting image size: %s"), e.message);
+            }
+        }
+
         /* Gets the file data. */
-        private void get_filedata() throws GLib.Error {
-            var pb = new Gdk.Pixbuf.from_file(path);
-            width = pb.width;
-            height = pb.height;
+        private void get_file_data() {
             Posix.Stat buf;
-            if (Posix.stat(path, out buf) != 0)
-                throw new GLib.Error(GLib.Quark.from_string("gqpe"), 0,
-                                     _("Cannot get file status: %s"), path);
-            size = (int)buf.st_size;
+            if (Posix.stat(path, out buf) != 0) {
+                GLib.warning(_("Error getting file status: %s"), path);
+                return;
+            }
+            _size = (int)buf.st_size;
             long t = (long)buf.st_mtime;
-            file_datetime = new GLib.DateTime.from_unix_local(t);
+            _file_datetime = new GLib.DateTime.from_unix_local(t);
         }
     }
 }
