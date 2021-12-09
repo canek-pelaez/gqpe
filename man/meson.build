@@ -17,7 +17,14 @@ flags = [
 
 command = [ xsltproc, '-o', '@OUTPUT@' ] + flags
 
-pages = [ 'tags', 'copy', 'store', 'interpolate-gps' ]
+pages = [
+  'copy',
+  'galeria',
+  'interpolate-gps',
+  'store',
+  'shotwell',
+  'tags'
+]
 man_pages = []
 html_pages = []
 

@@ -96,9 +96,9 @@ namespace GQPE {
         private static GLib.OptionEntry[] get_general_options() {
             GLib.OptionEntry[] options = {
                 { "url", 'u', 0, GLib.OptionArg.STRING,
-                  &url, _("Set the Galería site URL"), null },
+                  &url, _("Set the Galería site URL"), "URL" },
                 { "token", 't', 0, GLib.OptionArg.STRING,
-                  &token, _("Set the Galería site token"), null },
+                  &token, _("Set the Galería site token"), "TOKEN" },
                 { null }
             };
             return options;
@@ -127,7 +127,7 @@ namespace GQPE {
         /* Returns the list-photos options. */
         private static GLib.OptionEntry[] get_random_photo_options() {
             GLib.OptionEntry[] options = {
-                { "blacklist", '\0', 0, GLib.OptionArg.STRING, &blacklist,
+                { "blacklist", 'b', 0, GLib.OptionArg.STRING, &blacklist,
                   _("Blacklisted terms"), "TERMS" },
                 { null }
             };
@@ -147,7 +147,7 @@ namespace GQPE {
         /* Returns the upload-photos options. */
         private static GLib.OptionEntry[] get_upload_photos_options() {
             GLib.OptionEntry[] options = {
-                { "directory", '\0', 0, GLib.OptionArg.FILENAME,
+                { "directory", 'd', 0, GLib.OptionArg.FILENAME,
                   &directory, _("The directory to upload"),
                   "DIRECTORY" },
                 { null }
@@ -178,7 +178,7 @@ namespace GQPE {
         /* Returns the set-covers options. */
         private static GLib.OptionEntry[] get_set_covers_options() {
             GLib.OptionEntry[] options = {
-                { "covers", '\0', 0, GLib.OptionArg.FILENAME,
+                { "covers", 'c', 0, GLib.OptionArg.FILENAME,
                   &covers, _("The JSON file with the covers"), "JSON" },
                 { null }
             };

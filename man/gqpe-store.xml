@@ -211,15 +211,23 @@ IMG-20171016-124327.JPG: "My father's birthday", 2017-10-16T12:43:27-06</program
     <title>See Also</title>
     <para>
       <citerefentry>
-        <refentrytitle>gqpe-tags</refentrytitle>
-        <manvolnum>1</manvolnum>
-      </citerefentry>,
-      <citerefentry>
         <refentrytitle>gqpe-copy</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
+        <refentrytitle>gqpe-galeria</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
         <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-shotwell</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-tags</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>.
     </para>

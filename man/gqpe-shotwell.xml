@@ -2,7 +2,7 @@
 <!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
         "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <!--
-  gqpe-interpolate-gps.xml - This file is part of gqpe.
+  gqpe-shotwell.xml - This file is part of gqpe.
 
   Copyright © 2013-2021 Canek Peláez Valdés
 
@@ -19,10 +19,10 @@
   You should have received a copy of the GNU Lesser General Public License
   along with this program; If not, see <http://www.gnu.org/licenses/>.
 -->
-<refentry id="mlm-interpolate-gps">
+<refentry id="mlm-shotwell">
 
   <refentryinfo>
-    <title>gqpe-interpolate-gps</title>
+    <title>gqpe-shotwell</title>
     <productname>gqpe</productname>
     <authorgroup>
       <author>
@@ -35,20 +35,20 @@
   </refentryinfo>
 
   <refmeta>
-    <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+    <refentrytitle>gqpe-shotwell</refentrytitle>
     <manvolnum>1</manvolnum>
   </refmeta>
 
   <refnamediv>
-    <refname>gqpe-interpolate-gps</refname>
-    <refpurpose>Interpolate GPS coordinates</refpurpose>
+    <refname>gqpe-shotwell</refname>
+    <refpurpose>Export photographs to Shotwell</refpurpose>
   </refnamediv>
 
   <refsynopsisdiv>
     <cmdsynopsis>
-      <command>gqpe-interpolate-gps</command>
-      <arg choice="opt" rep="repeat">OPTION</arg>
-      <arg choice="opt">DIRNAME</arg>
+      <command>gqpe-shotwell</command>
+      <arg choice="opt">OPTION</arg>
+      <arg choice="opt">DIRECTORY</arg>
       <arg choice="opt" rep="repeat">FILENAME</arg>
     </cmdsynopsis>
   </refsynopsisdiv>
@@ -57,34 +57,14 @@
 
     <title>Description</title>
 
-    <para><command>gqpe-interpolate-gps</command> is a command line tool to
-    interpolate GPS coordinates in a timed range of image files.</para>
-
-    <para><command>gqpe-interpolate-gps</command> has two modes: The first one
-    receives a directory, and it automatically interpolates the GPS coordinates
-    of all photographs without GPS data, sorted by timestamp, such as they are
-    between two photographs, <varname>P</varname> and <varname>Q</varname>,
-    where both <varname>P</varname> and <varname>Q</varname> have GPS data and
-    the distance between <varname>P</varname> and <varname>Q</varname> is less
-    than 1,000 meters, and the time between <varname>P</varname> and
-    <varname>Q</varname> is less than one day.</para>
-
-    <para>The second mode uses the <option>-r</option> option, and receives a
-    set of photographs. The first and last one (time wise) must have GPS data,
-    and then the photographs in between have their GPS coordinates
-    interpolated.</para>
-
-    <para>The interpolation is a naive one, treating the latitude and longitude
-    as planar coordinates instead of polar coordinates; this works reasonably
-    well for small distances, but it does not for large ones.</para>
+    <para><command>gqpe-shotwell</command> is a command line tool to export
+    photographs to Shotwell.</para>
 
   </refsect1>
 
   <refsect1>
 
     <title>Options</title>
-
-    <para>The following options are accepted.</para>
 
     <variablelist>
 
@@ -97,10 +77,18 @@
       </varlistentry>
 
       <varlistentry>
-        <term><option>-r</option></term>
-        <term><option>--range</option></term>
+        <term><option>-f</option></term>
+        <term><option>--files</option></term>
         <listitem>
-          <para>Use a range of photographs.</para>
+          <para>Use a file list instead of a directory.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term><option>-c</option></term>
+        <term><option>--covers</option></term>
+        <listitem>
+          <para>Use a Galería JSON to set the primary photos.</para>
         </listitem>
       </varlistentry>
 
@@ -120,23 +108,23 @@
     <title>See Also</title>
     <para>
       <citerefentry>
-        <refentrytitle>gqpe-galeria</refentrytitle>
-        <manvolnum>1</manvolnum>
-      </citerefentry>,
-      <citerefentry>
         <refentrytitle>gqpe-copy</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
-        <refentrytitle>gqpe-tags</refentrytitle>
+        <refentrytitle>gqpe-galeria</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
-        <refentrytitle>gqpe-shotwell</refentrytitle>
+        <refentrytitle>gqpe-interpolate-gps</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
         <refentrytitle>gqpe-store</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-tags</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>.
     </para>

@@ -109,7 +109,15 @@
     <title>See Also</title>
     <para>
       <citerefentry>
-        <refentrytitle>gqpe-tags</refentrytitle>
+        <refentrytitle>gqpe-galeria</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-shotwell</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
@@ -117,7 +125,7 @@
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
-        <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <refentrytitle>gqpe-tags</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>.
     </para>

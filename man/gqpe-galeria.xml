@@ -1,0 +1,426 @@
+<?xml version='1.0' encoding='UTF-8'?> <!--*-nxml-*-->
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+        "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<!--
+  gqpe-galeria.xml - This file is part of gqpe.
+
+  Copyright © 2013-2021 Canek Peláez Valdés
+
+  This program is free software; you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by
+  the Free Software Foundation; either version 2.1 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  Lesser General Public License for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program; If not, see <http://www.gnu.org/licenses/>.
+-->
+<refentry id="mlm-galeria">
+
+  <refentryinfo>
+    <title>gqpe-galeria</title>
+    <productname>gqpe</productname>
+    <authorgroup>
+      <author>
+        <contrib>Developer</contrib>
+        <firstname>Canek</firstname>
+        <surname>Peláez Valdés</surname>
+        <email>canek@ciencias.unam.mx</email>
+      </author>
+    </authorgroup>
+  </refentryinfo>
+
+  <refmeta>
+    <refentrytitle>gqpe-galeria</refentrytitle>
+    <manvolnum>1</manvolnum>
+  </refmeta>
+
+  <refnamediv>
+    <refname>gqpe-galeria</refname>
+    <refpurpose>Execute Galería REST API methods</refpurpose>
+  </refnamediv>
+
+  <refsynopsisdiv>
+    <cmdsynopsis>
+      <command>gqpe-galeria</command>
+      <arg choice="req">OPTION</arg>
+      <arg choice="opt">ARGUMENT</arg>
+    </cmdsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+
+    <title>Description</title>
+
+    <para><command>gqpe-galeria</command> is a command line tool to execute
+    methods from the Galería REST API.</para>
+
+  </refsect1>
+
+  <refsect1>
+
+    <title>Options</title>
+
+    <refsect2>
+
+      <title>Help Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>-h</option></term>
+          <term><option>--help</option></term>
+          <listitem>
+            <para>Show help options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--help-all</option></term>
+          <listitem>
+            <para>Show all help options.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>General Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-general</option></term>
+          <listitem>
+            <para>Show general help options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-u</option></term>
+          <term><option>--url=URL</option></term>
+          <listitem>
+            <para>Set the Galería site URL.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry id="token">
+          <term><option>-t</option></term>
+          <term><option>--token=TOKEN</option></term>
+          <listitem>
+            <para>Set the Galería site token.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>Application Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--list-albums</option></term>
+          <listitem>
+            <para>Get a list of the albums. The albums are paginated with 100
+            albums per page; you can use the <option>--albums-page</option> yo
+            specify the page. If the page is out of range, the method will
+            return an empty list.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--list-photos</option></term>
+          <listitem>
+            <para>Get a list of the photos. The photos are paginated with 100
+            photos per page; you can use the <option>--photos-page</option> yo
+            specify the page. If the page is out of range, the method will
+            return an empty list.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--random-photo</option></term>
+          <listitem>
+            <para>Get a random photograph.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--upload-photos</option></term>
+          <listitem>
+            <para>Upload photographs.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--delete-item</option></term>
+          <listitem>
+            <para>Delete photographs or albums.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--reset-covers</option></term>
+          <listitem>
+            <para>Resets the album covers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--get-covers</option></term>
+          <listitem>
+            <para>Get the album covers.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--set-covers</option></term>
+          <listitem>
+            <para>Set the album covers.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>List Albums Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-list-albums</option></term>
+          <listitem>
+            <para>Show list-albums options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--albums-page=PAGE</option></term>
+          <listitem>
+            <para>The page of albums to get.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>List Photos Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-list-photos</option></term>
+          <listitem>
+            <para>Show list-photos options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--photos-page=PAGE</option></term>
+          <listitem>
+            <para>The page of photos to get.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>List Photos Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-random-photo</option></term>
+          <listitem>
+            <para>Show random-photo options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-b</option></term>
+          <term><option>--blacklist=BLACKLIST</option></term>
+          <listitem>
+            <para>Provide a comma separated list of blacklisted terms that will
+            not be included in the set of random photos.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>Get Covers Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-get-covers</option></term>
+          <listitem>
+            <para>Show get-covers options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-o</option></term>
+          <term><option>--output=OUTPUT</option></term>
+          <listitem>
+            <para>Instead of sending the covers to the standard output, send it
+            to a file.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>Upload Photos Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-upload-photos</option></term>
+          <listitem>
+            <para>Show upload-photos options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-d</option></term>
+          <term><option>--directory=DIRECTORY</option></term>
+          <listitem>
+            <para>Scan the directory recursively for photographs to
+            upload.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>Delete Item Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-delete-item</option></term>
+          <listitem>
+            <para>Show delete-item options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--delete-path=PATH</option></term>
+          <listitem>
+            <para>The path to delete.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>Reset Covers Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-reset-covers</option></term>
+          <listitem>
+            <para>Show reset-covers options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>--reset-path=PATH</option></term>
+          <listitem>
+            <para>The path to reset. If no path is provided, the whole Galería
+            reset its covers.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+    <refsect2>
+
+      <title>Set Covers Options</title>
+
+      <variablelist>
+
+        <varlistentry>
+          <term><option>--help-set-covers</option></term>
+          <listitem>
+            <para>Show set-covers options.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><option>-c</option></term>
+          <term><option>--covers=COVERS</option></term>
+          <listitem>
+            <para>The covers JSON file.</para>
+          </listitem>
+        </varlistentry>
+
+      </variablelist>
+
+    </refsect2>
+
+  </refsect1>
+
+  <refsect1>
+    <title>See Also</title>
+    <para>
+      <citerefentry>
+        <refentrytitle>gqpe-copy</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>.
+      <citerefentry>
+        <refentrytitle>gqpe-shotwell</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-store</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-tags</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>.
+    </para>
+  </refsect1>
+
+</refentry>

@@ -272,11 +272,19 @@
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
-        <refentrytitle>gqpe-store</refentrytitle>
+        <refentrytitle>gqpe-galeria</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>,
       <citerefentry>
         <refentrytitle>gqpe-interpolate-gps</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-store</refentrytitle>
+        <manvolnum>1</manvolnum>
+      </citerefentry>,
+      <citerefentry>
+        <refentrytitle>gqpe-tags</refentrytitle>
         <manvolnum>1</manvolnum>
       </citerefentry>.
     </para>
