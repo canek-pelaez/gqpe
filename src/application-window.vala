@@ -49,6 +49,8 @@ namespace GQPE {
         private const int ALBUM_LENGTH = 50;
         /* Maximum length for the title. */
         private const int TITLE_LENGTH = 40;
+        /* Maximum length for the comment. */
+        private const int COMMENT_LENGTH = 250;
         /* Max length. */
         private const int MAX_LENGTH = 500;
 
@@ -128,6 +130,9 @@ namespace GQPE {
         /* Updating flag. */
         private bool updating;
 
+        private bool long_comment;
+        private Gtk.TextTag warning_bg;
+
         /**
          * Constructs a new application window.
          * @param application the application.
@@ -165,6 +170,9 @@ namespace GQPE {
 
             image.set_size_request(MAX_LENGTH, MAX_LENGTH);
             disable_ui(Item.ALL);
+
+            warning_bg = comment.buffer.create_tag("red", "background",
+                                                   "#770000");
         }
 
         /* The on key press event callback. */
@@ -384,7 +392,7 @@ namespace GQPE {
             var photo = pmap[path];
             if (!pixbufs.has_key(path)) {
                 try {
-                    pixbufs[path] = Util.load_pixbuf(photo);
+                    pixbufs[path] = Util.load_pixbuf_scaled(photo, MAX_LENGTH);
                 } catch (GLib.Error e) {
                     GLib.warning("Could not load '%s': %s", path, e.message);
                 }
@@ -478,7 +486,8 @@ namespace GQPE {
             var path = photograph.path;
             if (!pixbufs.has_key(path)) {
                 try {
-                    pixbufs[path] = Util.load_pixbuf(photograph);
+                    pixbufs[path] = Util.load_pixbuf_scaled(photograph,
+                                                            MAX_LENGTH);
                 } catch (GLib.Error e) {
                     GLib.warning("Could not load '%s': %s", path, e.message);
                     disable_ui(Item.PICTURE);
@@ -509,6 +518,7 @@ namespace GQPE {
             var u  = "https://maps.google.com/maps?q=%2.11f,%2.11f&z=15";
             u = u.printf(photograph.latitude, photograph.longitude);
             link.uri = u;
+            check_entries_length();
             updating = false;
         }
 
@@ -575,6 +585,7 @@ namespace GQPE {
         private void check_entries_length() {
             check_entry_length(album, ALBUM_LENGTH);
             check_entry_length(_title, TITLE_LENGTH);
+            check_comment_length();
         }
 
         /* Checks the length of an entry. */
@@ -591,6 +602,19 @@ namespace GQPE {
                 entry.secondary_icon_tooltip_text = null;
                 entry.secondary_icon_activatable = false;
             }
+        }
+
+        /* Checks the length of the comment. */
+        private void check_comment_length() {
+            var lc = comment.buffer.text.length > COMMENT_LENGTH;
+            Gtk.TextIter start = {}, end = {};
+            comment.buffer.get_start_iter(out start);
+            comment.buffer.get_end_iter(out end);
+            if (long_comment && !lc)
+                comment.buffer.remove_all_tags(start, end);
+            long_comment = lc;
+            if (long_comment)
+                comment.buffer.apply_tag(warning_bg, start, end);
         }
     }
 }
