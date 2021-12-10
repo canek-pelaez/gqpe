@@ -299,10 +299,13 @@ namespace GQPE {
             return photos;
         }
 
+        /**
+         * Returns a Unix timestamp with the current clock.
+         * @return a Unix timestamp with the current clock.
+         */
         public static int64 now() {
             return new DateTime.now_utc().to_unix();
         }
-
 
         /**
          * Loads the photograph pixbuf.
@@ -327,6 +330,26 @@ namespace GQPE {
                 break;
             }
             return pb;
+        }
+
+        /**
+         * Loads the photograph pixbuf, scaled.
+         * @param photograph the photograph.
+         * @param length the maximum length of the pixbuf.
+         * @return the photograph pixbuf, scaled.
+         */
+        public static Gdk.Pixbuf load_pixbuf_scaled(Photograph photograph,
+                                                    double length)
+            throws GLib.Error {
+            var pb = load_pixbuf(photograph);
+            double scale = 1.0;
+            if (pb.width > pb.height)
+                scale = ((double)length) / pb.width;
+            else
+                scale = ((double)length) / pb.height;
+            return pb.scale_simple((int)(pb.width * scale),
+                                   (int)(pb.height * scale),
+                                   Gdk.InterpType.HYPER);
         }
 
         /**
