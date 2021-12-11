@@ -66,6 +66,8 @@ namespace GQPE {
         private static GLib.Settings settings;
         /* The session. */
         private static Soup.Session session;
+        /* The secret schema. */
+        private static Secret.Schema schema;
 
         /* List albums URL path. */
         private const string LIST_ALBUMS   = "/rest/list-albums";
@@ -240,7 +242,7 @@ namespace GQPE {
                     var ios = file.create_readwrite(GLib.FileCreateFlags.NONE);
                     var o = ios.output_stream as FileOutputStream;
                     o.write(message.response_body.data);
-                } catch (GLib.Error error) {
+                } catch (GLib.Error e) {
                     Util.error(_("Error writing output file: %s"), output);
                 }
             }
@@ -438,7 +440,7 @@ namespace GQPE {
             if (token == null || token == "")
                 token = GLib.Environment.get_variable("GQPE_GALERIA_TOKEN");
             if (token == null || token == "")
-                token = null;
+                lookup_token();
             if (token == null || token == "")
                 Util.error(_("Galería token is undefined"));
         }
@@ -546,7 +548,7 @@ namespace GQPE {
                 Util.use(e.message);
             }
 
-            settings = new GLib.Settings ("mx.unam.GQPE");
+            settings = new GLib.Settings("mx.unam.GQPE");
             check_galeria_url();
 
             n_options = get_n_options();
@@ -555,7 +557,38 @@ namespace GQPE {
             n_arguments = get_n_arguments();
 
             session = new Soup.Session();
+            schema = new Secret.Schema ("mx.unam.GQPE",
+                                            Secret.SchemaFlags.NONE,
+                                            "gqpe-galeria-token",
+                                            Secret.SchemaAttributeType.STRING);
             return args;
+        }
+
+        /* Looks up the token in the Secrets. */
+        private static void lookup_token() {
+            var cancellable = new GLib.Cancellable();
+            try {
+                token = Secret.password_lookup_sync(schema, cancellable,
+                                                    "gqpe-galeria-token",
+                                                    "token");
+            } catch (GLib.Error e) {
+                GLib.warning(_("Unable to retrieve the Galería token: %s"),
+                             e.message);
+            }
+        }
+
+        /* Stores the token in the Secrets. */
+        private static void store_token() {
+            var label = _("GQPE Galería token");
+            try {
+                Secret.password_store_sync(schema,
+                                           Secret.COLLECTION_DEFAULT,
+                                           label, token, null,
+                                           "gqpe-galeria-token", "token");
+            } catch (GLib.Error e) {
+                GLib.warning(_("Unable to store the Galería token: %s"),
+                             e.message);
+            }
         }
 
         public static int main(string[] args) {
@@ -585,10 +618,8 @@ namespace GQPE {
             }
 
             settings.set_string("url", url);
-            if (token != null) {
-                // Stores the token.
-            }
-
+            if (token != null)
+                store_token();
             return 0;
         }
     }

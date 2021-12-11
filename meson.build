@@ -176,7 +176,8 @@ gqpegaleria_dependencies = [
   gdkpixbuf,
   json,
   math,
-  soup
+  soup,
+  secret
 ]
 
 executable('gqpe-galeria', gqpegaleria_sources,
