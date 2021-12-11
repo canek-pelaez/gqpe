@@ -53,7 +53,7 @@ namespace GQPE {
                 stdout.printf(_("Loading photographs…\n"));
                 break;
             case ADVANCE:
-                stderr.printf(_("Loaded %d photographs…"), number, "\r\b");
+                stderr.printf(_("Loaded %d photographs…%s"), number, "\r\b");
                 break;
             case END:
                 stdout.printf(_("Loaded %d photographs.\n"), number);
@@ -146,9 +146,9 @@ namespace GQPE {
                 foreach (var photo in photos)
                     photographs[i++] = photo;
                 int c = interpolate_photos();
-                stderr.printf(_("%d photographs exported\n"), c);
+                stderr.printf(_("%d photographs interpolated\n"), c);
             } catch (GLib.Error e) {
-                Util.error(_("Error while exporting: %s"), e.message);
+                Util.error(_("Error while interpolating: %s"), e.message);
             }
         }
 
