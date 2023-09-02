@@ -349,21 +349,21 @@ namespace GQPE {
 
         /* Reads the timezone offset from the metadata. */
         private int get_tz_offset() throws GLib.Error {
-            return (int)(metadata.has_tag(Tag.TIMEZONE_OFFSET.tag()) ?
+            return (int)(metadata.try_has_tag(Tag.TIMEZONE_OFFSET.tag()) ?
                          metadata.try_get_tag_long(Tag.TIMEZONE_OFFSET.tag())
                          : 0);
         }
 
         /* Reads the data from the metadata. */
         private void get_metadata() throws GLib.Error {
-            title = (metadata.has_tag(Tag.TITLE.tag())) ?
+            title = (metadata.try_has_tag(Tag.TITLE.tag())) ?
                 metadata.try_get_tag_string(Tag.TITLE.tag()).strip() : "";
-            album = (metadata.has_tag(Tag.ALBUM.tag())) ?
+            album = (metadata.try_has_tag(Tag.ALBUM.tag())) ?
                 metadata.try_get_tag_string(Tag.ALBUM.tag()).strip() : "";
-            comment = (metadata.has_tag(Tag.DESCRIPTION.tag())) ?
+            comment = (metadata.try_has_tag(Tag.DESCRIPTION.tag())) ?
                 metadata.try_get_tag_string(Tag.DESCRIPTION.tag()).strip()
                 : "";
-            if (metadata.has_tag(Tag.DATETIME.tag())) {
+            if (metadata.try_has_tag(Tag.DATETIME.tag())) {
                 timezone_offset = get_tz_offset();
                 get_dt();
             } else if (has_geolocation) {
@@ -375,13 +375,13 @@ namespace GQPE {
             }
             check_gps_datetime();
             orientation = (Orientation)(
-                metadata.has_tag(Tag.ORIENTATION.tag()) ?
+                metadata.try_has_tag(Tag.ORIENTATION.tag()) ?
                 metadata.try_get_tag_long(Tag.ORIENTATION.tag()) :
                 Orientation.LANDSCAPE);
-            if (metadata.has_tag(Tag.LATITUDE.tag())     &&
-                metadata.has_tag(Tag.LONGITUDE.tag())    &&
-                metadata.has_tag(Tag.LATITUDE_REF.tag()) &&
-                metadata.has_tag(Tag.LONGITUDE_REF.tag())) {
+            if (metadata.try_has_tag(Tag.LATITUDE.tag())     &&
+                metadata.try_has_tag(Tag.LONGITUDE.tag())    &&
+                metadata.try_has_tag(Tag.LATITUDE_REF.tag()) &&
+                metadata.try_has_tag(Tag.LONGITUDE_REF.tag())) {
                 string lat =
                     metadata.try_get_tag_string(Tag.LATITUDE.tag());
                 string lon =
@@ -395,15 +395,15 @@ namespace GQPE {
                         Tag.LONGITUDE_REF.tag()) == "W")
                     longitude *= -1.0;
                 gps_tag =
-                    (metadata.has_tag(Tag.GPS_TAG.tag()) ?
+                    (metadata.try_has_tag(Tag.GPS_TAG.tag()) ?
                      metadata.try_get_tag_long(Tag.GPS_TAG.tag()) :
                      DEFAULT_GPS_TAG);
                 gps_version =
-                    (metadata.has_tag(Tag.GPS_VERSION.tag()) ?
+                    (metadata.try_has_tag(Tag.GPS_VERSION.tag()) ?
                      metadata.try_get_tag_string(Tag.GPS_VERSION.tag()) :
                      DEFAULT_GPS_VERSION);
                 gps_datum =
-                    (metadata.has_tag(Tag.GPS_DATUM.tag()) ?
+                    (metadata.try_has_tag(Tag.GPS_DATUM.tag()) ?
                      metadata.try_get_tag_string(Tag.GPS_DATUM.tag()) :
                      DEFAULT_GPS_DATUM);
                 has_geolocation = true;
@@ -412,21 +412,21 @@ namespace GQPE {
 
         /* Sets the metadata. */
         private void set_metadata() throws GLib.Error {
-            metadata.clear_tag(Tag.TITLE.tag());
+            metadata.try_clear_tag(Tag.TITLE.tag());
             metadata.try_set_tag_string(Tag.TITLE.tag(), title);
-            metadata.clear_tag(Tag.ALBUM.tag());
+            metadata.try_clear_tag(Tag.ALBUM.tag());
             metadata.try_set_tag_string(Tag.ALBUM.tag(), album);
-            metadata.clear_tag(Tag.DESCRIPTION.tag());
+            metadata.try_clear_tag(Tag.DESCRIPTION.tag());
             metadata.try_set_tag_string(Tag.DESCRIPTION.tag(), comment);
-            metadata.clear_tag(Tag.DATETIME.tag());
+            metadata.try_clear_tag(Tag.DATETIME.tag());
             metadata.try_set_tag_string(Tag.DATETIME.tag(),
                                         datetime.format("%Y:%m:%d %H:%M:%S"));
-            metadata.clear_tag(Tag.TIMEZONE_OFFSET.tag());
+            metadata.try_clear_tag(Tag.TIMEZONE_OFFSET.tag());
             metadata.try_set_tag_long(Tag.TIMEZONE_OFFSET.tag(),
                                       timezone_offset);
             metadata.try_set_tag_long(Tag.ORIENTATION.tag(), orientation);
             metadata.save_file(file.get_path());
-            if (metadata.has_tag(Tag.THUMB_ORIENTATION.tag()))
+            if (metadata.try_has_tag(Tag.THUMB_ORIENTATION.tag()))
                 metadata.try_set_tag_long(Tag.THUMB_ORIENTATION.tag(),
                                           orientation);
             set_geolocation_metadata();
@@ -442,26 +442,26 @@ namespace GQPE {
             var lon_ref = (longitude < 0.0) ? "W" : "E";
             var slat = double_to_decimals(lat);
             var slon = double_to_decimals(lon);
-            metadata.clear_tag(Tag.LATITUDE.tag());
+            metadata.try_clear_tag(Tag.LATITUDE.tag());
             metadata.try_set_tag_string(Tag.LATITUDE.tag(), slat);
-            metadata.clear_tag(Tag.LONGITUDE.tag());
+            metadata.try_clear_tag(Tag.LONGITUDE.tag());
             metadata.try_set_tag_string(Tag.LONGITUDE.tag(), slon);
-            metadata.clear_tag(Tag.LATITUDE_REF.tag());
+            metadata.try_clear_tag(Tag.LATITUDE_REF.tag());
             metadata.try_set_tag_string(Tag.LATITUDE_REF.tag(), lat_ref);
-            metadata.clear_tag(Tag.LONGITUDE_REF.tag());
+            metadata.try_clear_tag(Tag.LONGITUDE_REF.tag());
             metadata.try_set_tag_string(Tag.LONGITUDE_REF.tag(), lon_ref);
-            metadata.clear_tag(Tag.GPS_TAG.tag());
+            metadata.try_clear_tag(Tag.GPS_TAG.tag());
             metadata.try_set_tag_long(Tag.GPS_TAG.tag(), gps_tag);
-            metadata.clear_tag(Tag.GPS_VERSION.tag());
+            metadata.try_clear_tag(Tag.GPS_VERSION.tag());
             metadata.try_set_tag_string(Tag.GPS_VERSION.tag(), gps_version);
-            metadata.clear_tag(Tag.GPS_DATUM.tag());
+            metadata.try_clear_tag(Tag.GPS_DATUM.tag());
             metadata.try_set_tag_string(Tag.GPS_DATUM.tag(), gps_datum);
-            metadata.clear_tag(Tag.GPS_DATE.tag());
+            metadata.try_clear_tag(Tag.GPS_DATE.tag());
             var gps_date = "%d/1 %d/1 %d/1".printf(datetime.get_year(),
                                                    datetime.get_month(),
                                                    datetime.get_day_of_month());
             metadata.try_set_tag_string(Tag.GPS_DATE.tag(), gps_date);
-            metadata.clear_tag(Tag.GPS_TIME.tag());
+            metadata.try_clear_tag(Tag.GPS_TIME.tag());
             var gps_time = "%d/1 %d/1 %d/1".printf(datetime.get_hour(),
                                                    datetime.get_minute(),
                                                    datetime.get_second());
